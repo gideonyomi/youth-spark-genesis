@@ -16,7 +16,7 @@ const testimonials = [
   {
     name: "Grace Nwosu",
     role: "Youth Leader, Lagos Chapter",
-    text: "Serving in BLHMYOUTH has shaped me into the leader I am today. Every program is intentional, every lesson is transformative.",
+    text: "BLHMYOUTH drilled Hebrews 12:14 into my heart. Holiness is our watchword and it shows in everything we do. I'm a better leader because of it.",
     initials: "GN",
   },
 ];
