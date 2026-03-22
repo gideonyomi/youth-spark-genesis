@@ -26,9 +26,9 @@ const HeroSection = () => {
           className="font-serif font-bold text-primary-foreground text-5xl sm:text-7xl md:text-8xl lg:text-[7rem] text-balance animate-fade-up"
           style={{ animationDelay: "200ms", lineHeight: "0.9" }}
         >
-          Rooted in Faith,
+          Rooted in Holiness,
           <br />
-          <span className="text-accent">Rising in Purpose</span>
+          <span className="text-accent">Empowered for Purpose</span>
         </h1>
 
         <p
