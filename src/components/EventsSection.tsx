@@ -43,6 +43,7 @@ const EventsSection = () => {
           <h2 className="font-serif font-bold text-foreground text-3xl sm:text-4xl md:text-5xl text-balance">
             Mark Your Calendar
           </h2>
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto mt-4">Where holiness meets empowerment — gatherings that transform lives and ignite purpose.</p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">
