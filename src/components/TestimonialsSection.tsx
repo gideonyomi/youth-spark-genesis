@@ -10,7 +10,7 @@ const testimonials = [
   {
     name: "Marcus Thompson",
     role: "Student Success Camp Graduate",
-    text: "SSC gave me the tools to excel both in my studies and in my walk with God. The mentors poured into me in ways I'll never forget.",
+    text: "SSC showed me that God's empowerment starts with a holy life. The mentors taught me to pursue excellence and purity in everything I do.",
     initials: "MT",
   },
   {
