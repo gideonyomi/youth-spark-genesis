@@ -7,9 +7,10 @@ const events = [
   {
     tag: "YEC",
     title: "Youth Empowerment Conference",
+    badge: "🎉 30th Anniversary Edition",
     date: "August 15–18, 2026",
     location: "Main Auditorium, BLHM HQ",
-    description: "Four transformative days of worship, teaching, and empowerment. Keynote speakers, breakout sessions, and life-changing encounters.",
+    description: "2026 marks 30 years of YEC! Four transformative days of worship, holiness teaching, and empowerment. Keynote speakers, breakout sessions, and life-changing encounters with God.",
     image: yecImage,
     color: "bg-secondary",
   },
