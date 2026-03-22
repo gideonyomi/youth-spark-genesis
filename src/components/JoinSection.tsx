@@ -88,6 +88,7 @@ const JoinSection = () => {
                 <option value="">Select an option</option>
                 <option value="yec">YEC — Youth Empowerment Conference</option>
                 <option value="ssc">SSC — Student Success Camp</option>
+                <option value="nss">NSS — National Singles' Summit</option>
                 <option value="membership">General Membership</option>
                 <option value="volunteer">Volunteer / Serve</option>
               </select>
