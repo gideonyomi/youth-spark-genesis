@@ -4,7 +4,7 @@ const testimonials = [
   {
     name: "Adaeze Okafor",
     role: "YEC 2025 Attendee",
-    text: "The Youth Empowerment Conference changed the trajectory of my life. I discovered my purpose and found a community that truly cares about my spiritual growth.",
+    text: "YEC taught me that holiness isn't a burden — it's freedom. I discovered my purpose and found a community that truly cares about walking right with God.",
     initials: "AO",
   },
   {
