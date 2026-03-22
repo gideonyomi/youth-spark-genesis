@@ -10,7 +10,7 @@ const programs = [
   {
     icon: Users,
     title: "Leadership Development",
-    description: "Mentorship programs and workshops that cultivate servant-leaders ready to transform their spheres of influence.",
+    description: "Mentorship and workshops that cultivate holy, servant-leaders empowered to transform their spheres of influence for Christ.",
   },
   {
     icon: Heart,

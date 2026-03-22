@@ -50,8 +50,9 @@ const AboutSection = () => {
             alt="Youth Bible study session outdoors at golden hour"
             className="rounded-xl w-full aspect-[4/5] object-cover shadow-medium"
           />
-          <div className="absolute -bottom-6 -left-6 bg-accent text-accent-foreground font-serif font-bold text-lg px-6 py-4 rounded-lg shadow-soft">
-            Est. 2005
+          <div className="absolute -bottom-6 -left-6 bg-accent text-accent-foreground font-serif font-bold text-sm px-5 py-3 rounded-lg shadow-soft text-center leading-tight">
+            Hebrews 12:14
+            <span className="block text-xs font-sans font-normal mt-0.5 opacity-80">Holiness — our watchword</span>
           </div>
         </div>
       </div>

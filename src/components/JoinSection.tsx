@@ -31,10 +31,10 @@ const JoinSection = () => {
         <div className={`text-center mb-12 transition-all duration-700 ${visible ? "opacity-100 translate-y-0 blur-0" : "opacity-0 translate-y-5 blur-[4px]"}`}>
           <p className="font-sans text-sm font-semibold uppercase tracking-[0.1em] text-secondary mb-4">Join Us</p>
           <h2 className="font-serif font-bold text-foreground text-3xl sm:text-4xl md:text-5xl text-balance mb-4">
-            Be Part of the Movement
+            Walk in Holiness With Us
           </h2>
           <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-            Register for our annual events or join the BLHMYOUTH family. Fill out the form below and we'll be in touch.
+            Join the BLHMYOUTH family or register for YEC 2026 (30th anniversary!) and SSC. Holiness is our watchword — empowerment for purpose is our goal.
           </p>
         </div>
 

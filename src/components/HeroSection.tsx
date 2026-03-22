@@ -35,7 +35,7 @@ const HeroSection = () => {
           className="text-primary-foreground/80 text-lg md:text-xl max-w-2xl mx-auto mt-8 animate-fade-up"
           style={{ animationDelay: "500ms" }}
         >
-          Not just a youth group. A training ground for the soul — equipping the next generation to lead with holiness, courage, and love.
+          "Follow peace with all men, and holiness, without which no man shall see the Lord." — Hebrews 12:14. We are raising a generation set apart for God's purpose.
         </p>
 
         <div

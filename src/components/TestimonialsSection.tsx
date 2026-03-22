@@ -37,7 +37,7 @@ const TestimonialsSection = () => {
         <div className={`text-center mb-16 transition-all duration-700 ${visible ? "opacity-100 translate-y-0 blur-0" : "opacity-0 translate-y-5 blur-[4px]"}`}>
           <p className="font-sans text-sm font-semibold uppercase tracking-[0.1em] text-secondary mb-4">Testimonials</p>
           <h2 className="font-serif font-bold text-foreground text-3xl sm:text-4xl md:text-5xl text-balance">
-            Lives Transformed
+            Lives Set Apart
           </h2>
         </div>
 
