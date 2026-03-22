@@ -19,7 +19,7 @@ const events = [
     title: "Student Success Camp",
     date: "December 20–23, 2026",
     location: "Camp Ground Retreat Center",
-    description: "A 4-day camp blending academic mentorship with spiritual growth. Workshops, outdoor adventures, and team-building experiences.",
+    description: "A 4-day camp blending academic mentorship with spiritual growth, rooted in the pursuit of holiness. Workshops, outdoor adventures, and purposeful team-building.",
     image: sscImage,
     color: "bg-accent",
   },
