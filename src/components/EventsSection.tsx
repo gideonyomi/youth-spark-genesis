@@ -56,7 +56,7 @@ const EventsSection = () => {
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto mt-4">Where holiness meets empowerment — gatherings that transform lives and ignite purpose.</p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {events.map((event, i) => (
             <div
               key={event.tag}
@@ -66,8 +66,8 @@ const EventsSection = () => {
                 transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
               }}
             >
-              <div className="relative h-56 overflow-hidden">
-                <img src={event.image} alt={event.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+              <div className="relative h-48 sm:h-56 overflow-hidden">
+                <img src={event.image} alt={event.title} className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700" />
                 <span className={`absolute top-4 left-4 ${event.color} text-card font-sans font-bold text-xs uppercase tracking-widest px-4 py-1.5 rounded-full`}>
                   {event.tag}
                 </span>
