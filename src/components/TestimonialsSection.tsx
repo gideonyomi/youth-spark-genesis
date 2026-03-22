@@ -4,19 +4,19 @@ const testimonials = [
   {
     name: "Adaeze Okafor",
     role: "YEC 2025 Attendee",
-    text: "The Youth Empowerment Conference changed the trajectory of my life. I discovered my purpose and found a community that truly cares about my spiritual growth.",
+    text: "YEC taught me that holiness isn't a burden — it's freedom. I discovered my purpose and found a community that truly cares about walking right with God.",
     initials: "AO",
   },
   {
     name: "Marcus Thompson",
     role: "Student Success Camp Graduate",
-    text: "SSC gave me the tools to excel both in my studies and in my walk with God. The mentors poured into me in ways I'll never forget.",
+    text: "SSC showed me that God's empowerment starts with a holy life. The mentors taught me to pursue excellence and purity in everything I do.",
     initials: "MT",
   },
   {
     name: "Grace Nwosu",
     role: "Youth Leader, Lagos Chapter",
-    text: "Serving in BLHMYOUTH has shaped me into the leader I am today. Every program is intentional, every lesson is transformative.",
+    text: "BLHMYOUTH drilled Hebrews 12:14 into my heart. Holiness is our watchword and it shows in everything we do. I'm a better leader because of it.",
     initials: "GN",
   },
 ];
@@ -37,7 +37,7 @@ const TestimonialsSection = () => {
         <div className={`text-center mb-16 transition-all duration-700 ${visible ? "opacity-100 translate-y-0 blur-0" : "opacity-0 translate-y-5 blur-[4px]"}`}>
           <p className="font-sans text-sm font-semibold uppercase tracking-[0.1em] text-secondary mb-4">Testimonials</p>
           <h2 className="font-serif font-bold text-foreground text-3xl sm:text-4xl md:text-5xl text-balance">
-            Lives Transformed
+            Lives Set Apart
           </h2>
         </div>
 

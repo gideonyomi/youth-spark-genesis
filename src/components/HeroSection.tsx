@@ -26,16 +26,16 @@ const HeroSection = () => {
           className="font-serif font-bold text-primary-foreground text-5xl sm:text-7xl md:text-8xl lg:text-[7rem] text-balance animate-fade-up"
           style={{ animationDelay: "200ms", lineHeight: "0.9" }}
         >
-          Rooted in Faith,
+          Rooted in Holiness,
           <br />
-          <span className="text-accent">Rising in Purpose</span>
+          <span className="text-accent">Empowered for Purpose</span>
         </h1>
 
         <p
           className="text-primary-foreground/80 text-lg md:text-xl max-w-2xl mx-auto mt-8 animate-fade-up"
           style={{ animationDelay: "500ms" }}
         >
-          Not just a youth group. A training ground for the soul — equipping the next generation to lead with holiness, courage, and love.
+          "Follow peace with all men, and holiness, without which no man shall see the Lord." — Hebrews 12:14. We are raising a generation set apart for God's purpose.
         </p>
 
         <div

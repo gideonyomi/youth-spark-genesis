@@ -20,15 +20,18 @@ const AboutSection = () => {
         >
           <p className="font-sans text-sm font-semibold uppercase tracking-[0.1em] text-secondary mb-4">About Us</p>
           <h2 className="font-serif font-bold text-foreground text-3xl sm:text-4xl md:text-5xl mb-6 text-balance">
-            Empowering Youth Through Holiness & Purpose
+            Holiness Is Our Watchword
           </h2>
+          <p className="text-muted-foreground text-lg leading-relaxed mb-4">
+            The Bible Life Holiness Ministry Youth Department (BLHMYOUTH) is the youth arm of Bible Life Holiness Ministry — a vibrant community of young believers pursuing holiness as a lifestyle and empowerment as a mandate.
+          </p>
           <p className="text-muted-foreground text-lg leading-relaxed mb-6">
-            The Bible Life Holiness Ministry Youth Department (BLHMYOUTH) exists to raise a generation of young believers who are grounded in scripture, passionate about service, and equipped to make a lasting impact in their communities.
+            Anchored on Hebrews 12:14 — <em>"Follow peace with all men, and holiness, without which no man shall see the Lord"</em> — we are committed to raising kingdom citizens who walk in purity, serve with purpose, and lead with the fire of the Holy Spirit.
           </p>
           <div className="grid grid-cols-2 gap-6 mt-8">
             {[
-              { label: "Our Vision", value: "To see every young person walk in the fullness of God's purpose." },
-              { label: "Our Mission", value: "Disciple, train, and deploy young leaders for kingdom impact." },
+              { label: "Our Vision", value: "A generation of holy, purpose-driven young people transforming the world for Christ." },
+              { label: "Our Mission", value: "To disciple, empower, and deploy young believers who live holy and lead with purpose." },
             ].map((item) => (
               <div key={item.label} className="border-l-2 border-accent pl-4">
                 <p className="font-sans font-semibold text-sm uppercase tracking-wide text-foreground mb-1">{item.label}</p>
@@ -47,8 +50,9 @@ const AboutSection = () => {
             alt="Youth Bible study session outdoors at golden hour"
             className="rounded-xl w-full aspect-[4/5] object-cover shadow-medium"
           />
-          <div className="absolute -bottom-6 -left-6 bg-accent text-accent-foreground font-serif font-bold text-lg px-6 py-4 rounded-lg shadow-soft">
-            Est. 2005
+          <div className="absolute -bottom-6 -left-6 bg-accent text-accent-foreground font-serif font-bold text-sm px-5 py-3 rounded-lg shadow-soft text-center leading-tight">
+            Hebrews 12:14
+            <span className="block text-xs font-sans font-normal mt-0.5 opacity-80">Holiness — our watchword</span>
           </div>
         </div>
       </div>

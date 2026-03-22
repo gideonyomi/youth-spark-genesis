@@ -5,12 +5,12 @@ const programs = [
   {
     icon: BookOpen,
     title: "Bible Study & Discipleship",
-    description: "Weekly deep dives into God's Word, building a firm scriptural foundation for every young believer.",
+    description: "Weekly deep dives into God's Word, grounding every young believer in the doctrine of holiness and righteous living.",
   },
   {
     icon: Users,
     title: "Leadership Development",
-    description: "Mentorship programs and workshops that cultivate servant-leaders ready to transform their spheres of influence.",
+    description: "Mentorship and workshops that cultivate holy, servant-leaders empowered to transform their spheres of influence for Christ.",
   },
   {
     icon: Heart,
@@ -40,8 +40,9 @@ const ProgramsSection = () => {
         <div className={`text-center mb-16 transition-all duration-700 ${visible ? "opacity-100 translate-y-0 blur-0" : "opacity-0 translate-y-5 blur-[4px]"}`}>
           <p className="font-sans text-sm font-semibold uppercase tracking-[0.1em] text-accent mb-4">Our Programs</p>
           <h2 className="font-serif font-bold text-primary-foreground text-3xl sm:text-4xl md:text-5xl text-balance">
-            Building Kingdom Citizens
+            Empowered for Purpose
           </h2>
+          <p className="text-primary-foreground/70 text-lg max-w-2xl mx-auto mt-4">Holiness is the foundation — empowerment is the fruit. Every program is designed to set young people apart and send them out.</p>
         </div>
 
         <div className="grid sm:grid-cols-2 gap-6">

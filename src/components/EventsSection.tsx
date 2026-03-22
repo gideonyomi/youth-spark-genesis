@@ -7,9 +7,10 @@ const events = [
   {
     tag: "YEC",
     title: "Youth Empowerment Conference",
+    badge: "🎉 30th Anniversary Edition",
     date: "August 15–18, 2026",
     location: "Main Auditorium, BLHM HQ",
-    description: "Four transformative days of worship, teaching, and empowerment. Keynote speakers, breakout sessions, and life-changing encounters.",
+    description: "2026 marks 30 years of YEC! Four transformative days of worship, holiness teaching, and empowerment. Keynote speakers, breakout sessions, and life-changing encounters with God.",
     image: yecImage,
     color: "bg-secondary",
   },
@@ -18,7 +19,7 @@ const events = [
     title: "Student Success Camp",
     date: "December 20–23, 2026",
     location: "Camp Ground Retreat Center",
-    description: "A 4-day camp blending academic mentorship with spiritual growth. Workshops, outdoor adventures, and team-building experiences.",
+    description: "A 4-day camp blending academic mentorship with spiritual growth, rooted in the pursuit of holiness. Workshops, outdoor adventures, and purposeful team-building.",
     image: sscImage,
     color: "bg-accent",
   },
@@ -42,6 +43,7 @@ const EventsSection = () => {
           <h2 className="font-serif font-bold text-foreground text-3xl sm:text-4xl md:text-5xl text-balance">
             Mark Your Calendar
           </h2>
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto mt-4">Where holiness meets empowerment — gatherings that transform lives and ignite purpose.</p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">
@@ -59,6 +61,11 @@ const EventsSection = () => {
                 <span className={`absolute top-4 left-4 ${event.color} text-card font-sans font-bold text-xs uppercase tracking-widest px-4 py-1.5 rounded-full`}>
                   {event.tag}
                 </span>
+                {"badge" in event && event.badge && (
+                  <span className="absolute top-4 right-4 bg-card text-secondary font-sans font-bold text-xs px-3 py-1.5 rounded-full shadow-soft">
+                    {event.badge}
+                  </span>
+                )}
               </div>
 
               <div className="p-7">

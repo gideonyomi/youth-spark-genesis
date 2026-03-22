@@ -61,7 +61,7 @@ const Footer = () => {
 
         <div className="border-t border-primary-foreground/10 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-primary-foreground/50">
           <span>© {new Date().getFullYear()} Bible Life Holiness Ministry Youth Department. All rights reserved.</span>
-          <span className="mt-2 sm:mt-0">Rooted in Faith, Rising in Purpose.</span>
+          <span className="mt-2 sm:mt-0">Rooted in Holiness, Empowered for Purpose. — Heb 12:14</span>
         </div>
       </div>
     </footer>
