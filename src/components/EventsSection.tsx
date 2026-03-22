@@ -56,7 +56,7 @@ const EventsSection = () => {
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto mt-4">Where holiness meets empowerment — gatherings that transform lives and ignite purpose.</p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {events.map((event, i) => (
             <div
               key={event.tag}
