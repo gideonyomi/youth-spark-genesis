@@ -5,7 +5,7 @@ const programs = [
   {
     icon: BookOpen,
     title: "Bible Study & Discipleship",
-    description: "Weekly deep dives into God's Word, building a firm scriptural foundation for every young believer.",
+    description: "Weekly deep dives into God's Word, grounding every young believer in the doctrine of holiness and righteous living.",
   },
   {
     icon: Users,
