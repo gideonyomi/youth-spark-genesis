@@ -30,8 +30,8 @@ const AboutSection = () => {
           </p>
           <div className="grid grid-cols-2 gap-6 mt-8">
             {[
-              { label: "Our Vision", value: "To see every young person walk in the fullness of God's purpose." },
-              { label: "Our Mission", value: "Disciple, train, and deploy young leaders for kingdom impact." },
+              { label: "Our Vision", value: "A generation of holy, purpose-driven young people transforming the world for Christ." },
+              { label: "Our Mission", value: "To disciple, empower, and deploy young believers who live holy and lead with purpose." },
             ].map((item) => (
               <div key={item.label} className="border-l-2 border-accent pl-4">
                 <p className="font-sans font-semibold text-sm uppercase tracking-wide text-foreground mb-1">{item.label}</p>
