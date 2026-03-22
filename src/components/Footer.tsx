@@ -40,6 +40,9 @@ const Footer = () => {
               <a href="#events" className="text-primary-foreground/70 hover:text-primary-foreground transition-colors">
                 Student Success Camp (SSC)
               </a>
+              <a href="#events" className="text-primary-foreground/70 hover:text-primary-foreground transition-colors">
+                National Singles' Summit (NSS)
+              </a>
             </div>
           </div>
 

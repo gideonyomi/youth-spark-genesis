@@ -8,7 +8,7 @@ const HeroSection = () => {
         <img
           src={heroImage}
           alt="Youth worshipping together at BLHMYOUTH conference"
-          className="w-full h-full object-cover animate-clip-open"
+          className="w-full h-full object-cover object-top animate-clip-open"
           style={{ animationDelay: "400ms" }}
         />
         <div className="absolute inset-0 bg-primary/70" />

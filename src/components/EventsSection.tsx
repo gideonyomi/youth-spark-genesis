@@ -66,8 +66,8 @@ const EventsSection = () => {
                 transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
               }}
             >
-              <div className="relative h-56 overflow-hidden">
-                <img src={event.image} alt={event.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+              <div className="relative h-48 sm:h-56 overflow-hidden">
+                <img src={event.image} alt={event.title} className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700" />
                 <span className={`absolute top-4 left-4 ${event.color} text-card font-sans font-bold text-xs uppercase tracking-widest px-4 py-1.5 rounded-full`}>
                   {event.tag}
                 </span>
