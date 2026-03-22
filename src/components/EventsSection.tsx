@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Calendar, MapPin, ArrowRight } from "lucide-react";
 import yecImage from "@/assets/event-yec.jpg";
 import sscImage from "@/assets/event-ssc.jpg";
+import nssImage from "@/assets/gallery-1.jpg";
 
 const events = [
   {
@@ -22,6 +23,15 @@ const events = [
     description: "A 4-day camp blending academic mentorship with spiritual growth, rooted in the pursuit of holiness. Workshops, outdoor adventures, and purposeful team-building.",
     image: sscImage,
     color: "bg-accent",
+  },
+  {
+    tag: "NSS",
+    title: "National Singles' Summit",
+    date: "October 10–12, 2026",
+    location: "BLHM Conference Center",
+    description: "A powerful gathering for single believers — rooted in holiness, focused on purpose. Teaching, fellowship, and empowerment for singles walking in purity and faith.",
+    image: nssImage,
+    color: "bg-primary",
   },
 ];
 
