@@ -3,10 +3,11 @@ import { Menu, X } from "lucide-react";
 
 const navLinks = [
   { label: "About", href: "#about" },
-  { label: "Programs", href: "#programs" },
+  { label: "Ministries", href: "#ministries" },
   { label: "Events", href: "#events" },
-  { label: "Testimonials", href: "#testimonials" },
-  { label: "Join", href: "#join" },
+  { label: "History", href: "#history" },
+  { label: "Stories", href: "#testimonials" },
+  { label: "Prayer", href: "#prayer" },
 ];
 
 const Navbar = () => {
