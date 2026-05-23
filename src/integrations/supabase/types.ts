@@ -14,16 +14,541 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      about_content: {
+        Row: {
+          body: string | null
+          eyebrow: string | null
+          headline: string | null
+          id: number
+          scripture: string | null
+          updated_at: string
+          watchword: string | null
+        }
+        Insert: {
+          body?: string | null
+          eyebrow?: string | null
+          headline?: string | null
+          id?: number
+          scripture?: string | null
+          updated_at?: string
+          watchword?: string | null
+        }
+        Update: {
+          body?: string | null
+          eyebrow?: string | null
+          headline?: string | null
+          id?: number
+          scripture?: string | null
+          updated_at?: string
+          watchword?: string | null
+        }
+        Relationships: []
+      }
+      contact_messages: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          message: string
+          name: string
+          status: string
+          subject: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          message: string
+          name: string
+          status?: string
+          subject?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+          status?: string
+          subject?: string | null
+        }
+        Relationships: []
+      }
+      event_registrations: {
+        Row: {
+          created_at: string
+          email: string
+          event: string
+          full_name: string
+          id: string
+          notes: string | null
+          phone: string | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          event: string
+          full_name: string
+          id?: string
+          notes?: string | null
+          phone?: string | null
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          event?: string
+          full_name?: string
+          id?: string
+          notes?: string | null
+          phone?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
+      events: {
+        Row: {
+          badge: string | null
+          created_at: string
+          date: string | null
+          description: string | null
+          id: string
+          image_url: string | null
+          location: string | null
+          published: boolean
+          sort_order: number
+          tag: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          badge?: string | null
+          created_at?: string
+          date?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          location?: string | null
+          published?: boolean
+          sort_order?: number
+          tag: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          badge?: string | null
+          created_at?: string
+          date?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          location?: string | null
+          published?: boolean
+          sort_order?: number
+          tag?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      featured_testimonies: {
+        Row: {
+          created_at: string
+          id: string
+          location: string | null
+          name: string
+          quote: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          location?: string | null
+          name: string
+          quote: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          location?: string | null
+          name?: string
+          quote?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      general_overseer: {
+        Row: {
+          bio: string | null
+          id: number
+          name: string | null
+          photo_url: string | null
+          quote: string | null
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          bio?: string | null
+          id?: number
+          name?: string | null
+          photo_url?: string | null
+          quote?: string | null
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          bio?: string | null
+          id?: number
+          name?: string | null
+          photo_url?: string | null
+          quote?: string | null
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      hero_content: {
+        Row: {
+          cta_primary_label: string | null
+          cta_primary_link: string | null
+          cta_secondary_label: string | null
+          cta_secondary_link: string | null
+          eyebrow: string | null
+          headline: string | null
+          id: number
+          image_url: string | null
+          subhead: string | null
+          updated_at: string
+        }
+        Insert: {
+          cta_primary_label?: string | null
+          cta_primary_link?: string | null
+          cta_secondary_label?: string | null
+          cta_secondary_link?: string | null
+          eyebrow?: string | null
+          headline?: string | null
+          id?: number
+          image_url?: string | null
+          subhead?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cta_primary_label?: string | null
+          cta_primary_link?: string | null
+          cta_secondary_label?: string | null
+          cta_secondary_link?: string | null
+          eyebrow?: string | null
+          headline?: string | null
+          id?: number
+          image_url?: string | null
+          subhead?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      history_milestones: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          sort_order: number
+          theme: string
+          updated_at: string
+          year: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          sort_order?: number
+          theme: string
+          updated_at?: string
+          year: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          sort_order?: number
+          theme?: string
+          updated_at?: string
+          year?: string
+        }
+        Relationships: []
+      }
+      leadership: {
+        Row: {
+          bio: string | null
+          created_at: string
+          group_name: string
+          id: string
+          name: string
+          photo_url: string | null
+          role: string | null
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string
+          group_name: string
+          id?: string
+          name: string
+          photo_url?: string | null
+          role?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string
+          group_name?: string
+          id?: string
+          name?: string
+          photo_url?: string | null
+          role?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      livestream_links: {
+        Row: {
+          created_at: string
+          handle: string | null
+          id: string
+          platform: string
+          sort_order: number
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          handle?: string | null
+          id?: string
+          platform: string
+          sort_order?: number
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          handle?: string | null
+          id?: string
+          platform?: string
+          sort_order?: number
+          updated_at?: string
+          url?: string
+        }
+        Relationships: []
+      }
+      ministries: {
+        Row: {
+          created_at: string
+          description: string | null
+          icon: string | null
+          id: string
+          published: boolean
+          sort_order: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          published?: boolean
+          sort_order?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          published?: boolean
+          sort_order?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      newsletter_subscribers: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+        }
+        Relationships: []
+      }
+      prayer_requests: {
+        Row: {
+          anonymous: boolean
+          created_at: string
+          email: string | null
+          id: string
+          name: string | null
+          request: string
+          status: string
+        }
+        Insert: {
+          anonymous?: boolean
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string | null
+          request: string
+          status?: string
+        }
+        Update: {
+          anonymous?: boolean
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string | null
+          request?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      programs: {
+        Row: {
+          created_at: string
+          description: string | null
+          icon: string | null
+          id: string
+          image_url: string | null
+          published: boolean
+          sort_order: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          image_url?: string | null
+          published?: boolean
+          sort_order?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          image_url?: string | null
+          published?: boolean
+          sort_order?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      site_settings: {
+        Row: {
+          data: Json
+          id: number
+          updated_at: string
+        }
+        Insert: {
+          data?: Json
+          id?: number
+          updated_at?: string
+        }
+        Update: {
+          data?: Json
+          id?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      testimony_submissions: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          location: string | null
+          name: string
+          status: string
+          story: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          location?: string | null
+          name: string
+          status?: string
+          story: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          location?: string | null
+          name?: string
+          status?: string
+          story?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_staff: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "editor"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +675,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "editor"],
+    },
   },
 } as const
