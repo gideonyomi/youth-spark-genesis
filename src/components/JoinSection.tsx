@@ -1,9 +1,12 @@
 import { useState, useEffect, useRef } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const JoinSection = () => {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [busy, setBusy] = useState(false);
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -18,8 +21,18 @@ const JoinSection = () => {
     return () => obs.disconnect();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setBusy(true);
+    const { error } = await supabase.from("event_registrations").insert({
+      full_name: form.name,
+      email: form.email,
+      phone: form.phone || null,
+      event: form.event || "general",
+      notes: form.message || null,
+    });
+    setBusy(false);
+    if (error) return toast.error("Could not submit. Please try again.");
     setSubmitted(true);
     setTimeout(() => setSubmitted(false), 4000);
     setForm({ name: "", email: "", phone: "", event: "", message: "" });
