@@ -53,12 +53,17 @@ const TestimoniesSection = () => {
     return () => obs.disconnect();
   }, []);
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const { error } = await supabase.from("testimony_submissions").insert({
+      name: form.name, location: form.location || null, story: form.story,
+    });
+    if (error) return toast.error("Could not submit. Please try again.");
     setSubmitted(true);
     setTimeout(() => setSubmitted(false), 4000);
     setForm({ name: "", location: "", story: "" });
   };
+
 
   return (
     <section id="testimonials" className="py-24 md:py-40 px-4 bg-muted/50" ref={ref}>
