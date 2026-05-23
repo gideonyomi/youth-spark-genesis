@@ -1,10 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { HandHeart } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const PrayerRequestSection = () => {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [busy, setBusy] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", request: "", anonymous: false });
 
   useEffect(() => {
@@ -13,8 +16,17 @@ const PrayerRequestSection = () => {
     return () => obs.disconnect();
   }, []);
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setBusy(true);
+    const { error } = await supabase.from("prayer_requests").insert({
+      name: form.anonymous ? null : form.name,
+      email: form.email || null,
+      request: form.request,
+      anonymous: form.anonymous,
+    });
+    setBusy(false);
+    if (error) return toast.error("Could not send. Please try again.");
     setSubmitted(true);
     setTimeout(() => setSubmitted(false), 4000);
     setForm({ name: "", email: "", request: "", anonymous: false });
