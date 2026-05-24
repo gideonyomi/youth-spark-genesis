@@ -1,45 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useCollection } from "@/hooks/useContent";
 
-const testimonies = [
-  {
-    name: "Adaeze O.",
-    role: "University student, Lagos",
-    text: "Coming to YEC changed how I see my purpose. I left feeling seen, valued, and clear about my next steps — both spiritually and academically.",
-    initials: "AO",
-  },
-  {
-    name: "Marcus T.",
-    role: "Graduate, Student Success Camp '24",
-    text: "SSC gave me mentors who walked with me through a tough season. The friendships I made there are still some of the strongest in my life.",
-    initials: "MT",
-  },
-  {
-    name: "Grace N.",
-    role: "Teen, Port Harcourt",
-    text: "I joined the teenagers' programme nervous and quiet. A year later I'm leading my school fellowship. The church family here actually shows up for you.",
-    initials: "GN",
-  },
-  {
-    name: "Samuel I.",
-    role: "Young professional, Abuja",
-    text: "After years away from church, NSS welcomed me without judgement and helped me rediscover my faith. I found community I didn't know I needed.",
-    initials: "SI",
-  },
-  {
-    name: "Tola A.",
-    role: "Volunteer, Campus Outreach",
-    text: "Serving with the youth on outreach reminded me that the gospel is practical. We fed people, listened to their stories, and saw lives change.",
-    initials: "TA",
-  },
-  {
-    name: "Anonymous",
-    role: "Camp attendee",
-    text: "I came carrying a lot. I left lighter. I won't forget the morning the worship team stopped mid-set to pray for someone they didn't even know — me.",
-    initials: "—",
-  },
+const FALLBACK = [
+  { id: "f1", name: "Adaeze O.", location: "University student, Lagos", quote: "Coming to YEC changed how I see my purpose. I left feeling seen, valued, and clear about my next steps — both spiritually and academically." },
+  { id: "f2", name: "Marcus T.", location: "Graduate, SSC '24", quote: "SSC gave me mentors who walked with me through a tough season. The friendships I made there are still some of the strongest in my life." },
+  { id: "f3", name: "Grace N.", location: "Teen, Port Harcourt", quote: "I joined the teenagers' programme nervous and quiet. A year later I'm leading my school fellowship." },
 ];
+
+const initialsOf = (name: string) =>
+  name.split(/\s+/).map((w) => w[0]).filter(Boolean).slice(0, 2).join("").toUpperCase() || "—";
+
+
 
 const TestimoniesSection = () => {
   const ref = useRef<HTMLDivElement>(null);
