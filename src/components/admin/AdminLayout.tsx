@@ -1,5 +1,7 @@
 import { ReactNode } from "react";
 import { Navigate, NavLink, Outlet, useNavigate } from "react-router-dom";
+import logo from "@/assets/blhm-logo.png";
+
 import { useAuth } from "@/hooks/useAuth";
 import {
   Inbox, HandHeart, MessageSquareQuote, ClipboardList, Mail, AtSign,
@@ -52,12 +54,13 @@ const AdminLayout = ({ children }: { children?: ReactNode }) => {
     <div className="min-h-screen flex bg-muted/20">
       <aside className={`${open ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 fixed md:static z-40 w-72 h-screen md:h-auto md:min-h-screen bg-card border-r border-border flex flex-col transition-transform`}>
         <div className="p-5 border-b border-border flex items-center gap-3">
-          <img src={(await import("@/assets/blhm-logo.png")).default ?? ""} alt="" className="hidden" />
+          <img src={logo} alt="BLHM logo" className="w-10 h-10 object-contain" />
           <div>
-            <p className="font-serif font-bold text-lg">BLHMYOUTH</p>
+            <p className="font-serif font-bold text-lg leading-tight">BLHMYOUTH</p>
             <p className="text-xs text-muted-foreground">Admin Panel</p>
           </div>
         </div>
+
 
         <nav className="flex-1 overflow-y-auto p-3 space-y-5">
           {nav.map((sec) => (
