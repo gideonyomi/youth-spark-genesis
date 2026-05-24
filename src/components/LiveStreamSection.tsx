@@ -1,15 +1,18 @@
 import { useEffect, useRef, useState } from "react";
-import { Youtube, Facebook, Instagram, Radio } from "lucide-react";
+import { Youtube, Facebook, Instagram, Radio, Twitter, Globe, type LucideIcon } from "lucide-react";
+import { useCollection } from "@/hooks/useContent";
 
-const channels = [
-  { name: "YouTube Live", handle: "@blhmyec", icon: Youtube, href: "https://youtube.com/@blhmyec" },
-  { name: "Facebook Live", handle: "blhmyec", icon: Facebook, href: "https://facebook.com/blhmyec" },
-  { name: "Instagram Live", handle: "@blhmyec", icon: Instagram, href: "https://instagram.com/blhmyec" },
-];
+const ICONS: Record<string, LucideIcon> = {
+  youtube: Youtube,
+  facebook: Facebook,
+  instagram: Instagram,
+  twitter: Twitter,
+};
 
 const LiveStreamSection = () => {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
+  const { data: channels = [] } = useCollection<any>("livestream_links");
 
   useEffect(() => {
     const obs = new IntersectionObserver(([e]) => e.isIntersecting && setVisible(true), { threshold: 0.2 });
@@ -33,21 +36,24 @@ const LiveStreamSection = () => {
         </div>
 
         <div className="grid sm:grid-cols-3 gap-5">
-          {channels.map((c, i) => (
-            <a
-              key={c.name}
-              href={c.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`group bg-card rounded-xl p-7 shadow-soft hover:shadow-medium hover:-translate-y-1 transition-all duration-500 ${visible ? "opacity-100 translate-y-0 blur-0" : "opacity-0 translate-y-3 blur-[4px]"}`}
-              style={{ transitionDelay: visible ? `${i * 80}ms` : "0ms" }}
-            >
-              <c.icon className="w-7 h-7 text-secondary mb-4" />
-              <p className="font-serif font-semibold text-card-foreground text-lg">{c.name}</p>
-              <p className="text-sm text-muted-foreground mt-1">{c.handle}</p>
-              <p className="text-xs text-accent font-semibold uppercase tracking-wider mt-4 group-hover:underline">Open channel →</p>
-            </a>
-          ))}
+          {channels.map((c, i) => {
+            const Icon = ICONS[c.platform?.toLowerCase()] ?? Globe;
+            return (
+              <a
+                key={c.id}
+                href={c.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`group bg-card rounded-xl p-7 shadow-soft hover:shadow-medium hover:-translate-y-1 transition-all duration-500 ${visible ? "opacity-100 translate-y-0 blur-0" : "opacity-0 translate-y-3 blur-[4px]"}`}
+                style={{ transitionDelay: visible ? `${i * 80}ms` : "0ms" }}
+              >
+                <Icon className="w-7 h-7 text-secondary mb-4" />
+                <p className="font-serif font-semibold text-card-foreground text-lg">{c.platform}</p>
+                <p className="text-sm text-muted-foreground mt-1">{c.handle}</p>
+                <p className="text-xs text-accent font-semibold uppercase tracking-wider mt-4 group-hover:underline">Open channel →</p>
+              </a>
+            );
+          })}
         </div>
       </div>
     </section>

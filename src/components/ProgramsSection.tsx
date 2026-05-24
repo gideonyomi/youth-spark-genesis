@@ -1,32 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { BookOpen, Users, Heart, Mic } from "lucide-react";
-
-const programs = [
-  {
-    icon: BookOpen,
-    title: "Bible Study & Discipleship",
-    description: "Weekly deep dives into God's Word, grounding every young believer in the doctrine of holiness and righteous living.",
-  },
-  {
-    icon: Users,
-    title: "Leadership Development",
-    description: "Mentorship and workshops that cultivate holy, servant-leaders empowered to transform their spheres of influence for Christ.",
-  },
-  {
-    icon: Heart,
-    title: "Community Outreach",
-    description: "Hands-on service projects that put faith into action — feeding the hungry, visiting the sick, caring for the vulnerable.",
-  },
-  {
-    icon: Mic,
-    title: "Creative Arts & Worship",
-    description: "Music, drama, spoken word, and multimedia — channels for young creatives to glorify God with their gifts.",
-  },
-];
+import { useCollection } from "@/hooks/useContent";
+import { getIcon } from "@/lib/icon-map";
+import { BookOpen } from "lucide-react";
 
 const ProgramsSection = () => {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
+  const { data: programs = [] } = useCollection<any>("programs", { onlyPublished: true });
 
   useEffect(() => {
     const obs = new IntersectionObserver(([e]) => e.isIntersecting && setVisible(true), { threshold: 0.2 });
@@ -46,22 +26,30 @@ const ProgramsSection = () => {
         </div>
 
         <div className="grid sm:grid-cols-2 gap-6">
-          {programs.map((prog, i) => (
-            <div
-              key={prog.title}
-              className={`group bg-card rounded-xl p-8 transition-all duration-700 hover:shadow-heavy hover:-translate-y-2 ${visible ? "opacity-100 translate-y-0 blur-0" : "opacity-0 translate-y-5 blur-[4px]"}`}
-              style={{
-                transitionDelay: visible ? `${200 + i * 100}ms` : "0ms",
-                transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
-              }}
-            >
-              <div className="w-12 h-12 rounded-lg bg-accent/15 flex items-center justify-center mb-5 group-hover:bg-accent/25 transition-colors">
-                <prog.icon className="w-6 h-6 text-accent" />
+          {programs.map((prog, i) => {
+            const Icon = getIcon(prog.icon, BookOpen);
+            return (
+              <div
+                key={prog.id}
+                className={`group bg-card rounded-xl overflow-hidden transition-all duration-700 hover:shadow-heavy hover:-translate-y-2 ${visible ? "opacity-100 translate-y-0 blur-0" : "opacity-0 translate-y-5 blur-[4px]"}`}
+                style={{
+                  transitionDelay: visible ? `${200 + i * 100}ms` : "0ms",
+                  transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
+                }}
+              >
+                {prog.image_url && (
+                  <img src={prog.image_url} alt={prog.title} className="w-full h-44 object-cover" />
+                )}
+                <div className="p-8">
+                  <div className="w-12 h-12 rounded-lg bg-accent/15 flex items-center justify-center mb-5 group-hover:bg-accent/25 transition-colors">
+                    <Icon className="w-6 h-6 text-accent" />
+                  </div>
+                  <h3 className="font-serif font-semibold text-xl text-card-foreground mb-3">{prog.title}</h3>
+                  <p className="text-muted-foreground leading-relaxed">{prog.description}</p>
+                </div>
               </div>
-              <h3 className="font-serif font-semibold text-xl text-card-foreground mb-3">{prog.title}</h3>
-              <p className="text-muted-foreground leading-relaxed">{prog.description}</p>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

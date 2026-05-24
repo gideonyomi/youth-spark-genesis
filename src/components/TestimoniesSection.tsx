@@ -1,51 +1,26 @@
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useCollection } from "@/hooks/useContent";
 
-const testimonies = [
-  {
-    name: "Adaeze O.",
-    role: "University student, Lagos",
-    text: "Coming to YEC changed how I see my purpose. I left feeling seen, valued, and clear about my next steps — both spiritually and academically.",
-    initials: "AO",
-  },
-  {
-    name: "Marcus T.",
-    role: "Graduate, Student Success Camp '24",
-    text: "SSC gave me mentors who walked with me through a tough season. The friendships I made there are still some of the strongest in my life.",
-    initials: "MT",
-  },
-  {
-    name: "Grace N.",
-    role: "Teen, Port Harcourt",
-    text: "I joined the teenagers' programme nervous and quiet. A year later I'm leading my school fellowship. The church family here actually shows up for you.",
-    initials: "GN",
-  },
-  {
-    name: "Samuel I.",
-    role: "Young professional, Abuja",
-    text: "After years away from church, NSS welcomed me without judgement and helped me rediscover my faith. I found community I didn't know I needed.",
-    initials: "SI",
-  },
-  {
-    name: "Tola A.",
-    role: "Volunteer, Campus Outreach",
-    text: "Serving with the youth on outreach reminded me that the gospel is practical. We fed people, listened to their stories, and saw lives change.",
-    initials: "TA",
-  },
-  {
-    name: "Anonymous",
-    role: "Camp attendee",
-    text: "I came carrying a lot. I left lighter. I won't forget the morning the worship team stopped mid-set to pray for someone they didn't even know — me.",
-    initials: "—",
-  },
+const FALLBACK = [
+  { id: "f1", name: "Adaeze O.", location: "University student, Lagos", quote: "Coming to YEC changed how I see my purpose. I left feeling seen, valued, and clear about my next steps — both spiritually and academically." },
+  { id: "f2", name: "Marcus T.", location: "Graduate, SSC '24", quote: "SSC gave me mentors who walked with me through a tough season. The friendships I made there are still some of the strongest in my life." },
+  { id: "f3", name: "Grace N.", location: "Teen, Port Harcourt", quote: "I joined the teenagers' programme nervous and quiet. A year later I'm leading my school fellowship." },
 ];
+
+const initialsOf = (name: string) =>
+  name.split(/\s+/).map((w) => w[0]).filter(Boolean).slice(0, 2).join("").toUpperCase() || "—";
+
+
 
 const TestimoniesSection = () => {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState({ name: "", location: "", story: "" });
+  const { data: featured = [] } = useCollection<any>("featured_testimonies");
+  const testimonies = featured.length > 0 ? featured : FALLBACK;
 
   useEffect(() => {
     const obs = new IntersectionObserver(([e]) => e.isIntersecting && setVisible(true), { threshold: 0.15 });
@@ -64,7 +39,6 @@ const TestimoniesSection = () => {
     setForm({ name: "", location: "", story: "" });
   };
 
-
   return (
     <section id="testimonials" className="py-24 md:py-40 px-4 bg-muted/50" ref={ref}>
       <div className="container max-w-6xl mx-auto">
@@ -79,22 +53,23 @@ const TestimoniesSection = () => {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-          {testimonies.map((t, i) => (
+          {testimonies.map((t: any, i: number) => (
             <div
-              key={`${t.name}-${i}`}
+              key={t.id ?? `${t.name}-${i}`}
               className={`bg-card rounded-xl p-7 shadow-soft transition-all duration-700 ${visible ? "opacity-100 translate-y-0 blur-0" : "opacity-0 translate-y-3 blur-[4px]"}`}
               style={{ transitionDelay: visible ? `${i * 80}ms` : "0ms" }}
             >
-              <p className="text-muted-foreground leading-relaxed mb-6 italic font-serif text-lg">"{t.text}"</p>
+              <p className="text-muted-foreground leading-relaxed mb-6 italic font-serif text-lg">"{t.quote ?? t.text}"</p>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-semibold text-sm">
-                  {t.initials}
+                  {initialsOf(t.name)}
                 </div>
                 <div>
                   <p className="font-semibold text-sm text-card-foreground">{t.name}</p>
-                  <p className="text-xs text-muted-foreground">{t.role}</p>
+                  <p className="text-xs text-muted-foreground">{t.location ?? t.role}</p>
                 </div>
               </div>
+
             </div>
           ))}
         </div>

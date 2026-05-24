@@ -3,6 +3,8 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import logo from "@/assets/blhm-logo.png";
+
 
 const Login = () => {
   const { user, signIn, signUp, loading } = useAuth();
@@ -29,11 +31,15 @@ const Login = () => {
   return (
     <div className="min-h-screen grid place-items-center bg-muted/30 px-4">
       <div className="w-full max-w-md bg-card rounded-xl shadow-medium p-8">
-        <h1 className="font-serif text-2xl font-bold mb-1">BLHMYOUTH Admin</h1>
-        <p className="text-sm text-muted-foreground mb-6">
-          {mode === "signin" ? "Sign in to manage your site" : "Create the first admin account"}
-        </p>
+        <div className="flex flex-col items-center text-center mb-6">
+          <img src={logo} alt="BLHM logo" className="w-16 h-16 object-contain mb-3" />
+          <h1 className="font-serif text-2xl font-bold">BLHMYOUTH Admin</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            {mode === "signin" ? "Sign in to manage your site" : "Create the first admin account"}
+          </p>
+        </div>
         <form onSubmit={submit} className="space-y-4">
+
           <div>
             <label className="text-sm font-medium block mb-1.5">Email</label>
             <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)}

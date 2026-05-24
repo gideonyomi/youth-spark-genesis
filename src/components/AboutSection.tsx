@@ -1,15 +1,23 @@
 import { useEffect, useRef, useState } from "react";
 import studyImage from "@/assets/programs-study.jpg";
+import { useSingleton } from "@/hooks/useContent";
 
 const AboutSection = () => {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
+  const { data } = useSingleton<any>("about_content");
 
   useEffect(() => {
     const obs = new IntersectionObserver(([e]) => e.isIntersecting && setVisible(true), { threshold: 0.2 });
     if (ref.current) obs.observe(ref.current);
     return () => obs.disconnect();
   }, []);
+
+  const eyebrow = data?.eyebrow ?? "About BLHMYOUTH";
+  const headline = data?.headline ?? "Holiness Is Our Watchword";
+  const body = data?.body ?? "The Bible Life Holiness Ministry Youth Department (BLHMYOUTH) is the youth arm of Bible Life Holiness Ministry — a vibrant community of young believers pursuing holiness as a lifestyle and empowerment as a mandate.";
+  const watchword = data?.watchword ?? "Holiness is our watchword. Empowerment for purpose is our goal.";
+  const scripture = data?.scripture ?? 'Hebrews 12:14 — "Follow peace with all men, and holiness, without which no man shall see the Lord."';
 
   return (
     <section id="about" className="py-24 md:py-40 px-4" ref={ref}>
@@ -18,26 +26,19 @@ const AboutSection = () => {
           className={`transition-all duration-700 ${visible ? "opacity-100 translate-x-0 blur-0" : "opacity-0 -translate-x-6 blur-[4px]"}`}
           style={{ transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)" }}
         >
-          <p className="font-sans text-sm font-semibold uppercase tracking-[0.1em] text-secondary mb-4">About Us</p>
+          <p className="font-sans text-sm font-semibold uppercase tracking-[0.1em] text-secondary mb-4">{eyebrow}</p>
           <h2 className="font-serif font-bold text-foreground text-3xl sm:text-4xl md:text-5xl mb-6 text-balance">
-            Holiness Is Our Watchword
+            {headline}
           </h2>
-          <p className="text-muted-foreground text-lg leading-relaxed mb-4">
-            The Bible Life Holiness Ministry Youth Department (BLHMYOUTH) is the youth arm of Bible Life Holiness Ministry — a vibrant community of young believers pursuing holiness as a lifestyle and empowerment as a mandate.
+          <p className="text-muted-foreground text-lg leading-relaxed mb-4 whitespace-pre-line">
+            {body}
           </p>
-          <p className="text-muted-foreground text-lg leading-relaxed mb-6">
-            Anchored on Hebrews 12:14 — <em>"Follow peace with all men, and holiness, without which no man shall see the Lord"</em> — we are committed to raising kingdom citizens who walk in purity, serve with purpose, and lead with the fire of the Holy Spirit.
+          <p className="text-muted-foreground text-lg leading-relaxed mb-6 italic">
+            {scripture}
           </p>
-          <div className="grid grid-cols-2 gap-6 mt-8">
-            {[
-              { label: "Our Vision", value: "A generation of holy, purpose-driven young people transforming the world for Christ." },
-              { label: "Our Mission", value: "To disciple, empower, and deploy young believers who live holy and lead with purpose." },
-            ].map((item) => (
-              <div key={item.label} className="border-l-2 border-accent pl-4">
-                <p className="font-sans font-semibold text-sm uppercase tracking-wide text-foreground mb-1">{item.label}</p>
-                <p className="text-muted-foreground text-sm leading-relaxed">{item.value}</p>
-              </div>
-            ))}
+          <div className="border-l-2 border-accent pl-4 mt-6">
+            <p className="font-sans font-semibold text-sm uppercase tracking-wide text-foreground mb-1">Our Watchword</p>
+            <p className="text-muted-foreground text-sm leading-relaxed">{watchword}</p>
           </div>
         </div>
 

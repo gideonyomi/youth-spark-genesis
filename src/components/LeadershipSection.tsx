@@ -1,39 +1,27 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { User } from "lucide-react";
-
-const groups = [
-  {
-    title: "Council Chairman",
-    people: [{ name: "To be announced", role: "Council Chairman" }],
-  },
-  {
-    title: "National Executives",
-    people: [
-      { name: "To be announced", role: "National Youth President" },
-      { name: "To be announced", role: "National Secretary" },
-      { name: "To be announced", role: "National Coordinator" },
-    ],
-  },
-  {
-    title: "State Youth Coordinators",
-    people: [
-      { name: "To be announced", role: "Lagos State" },
-      { name: "To be announced", role: "Oyo State" },
-      { name: "To be announced", role: "FCT Abuja" },
-      { name: "To be announced", role: "Rivers State" },
-    ],
-  },
-];
+import { useCollection } from "@/hooks/useContent";
 
 const LeadershipSection = () => {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
+  const { data: people = [] } = useCollection<any>("leadership");
 
   useEffect(() => {
     const obs = new IntersectionObserver(([e]) => e.isIntersecting && setVisible(true), { threshold: 0.15 });
     if (ref.current) obs.observe(ref.current);
     return () => obs.disconnect();
   }, []);
+
+  const groups = useMemo(() => {
+    const acc: Record<string, any[]> = {};
+    const order: string[] = [];
+    for (const p of people) {
+      if (!acc[p.group_name]) { acc[p.group_name] = []; order.push(p.group_name); }
+      acc[p.group_name].push(p);
+    }
+    return order.map((title) => ({ title, people: acc[title] }));
+  }, [people]);
 
   return (
     <section id="leadership" className="py-24 md:py-40 px-4" ref={ref}>
@@ -55,25 +43,26 @@ const LeadershipSection = () => {
               <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
                 {g.people.map((p, i) => (
                   <div
-                    key={`${g.title}-${i}`}
+                    key={p.id}
                     className={`bg-card rounded-xl p-6 shadow-soft transition-all duration-700 ${visible ? "opacity-100 translate-y-0 blur-0" : "opacity-0 translate-y-3 blur-[4px]"}`}
                     style={{ transitionDelay: visible ? `${gi * 100 + i * 60}ms` : "0ms" }}
                   >
-                    <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
-                      <User className="w-7 h-7 text-muted-foreground" />
+                    <div className="w-16 h-16 rounded-full bg-muted overflow-hidden flex items-center justify-center mb-4">
+                      {p.photo_url ? (
+                        <img src={p.photo_url} alt={p.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <User className="w-7 h-7 text-muted-foreground" />
+                      )}
                     </div>
                     <p className="font-serif font-semibold text-card-foreground">{p.name}</p>
                     <p className="text-xs text-muted-foreground mt-1 uppercase tracking-wider">{p.role}</p>
+                    {p.bio && <p className="text-sm text-muted-foreground mt-2 leading-relaxed">{p.bio}</p>}
                   </div>
                 ))}
               </div>
             </div>
           ))}
         </div>
-
-        <p className="text-center text-xs text-muted-foreground mt-10 italic">
-          Photos and full bios will be added as the directory is finalised.
-        </p>
       </div>
     </section>
   );
