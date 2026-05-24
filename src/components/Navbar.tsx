@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import logo from "@/assets/blhm-logo.png";
 
 const navLinks = [
   { label: "About", href: "#about" },
@@ -14,11 +15,12 @@ const Navbar = () => {
   const [open, setOpen] = useState(false);
 
   return (
-    <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50">
+    <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-1.5rem)] max-w-5xl">
       {/* Desktop pill */}
       <div className="hidden md:flex items-center gap-1 bg-primary/95 backdrop-blur-md rounded-full px-2 py-2 shadow-heavy">
-        <a href="#" className="font-serif font-bold text-primary-foreground px-4 text-lg tracking-tight">
-          BLHMYOUTH
+        <a href="#" className="flex items-center gap-2 pl-2 pr-3">
+          <img src={logo} alt="BLHM logo" className="w-8 h-8 object-contain" />
+          <span className="font-serif font-bold text-primary-foreground text-lg tracking-tight">BLHMYOUTH</span>
         </a>
         <div className="w-px h-5 bg-primary-foreground/20" />
         {navLinks.map((link) => (
@@ -39,7 +41,8 @@ const Navbar = () => {
       </div>
 
       {/* Mobile */}
-      <div className="md:hidden flex items-center gap-3 bg-primary/95 backdrop-blur-md rounded-full px-4 py-3 shadow-heavy">
+      <div className="md:hidden flex items-center gap-3 bg-primary/95 backdrop-blur-md rounded-full px-4 py-2.5 shadow-heavy">
+        <img src={logo} alt="BLHM logo" className="w-8 h-8 object-contain" />
         <span className="font-serif font-bold text-primary-foreground text-lg">BLHMYOUTH</span>
         <button
           onClick={() => setOpen(!open)}
