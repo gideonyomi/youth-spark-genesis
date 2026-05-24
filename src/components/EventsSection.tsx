@@ -3,41 +3,15 @@ import { Calendar, MapPin, ArrowRight } from "lucide-react";
 import yecImage from "@/assets/event-yec.jpg";
 import sscImage from "@/assets/event-ssc.jpg";
 import nssImage from "@/assets/gallery-1.jpg";
+import { useCollection } from "@/hooks/useContent";
 
-const events = [
-  {
-    tag: "YEC",
-    title: "Youth Empowerment Conference",
-    badge: "🎉 30th Anniversary Edition",
-    date: "August 15–18, 2026",
-    location: "Main Auditorium, BLHM HQ",
-    description: "2026 marks 30 years of YEC! Four transformative days of worship, holiness teaching, and empowerment. Keynote speakers, breakout sessions, and life-changing encounters with God.",
-    image: yecImage,
-    color: "bg-secondary",
-  },
-  {
-    tag: "SSC",
-    title: "Student Success Camp",
-    date: "December 20–23, 2026",
-    location: "Camp Ground Retreat Center",
-    description: "A 4-day camp blending academic mentorship with spiritual growth, rooted in the pursuit of holiness. Workshops, outdoor adventures, and purposeful team-building.",
-    image: sscImage,
-    color: "bg-accent",
-  },
-  {
-    tag: "NSS",
-    title: "National Singles' Summit",
-    date: "October 10–12, 2026",
-    location: "BLHM Conference Center",
-    description: "A powerful gathering for single believers — rooted in holiness, focused on purpose. Teaching, fellowship, and empowerment for singles walking in purity and faith.",
-    image: nssImage,
-    color: "bg-primary",
-  },
-];
+const FALLBACK_IMAGES: Record<string, string> = { YEC: yecImage, SSC: sscImage, NSS: nssImage };
+const TAG_COLORS: Record<string, string> = { YEC: "bg-secondary", SSC: "bg-accent", NSS: "bg-primary" };
 
 const EventsSection = () => {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
+  const { data: events = [] } = useCollection<any>("events", { onlyPublished: true });
 
   useEffect(() => {
     const obs = new IntersectionObserver(([e]) => e.isIntersecting && setVisible(true), { threshold: 0.2 });
@@ -57,52 +31,60 @@ const EventsSection = () => {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {events.map((event, i) => (
-            <div
-              key={event.tag}
-              className={`group bg-card rounded-xl overflow-hidden shadow-soft hover:shadow-heavy transition-all duration-500 hover:-translate-y-2 ${visible ? "opacity-100 translate-y-0 blur-0" : "opacity-0 translate-y-5 blur-[4px]"}`}
-              style={{
-                transitionDelay: visible ? `${200 + i * 150}ms` : "0ms",
-                transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
-              }}
-            >
-              <div className="relative h-48 sm:h-56 overflow-hidden">
-                <img src={event.image} alt={event.title} className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700" />
-                <span className={`absolute top-4 left-4 ${event.color} text-card font-sans font-bold text-xs uppercase tracking-widest px-4 py-1.5 rounded-full`}>
-                  {event.tag}
-                </span>
-                {"badge" in event && event.badge && (
-                  <span className="absolute top-4 right-4 bg-card text-secondary font-sans font-bold text-xs px-3 py-1.5 rounded-full shadow-soft">
-                    {event.badge}
+          {events.map((event, i) => {
+            const img = event.image_url || FALLBACK_IMAGES[event.tag] || yecImage;
+            const color = TAG_COLORS[event.tag] || "bg-primary";
+            return (
+              <div
+                key={event.id}
+                className={`group bg-card rounded-xl overflow-hidden shadow-soft hover:shadow-heavy transition-all duration-500 hover:-translate-y-2 ${visible ? "opacity-100 translate-y-0 blur-0" : "opacity-0 translate-y-5 blur-[4px]"}`}
+                style={{
+                  transitionDelay: visible ? `${200 + i * 150}ms` : "0ms",
+                  transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
+                }}
+              >
+                <div className="relative h-48 sm:h-56 overflow-hidden">
+                  <img src={img} alt={event.title} className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700" />
+                  <span className={`absolute top-4 left-4 ${color} text-card font-sans font-bold text-xs uppercase tracking-widest px-4 py-1.5 rounded-full`}>
+                    {event.tag}
                   </span>
-                )}
-              </div>
-
-              <div className="p-7">
-                <h3 className="font-serif font-bold text-2xl text-card-foreground mb-3">{event.title}</h3>
-                <p className="text-muted-foreground leading-relaxed mb-5">{event.description}</p>
-
-                <div className="flex flex-col gap-2 text-sm text-muted-foreground mb-6">
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-secondary" />
-                    {event.date}
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-secondary" />
-                    {event.location}
-                  </div>
+                  {event.badge && (
+                    <span className="absolute top-4 right-4 bg-card text-secondary font-sans font-bold text-xs px-3 py-1.5 rounded-full shadow-soft">
+                      {event.badge}
+                    </span>
+                  )}
                 </div>
 
-                <a
-                  href="#join"
-                  className="inline-flex items-center gap-2 bg-primary text-primary-foreground font-semibold px-6 py-3 rounded-full text-sm transition-all duration-200 active:scale-[0.97] group-hover:gap-3"
-                >
-                  Register for {event.tag}
-                  <ArrowRight className="w-4 h-4" />
-                </a>
+                <div className="p-7">
+                  <h3 className="font-serif font-bold text-2xl text-card-foreground mb-3">{event.title}</h3>
+                  <p className="text-muted-foreground leading-relaxed mb-5">{event.description}</p>
+
+                  <div className="flex flex-col gap-2 text-sm text-muted-foreground mb-6">
+                    {event.date && (
+                      <div className="flex items-center gap-2">
+                        <Calendar className="w-4 h-4 text-secondary" />
+                        {event.date}
+                      </div>
+                    )}
+                    {event.location && (
+                      <div className="flex items-center gap-2">
+                        <MapPin className="w-4 h-4 text-secondary" />
+                        {event.location}
+                      </div>
+                    )}
+                  </div>
+
+                  <a
+                    href="#join"
+                    className="inline-flex items-center gap-2 bg-primary text-primary-foreground font-semibold px-6 py-3 rounded-full text-sm transition-all duration-200 active:scale-[0.97] group-hover:gap-3"
+                  >
+                    Register for {event.tag}
+                    <ArrowRight className="w-4 h-4" />
+                  </a>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

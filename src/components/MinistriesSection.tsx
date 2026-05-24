@@ -1,47 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { MapPin, GraduationCap, Globe2, Sparkles, BookMarked, Megaphone, Tent } from "lucide-react";
-
-const ministries = [
-  {
-    icon: MapPin,
-    title: "State Programmes",
-    description: "Local gatherings, retreats and outreaches led by our state chapters across the country.",
-  },
-  {
-    icon: GraduationCap,
-    title: "School of Ministry & Rescue Mission",
-    description: "Training young believers for ministry, evangelism and reaching the lost in our communities.",
-  },
-  {
-    icon: Globe2,
-    title: "Missions & Outreach",
-    description: "Taking the gospel beyond our walls through mission trips, community service and partnerships.",
-  },
-  {
-    icon: Sparkles,
-    title: "Teenagers' Programme",
-    description: "A dedicated space for teens — mentorship, fellowship and discipleship that meets them where they are.",
-  },
-  {
-    icon: BookMarked,
-    title: "Campus Corners & Fellowships",
-    description: "Vibrant fellowships on university and college campuses, building Christ-centred community in academic spaces.",
-  },
-  {
-    icon: Megaphone,
-    title: "NYC Corner",
-    description: "Updates, announcements and resources from the National Youth Council to keep every member informed.",
-  },
-  {
-    icon: Tent,
-    title: "Youth Camp Ground",
-    description: "Our retreat ground for camps, workshops and intensives. Booking and visit info coming soon.",
-  },
-];
+import { useCollection } from "@/hooks/useContent";
+import { getIcon } from "@/lib/icon-map";
+import { Sparkles } from "lucide-react";
 
 const MinistriesSection = () => {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
+  const { data: ministries = [] } = useCollection<any>("ministries", { onlyPublished: true });
 
   useEffect(() => {
     const obs = new IntersectionObserver(([e]) => e.isIntersecting && setVisible(true), { threshold: 0.15 });
@@ -63,19 +28,22 @@ const MinistriesSection = () => {
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {ministries.map((m, i) => (
-            <div
-              key={m.title}
-              className={`bg-card rounded-xl p-7 shadow-soft hover:shadow-medium hover:-translate-y-1 transition-all duration-500 ${visible ? "opacity-100 translate-y-0 blur-0" : "opacity-0 translate-y-3 blur-[4px]"}`}
-              style={{ transitionDelay: visible ? `${i * 70}ms` : "0ms" }}
-            >
-              <div className="w-11 h-11 rounded-lg bg-accent/15 flex items-center justify-center mb-4">
-                <m.icon className="w-5 h-5 text-accent" />
+          {ministries.map((m, i) => {
+            const Icon = getIcon(m.icon, Sparkles);
+            return (
+              <div
+                key={m.id}
+                className={`bg-card rounded-xl p-7 shadow-soft hover:shadow-medium hover:-translate-y-1 transition-all duration-500 ${visible ? "opacity-100 translate-y-0 blur-0" : "opacity-0 translate-y-3 blur-[4px]"}`}
+                style={{ transitionDelay: visible ? `${i * 70}ms` : "0ms" }}
+              >
+                <div className="w-11 h-11 rounded-lg bg-accent/15 flex items-center justify-center mb-4">
+                  <Icon className="w-5 h-5 text-accent" />
+                </div>
+                <h3 className="font-serif font-semibold text-lg text-card-foreground mb-2">{m.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{m.description}</p>
               </div>
-              <h3 className="font-serif font-semibold text-lg text-card-foreground mb-2">{m.title}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">{m.description}</p>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
