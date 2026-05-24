@@ -19,6 +19,8 @@ const TestimoniesSection = () => {
   const [visible, setVisible] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState({ name: "", location: "", story: "" });
+  const { data: featured = [] } = useCollection<any>("featured_testimonies");
+  const testimonies = featured.length > 0 ? featured : FALLBACK;
 
   useEffect(() => {
     const obs = new IntersectionObserver(([e]) => e.isIntersecting && setVisible(true), { threshold: 0.15 });
@@ -37,7 +39,6 @@ const TestimoniesSection = () => {
     setForm({ name: "", location: "", story: "" });
   };
 
-
   return (
     <section id="testimonials" className="py-24 md:py-40 px-4 bg-muted/50" ref={ref}>
       <div className="container max-w-6xl mx-auto">
@@ -52,22 +53,23 @@ const TestimoniesSection = () => {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-          {testimonies.map((t, i) => (
+          {testimonies.map((t: any, i: number) => (
             <div
-              key={`${t.name}-${i}`}
+              key={t.id ?? `${t.name}-${i}`}
               className={`bg-card rounded-xl p-7 shadow-soft transition-all duration-700 ${visible ? "opacity-100 translate-y-0 blur-0" : "opacity-0 translate-y-3 blur-[4px]"}`}
               style={{ transitionDelay: visible ? `${i * 80}ms` : "0ms" }}
             >
-              <p className="text-muted-foreground leading-relaxed mb-6 italic font-serif text-lg">"{t.text}"</p>
+              <p className="text-muted-foreground leading-relaxed mb-6 italic font-serif text-lg">"{t.quote ?? t.text}"</p>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-semibold text-sm">
-                  {t.initials}
+                  {initialsOf(t.name)}
                 </div>
                 <div>
                   <p className="font-semibold text-sm text-card-foreground">{t.name}</p>
-                  <p className="text-xs text-muted-foreground">{t.role}</p>
+                  <p className="text-xs text-muted-foreground">{t.location ?? t.role}</p>
                 </div>
               </div>
+
             </div>
           ))}
         </div>
