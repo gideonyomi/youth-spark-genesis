@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { Calendar, MapPin, ArrowRight } from "lucide-react";
 import yecImage from "@/assets/event-yec.jpg";
 import sscImage from "@/assets/event-ssc.jpg";
@@ -74,13 +75,13 @@ const EventsSection = () => {
                     )}
                   </div>
 
-                  <a
-                    href="#join"
+                  <Link
+                    to={`/register/${(event.tag || "").toLowerCase()}`}
                     className="inline-flex items-center gap-2 bg-primary text-primary-foreground font-semibold px-6 py-3 rounded-full text-sm transition-all duration-200 active:scale-[0.97] group-hover:gap-3"
                   >
                     Register for {event.tag}
                     <ArrowRight className="w-4 h-4" />
-                  </a>
+                  </Link>
                 </div>
               </div>
             );

@@ -47,7 +47,7 @@ const JoinSection = () => {
             Walk in Holiness With Us
           </h2>
           <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-            Join the BLHMYOUTH family or register for YEC 2026 (30th anniversary!) and SSC. Holiness is our watchword — empowerment for purpose is our goal.
+            Become part of the BLHMYOUTH family. For YEC, SSC, or NSS, use the dedicated Register buttons in the Events section.
           </p>
         </div>
 
@@ -99,9 +99,6 @@ const JoinSection = () => {
                 className="w-full border border-border rounded-lg px-4 py-3 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-accent transition-shadow"
               >
                 <option value="">Select an option</option>
-                <option value="yec">YEC — Youth Empowerment Conference</option>
-                <option value="ssc">SSC — Student Success Camp</option>
-                <option value="nss">NSS — National Singles' Summit</option>
                 <option value="membership">General Membership</option>
                 <option value="volunteer">Volunteer / Serve</option>
               </select>

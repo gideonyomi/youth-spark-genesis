@@ -76,33 +76,48 @@ export type Database = {
       }
       event_registrations: {
         Row: {
+          age_range: string | null
           created_at: string
           email: string
           event: string
           full_name: string
           id: string
           notes: string | null
+          payment_reference: string | null
+          payment_status: string
           phone: string | null
+          photo_url: string | null
+          registration_code: string | null
           status: string
         }
         Insert: {
+          age_range?: string | null
           created_at?: string
           email: string
           event: string
           full_name: string
           id?: string
           notes?: string | null
+          payment_reference?: string | null
+          payment_status?: string
           phone?: string | null
+          photo_url?: string | null
+          registration_code?: string | null
           status?: string
         }
         Update: {
+          age_range?: string | null
           created_at?: string
           email?: string
           event?: string
           full_name?: string
           id?: string
           notes?: string | null
+          payment_reference?: string | null
+          payment_status?: string
           phone?: string | null
+          photo_url?: string | null
+          registration_code?: string | null
           status?: string
         }
         Relationships: []
@@ -461,6 +476,21 @@ export type Database = {
           sort_order?: number
           title?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      registration_counters: {
+        Row: {
+          event: string
+          last_number: number
+        }
+        Insert: {
+          event: string
+          last_number?: number
+        }
+        Update: {
+          event?: string
+          last_number?: number
         }
         Relationships: []
       }
