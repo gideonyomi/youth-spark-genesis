@@ -20,7 +20,7 @@ const nav = [
   ]},
   { section: "Content", items: [
     { to: "/admin/content/settings", label: "Site Settings", icon: Settings },
-    { to: "/admin/content/hero", label: "Hero", icon: Home },
+    { to: "/admin/content/hero", label: "Home Page", icon: Home },
     { to: "/admin/content/about", label: "About", icon: Info },
     { to: "/admin/content/overseer", label: "General Overseer", icon: UserCircle },
     { to: "/admin/content/programs", label: "Programs", icon: Sparkles },
