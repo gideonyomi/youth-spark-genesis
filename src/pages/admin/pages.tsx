@@ -29,10 +29,16 @@ export const RegistrationInbox = () => (
   <InboxTable title="Event Registrations" description="People who registered for YEC, SSC, or NSS."
     table="event_registrations" statusOptions={["new", "confirmed", "attended", "cancelled"]}
     columns={[
+      { key: "registration_code", label: "ID", render: r => <span className="font-mono font-semibold">{r.registration_code || "—"}</span> },
+      { key: "photo_url", label: "Photo", render: r => r.photo_url
+        ? <a href={r.photo_url} target="_blank" rel="noreferrer"><img src={r.photo_url} alt="" className="w-10 h-10 rounded-full object-cover" /></a>
+        : <span className="text-muted-foreground">—</span> },
       { key: "full_name", label: "Name" },
       { key: "email", label: "Email" },
       { key: "phone", label: "Phone" },
       { key: "event", label: "Event" },
+      { key: "age_range", label: "Age" },
+      { key: "payment_status", label: "Payment", render: r => <span className={`text-xs px-2 py-0.5 rounded-full ${r.payment_status === "paid" ? "bg-secondary/20 text-secondary" : "bg-muted"}`}>{r.payment_status || "unpaid"}</span> },
     ]} />
 );
 export const ContactInbox = () => (
@@ -53,7 +59,7 @@ export const NewsletterInbox = () => (
 
 // ============ CONTENT - SINGLETONS ============
 export const HeroEdit = () => (
-  <SingletonForm title="Hero Section" table="hero_content" fields={[
+  <SingletonForm title="Home Page" table="hero_content" fields={[
     { key: "eyebrow", label: "Eyebrow / small text above headline" },
     { key: "headline", label: "Headline", type: "textarea", rows: 2 },
     { key: "subhead", label: "Subhead", type: "textarea", rows: 3 },
@@ -61,7 +67,7 @@ export const HeroEdit = () => (
     { key: "cta_primary_link", label: "Primary CTA link (e.g. #join)" },
     { key: "cta_secondary_label", label: "Secondary CTA label" },
     { key: "cta_secondary_link", label: "Secondary CTA link" },
-    { key: "image_url", label: "Hero image (optional override)", type: "image" },
+    { key: "image_url", label: "Home image (optional override)", type: "image" },
   ]} />
 );
 export const AboutEdit = () => (
@@ -90,6 +96,14 @@ export const SiteSettingsEdit = () => {
     ["email", "Contact email"], ["phone", "Phone"],
     ["instagram", "Instagram handle"], ["facebook", "Facebook handle"],
     ["youtube", "YouTube handle"],
+    ["payment_button_label", "Registration · Payment button label"],
+    ["payment_instructions", "Registration · Payment instructions (shown to registrants)"],
+    ["payment_yec_url", "Registration · YEC payment link"],
+    ["registration_fee_yec", "Registration · YEC fee (e.g. ₦5,000)"],
+    ["payment_ssc_url", "Registration · SSC payment link"],
+    ["registration_fee_ssc", "Registration · SSC fee"],
+    ["payment_nss_url", "Registration · NSS payment link"],
+    ["registration_fee_nss", "Registration · NSS fee"],
   ] as const;
   const [data, setData] = useState<any>({});
   const [loading, setLoading] = useState(true);
