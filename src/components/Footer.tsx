@@ -38,7 +38,7 @@ const Footer = () => {
               {[
                 { l: "About", h: "#about" },
                 { l: "Ministries", h: "#ministries" },
-                { l: "Leadership", h: "#leadership" },
+                { l: "Leadership", h: "/leadership" },
                 { l: "History", h: "#history" },
                 { l: "Testimonies", h: "#testimonials" },
               ].map((link) => (
