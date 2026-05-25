@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { User } from "lucide-react";
+import { User, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useCollection } from "@/hooks/useContent";
 
-const LeadershipSection = () => {
+const LeadershipSection = ({ preview = false }: { preview?: boolean }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   const { data: people = [] } = useCollection<any>("leadership");
@@ -20,8 +21,11 @@ const LeadershipSection = () => {
       if (!acc[p.group_name]) { acc[p.group_name] = []; order.push(p.group_name); }
       acc[p.group_name].push(p);
     }
-    return order.map((title) => ({ title, people: acc[title] }));
-  }, [people]);
+    const all = order.map((title) => ({ title, people: acc[title] }));
+    if (!preview) return all;
+    // Preview: show first group only, max 4 people
+    return all.slice(0, 1).map((g) => ({ ...g, people: g.people.slice(0, 4) }));
+  }, [people, preview]);
 
   return (
     <section id="leadership" className="py-24 md:py-40 px-4" ref={ref}>
@@ -63,6 +67,17 @@ const LeadershipSection = () => {
             </div>
           ))}
         </div>
+
+        {preview && (
+          <div className="text-center mt-14">
+            <Link
+              to="/leadership"
+              className="inline-flex items-center gap-2 bg-primary text-primary-foreground font-semibold text-sm px-6 py-3 rounded-full transition-transform duration-150 active:scale-[0.97] hover:gap-3"
+            >
+              Meet the full leadership <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        )}
       </div>
     </section>
   );
