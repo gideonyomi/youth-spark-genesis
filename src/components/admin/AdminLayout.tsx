@@ -4,9 +4,9 @@ import logo from "@/assets/blhm-logo.png";
 
 import { useAuth } from "@/hooks/useAuth";
 import {
-  Inbox, HandHeart, MessageSquareQuote, ClipboardList, Mail, AtSign,
+  HandHeart, MessageSquareQuote, ClipboardList, Mail, AtSign,
   Settings, Home, Info, UserCircle, Sparkles, Building2, CalendarDays,
-  History, Users, Radio, Star, LogOut, Loader2, Menu
+  History, Users, Radio, Star, LogOut, Loader2, Menu, UserCog
 } from "lucide-react";
 import { useState } from "react";
 
@@ -17,6 +17,9 @@ const nav = [
     { to: "/admin/inbox/registrations", label: "Event Registrations", icon: ClipboardList },
     { to: "/admin/inbox/contact", label: "Contact Messages", icon: Mail },
     { to: "/admin/inbox/newsletter", label: "Newsletter", icon: AtSign },
+  ]},
+  { section: "Team", items: [
+    { to: "/admin/team/users", label: "Admins & Editors", icon: UserCog },
   ]},
   { section: "Content", items: [
     { to: "/admin/content/settings", label: "Site Settings", icon: Settings },
