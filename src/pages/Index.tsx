@@ -10,7 +10,7 @@ import LeadershipSection from "@/components/LeadershipSection";
 import LiveStreamSection from "@/components/LiveStreamSection";
 import TestimoniesSection from "@/components/TestimoniesSection";
 import PrayerRequestSection from "@/components/PrayerRequestSection";
-import JoinSection from "@/components/JoinSection";
+import NewsletterSection from "@/components/NewsletterSection";
 import Footer from "@/components/Footer";
 
 const Index = () => {
@@ -28,7 +28,7 @@ const Index = () => {
       <LiveStreamSection />
       <TestimoniesSection />
       <PrayerRequestSection />
-      <JoinSection />
+      <NewsletterSection />
       <Footer />
     </div>
   );
