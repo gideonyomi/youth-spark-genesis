@@ -37,6 +37,8 @@ export const RegistrationInbox = () => (
       { key: "email", label: "Email" },
       { key: "phone", label: "Phone" },
       { key: "event", label: "Event" },
+      { key: "state", label: "State" },
+      { key: "zone_fellowship", label: "Zone / Fellowship", truncate: true },
       { key: "age_range", label: "Age" },
       { key: "payment_status", label: "Payment", render: r => <span className={`text-xs px-2 py-0.5 rounded-full ${r.payment_status === "paid" ? "bg-secondary/20 text-secondary" : "bg-muted"}`}>{r.payment_status || "unpaid"}</span> },
     ]} />
