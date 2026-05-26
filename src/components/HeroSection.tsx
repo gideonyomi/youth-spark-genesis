@@ -5,7 +5,7 @@ const HeroSection = () => {
   const { data } = useSingleton<any>("hero_content");
 
   const eyebrow = data?.eyebrow ?? "Bible Life Holiness Ministry Youth Department";
-  const headline = data?.headline ?? "Rooted in Holiness, Empowered for Purpose";
+  const headline = data?.headline ?? "Knowing Christ and Making Him Known";
   const subhead = data?.subhead ?? '"Follow peace with all men, and holiness, without which no man shall see the Lord." — Hebrews 12:14. We are raising a generation set apart for God\'s purpose.';
   const ctaPrimaryLabel = data?.cta_primary_label ?? "Upcoming Events";
   const ctaPrimaryLink = data?.cta_primary_link ?? "#events";
@@ -13,8 +13,10 @@ const HeroSection = () => {
   const ctaSecondaryLink = data?.cta_secondary_link ?? "#about";
   const image = data?.image_url || heroImage;
 
-  // Split headline on comma for two-line styled headline (fallback gracefully)
-  const headlineParts = headline.includes(",") ? headline.split(/,(.+)/).filter(Boolean) : [headline];
+  // Split headline on " and " for emphasis, falling back to comma split or single line
+  const andMatch = headline.match(/^(.*?)\s+(and|And|AND)\s+(.*)$/);
+  const headlineParts = andMatch ? [andMatch[1], andMatch[3]] : (headline.includes(",") ? headline.split(/,(.+)/).filter(Boolean) : [headline]);
+  const joiner = andMatch ? " and" : ",";
 
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden px-4 pt-28 pb-16">
@@ -36,7 +38,7 @@ const HeroSection = () => {
         <h1 className="font-serif font-bold text-primary-foreground text-5xl sm:text-7xl md:text-8xl lg:text-[7rem] text-balance animate-fade-up" style={{ animationDelay: "200ms", lineHeight: "0.9" }}>
           {headlineParts.length > 1 ? (
             <>
-              {headlineParts[0]},<br />
+              {headlineParts[0]}{joiner}<br />
               <span className="text-accent">{headlineParts[1].trim()}</span>
             </>
           ) : (

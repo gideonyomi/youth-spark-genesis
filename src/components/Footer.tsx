@@ -70,7 +70,7 @@ const Footer = () => {
           <div>
             <p className="font-semibold uppercase tracking-wider text-xs text-accent mb-3">Get Involved</p>
             <div className="flex flex-col gap-2">
-              <a href="#join" className="text-primary-foreground/70 hover:text-primary-foreground transition-colors">Register / Join</a>
+              <a href="#newsletter" className="text-primary-foreground/70 hover:text-primary-foreground transition-colors">Subscribe to Newsletter</a>
               <a href="#share-testimony" className="text-primary-foreground/70 hover:text-primary-foreground transition-colors">Share a Testimony</a>
               <a href="#prayer" className="text-primary-foreground/70 hover:text-primary-foreground transition-colors">Prayer Request</a>
               <a href={contactHref} className="text-primary-foreground/70 hover:text-primary-foreground transition-colors">Contact Us</a>
@@ -95,7 +95,7 @@ const Footer = () => {
 
         <div className="border-t border-primary-foreground/10 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-primary-foreground/50 gap-2">
           <span>© {new Date().getFullYear()} Bible Life Holiness Ministry Youth Department. All rights reserved.</span>
-          <span>Rooted in Holiness, Empowered for Purpose. — Heb 12:14</span>
+          <span>Knowing Christ and Making Him Known. — Heb 12:14</span>
         </div>
       </div>
     </footer>

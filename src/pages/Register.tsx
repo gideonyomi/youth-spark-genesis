@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ArrowLeft, Loader2, Upload, X, CheckCircle2 } from "lucide-react";
 import logo from "@/assets/blhm-logo.png";
+import { NIGERIAN_STATES } from "@/lib/nigerian-states";
 
 const EVENT_META: Record<string, { tag: string; title: string; blurb: string }> = {
   yec: { tag: "YEC", title: "Youth Empowerment Conference", blurb: "Holiness. Empowerment. Purpose." },
@@ -19,7 +20,7 @@ const Register = () => {
 
   const [settings, setSettings] = useState<any>({});
   const [form, setForm] = useState({
-    full_name: "", email: "", phone: "", age_range: "", notes: "",
+    full_name: "", email: "", phone: "", age_range: "", state: "", zone_fellowship: "", notes: "",
   });
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
@@ -57,6 +58,8 @@ const Register = () => {
     e.preventDefault();
     if (!photoFile) return toast.error("Profile picture is required");
     if (!form.age_range) return toast.error("Please select an age range");
+    if (!form.state) return toast.error("Please select your state");
+    if (!form.zone_fellowship.trim()) return toast.error("Please enter your zone / fellowship");
 
     setBusy(true);
     try {
@@ -72,9 +75,11 @@ const Register = () => {
         phone: form.phone || null,
         event: meta.tag,
         age_range: form.age_range,
+        state: form.state,
+        zone_fellowship: form.zone_fellowship.trim(),
         notes: form.notes || null,
         photo_url: pub.publicUrl,
-      }).select("registration_code").single();
+      } as any).select("registration_code").single();
       if (error) throw error;
 
       setDone({ code: data.registration_code });
@@ -179,6 +184,24 @@ const Register = () => {
                     <option value="">Select age range</option>
                     {AGE_RANGES.map(a => <option key={a} value={a}>{a}</option>)}
                   </select>
+                </div>
+              </div>
+
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold mb-1.5">State <span className="text-destructive">*</span></label>
+                  <select required value={form.state} onChange={(e) => setForm({ ...form, state: e.target.value })}
+                    className="w-full border border-border rounded-lg px-4 py-3 bg-background focus:outline-none focus:ring-2 focus:ring-accent">
+                    <option value="">Select your state</option>
+                    {NIGERIAN_STATES.map((s) => <option key={s} value={s}>{s}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold mb-1.5">Zone / Fellowship <span className="text-destructive">*</span></label>
+                  <input required value={form.zone_fellowship} maxLength={120}
+                    onChange={(e) => setForm({ ...form, zone_fellowship: e.target.value })}
+                    placeholder="e.g. Ikeja Zone / Campus Fellowship"
+                    className="w-full border border-border rounded-lg px-4 py-3 bg-background focus:outline-none focus:ring-2 focus:ring-accent" />
                 </div>
               </div>
 

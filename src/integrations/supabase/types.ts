@@ -88,7 +88,9 @@ export type Database = {
           phone: string | null
           photo_url: string | null
           registration_code: string | null
+          state: string | null
           status: string
+          zone_fellowship: string | null
         }
         Insert: {
           age_range?: string | null
@@ -103,7 +105,9 @@ export type Database = {
           phone?: string | null
           photo_url?: string | null
           registration_code?: string | null
+          state?: string | null
           status?: string
+          zone_fellowship?: string | null
         }
         Update: {
           age_range?: string | null
@@ -118,7 +122,9 @@ export type Database = {
           phone?: string | null
           photo_url?: string | null
           registration_code?: string | null
+          state?: string | null
           status?: string
+          zone_fellowship?: string | null
         }
         Relationships: []
       }
