@@ -20,6 +20,7 @@ const nav = [
   ]},
   { section: "Team", items: [
     { to: "/admin/team/users", label: "Admins & Editors", icon: UserCog },
+    { to: "/admin/team/approvals", label: "Pending Approvals", icon: HandHeart },
   ]},
   { section: "Content", items: [
     { to: "/admin/content/settings", label: "Site Settings", icon: Settings },
@@ -37,21 +38,28 @@ const nav = [
 ];
 
 const AdminLayout = ({ children }: { children?: ReactNode }) => {
-  const { user, isStaff, loading, signOut } = useAuth();
+  const { user, isStaff, pendingStatus, loading, signOut } = useAuth();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
   if (loading) return <div className="min-h-screen grid place-items-center"><Loader2 className="animate-spin" /></div>;
   if (!user) return <Navigate to="/admin/login" replace />;
-  if (!isStaff) return (
-    <div className="min-h-screen grid place-items-center p-6 text-center">
-      <div>
-        <h2 className="font-serif text-xl mb-2">No admin access</h2>
-        <p className="text-muted-foreground mb-4">This account does not have admin/editor permissions.</p>
-        <button onClick={async () => { await signOut(); navigate("/admin/login"); }} className="text-sm underline">Sign out</button>
+  if (!isStaff) {
+    const msg =
+      pendingStatus === "pending" ? "Your account is awaiting approval by an administrator. You'll get access as soon as it's reviewed."
+      : pendingStatus === "rejected" ? "Your access request was declined. Please contact an administrator."
+      : pendingStatus === "suspended" ? "Your account has been suspended. Please contact an administrator."
+      : "This account does not have admin/editor permissions.";
+    return (
+      <div className="min-h-screen grid place-items-center p-6 text-center">
+        <div className="max-w-sm">
+          <h2 className="font-serif text-xl mb-2">{pendingStatus === "pending" ? "Awaiting approval" : "No admin access"}</h2>
+          <p className="text-muted-foreground mb-4">{msg}</p>
+          <button onClick={async () => { await signOut(); navigate("/admin/login"); }} className="text-sm underline">Sign out</button>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 
   return (
     <div className="min-h-screen flex bg-muted/20">
