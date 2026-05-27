@@ -11,6 +11,7 @@ import Leadership from "./pages/Leadership";
 import Login from "./pages/admin/Login";
 import AdminLayout from "./components/admin/AdminLayout";
 import AdminUsers from "./pages/admin/AdminUsers";
+import PendingApprovals from "./pages/admin/PendingApprovals";
 import {
   Dashboard, PrayerInbox, TestimonyInbox, RegistrationInbox, ContactInbox, NewsletterInbox,
   SiteSettingsEdit, HeroEdit, AboutEdit, OverseerEdit,
@@ -39,6 +40,7 @@ const App = () => (
               <Route path="inbox/contact" element={<ContactInbox />} />
               <Route path="inbox/newsletter" element={<NewsletterInbox />} />
               <Route path="team/users" element={<AdminUsers />} />
+              <Route path="team/approvals" element={<PendingApprovals />} />
               <Route path="content/settings" element={<SiteSettingsEdit />} />
               <Route path="content/hero" element={<HeroEdit />} />
               <Route path="content/about" element={<AboutEdit />} />
