@@ -106,7 +106,9 @@ export const SiteSettingsEdit = () => {
     ["registration_fee_ssc", "Registration · SSC fee"],
     ["payment_nss_url", "Registration · NSS payment link"],
     ["registration_fee_nss", "Registration · NSS fee"],
+    ["paystack_secret_key", "Paystack secret key (used to verify webhooks)"],
   ] as const;
+  const secretKeys = new Set(["paystack_secret_key"]);
   const [data, setData] = useState<any>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
