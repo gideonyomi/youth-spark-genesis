@@ -419,6 +419,39 @@ export type Database = {
         }
         Relationships: []
       }
+      pending_signups: {
+        Row: {
+          created_at: string
+          email: string
+          full_name: string | null
+          id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          full_name?: string | null
+          id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          full_name?: string | null
+          id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       prayer_requests: {
         Row: {
           anonymous: boolean
@@ -566,6 +599,39 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      webhook_logs: {
+        Row: {
+          created_at: string
+          event_type: string | null
+          id: string
+          message: string | null
+          payload: Json | null
+          signature_valid: boolean | null
+          source: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          event_type?: string | null
+          id?: string
+          message?: string | null
+          payload?: Json | null
+          signature_valid?: boolean | null
+          source: string
+          status: string
+        }
+        Update: {
+          created_at?: string
+          event_type?: string | null
+          id?: string
+          message?: string | null
+          payload?: Json | null
+          signature_valid?: boolean | null
+          source?: string
+          status?: string
         }
         Relationships: []
       }
