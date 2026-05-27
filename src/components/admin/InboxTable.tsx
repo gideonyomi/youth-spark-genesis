@@ -19,6 +19,8 @@ const InboxTable = ({ title, description, table, columns, statusOptions, hasStat
   const [rows, setRows] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<any | null>(null);
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
 
   const load = async () => {
     setLoading(true);
@@ -46,17 +48,24 @@ const InboxTable = ({ title, description, table, columns, statusOptions, hasStat
     setSelected(null); load();
   };
 
+  const filtered = rows.filter((r) => {
+    if (hasStatus && statusFilter !== "all" && r.status !== statusFilter) return false;
+    if (!search.trim()) return true;
+    const q = search.toLowerCase();
+    return Object.values(r).some((v) => String(v ?? "").toLowerCase().includes(q));
+  });
+
   const exportCsv = () => {
-    if (!rows.length) return;
-    const keys = Object.keys(rows[0]);
+    if (!filtered.length) return;
+    const keys = Object.keys(filtered[0]);
     const csv = [
       keys.join(","),
-      ...rows.map(r => keys.map(k => `"${String(r[k] ?? "").replace(/"/g, '""')}"`).join(","))
+      ...filtered.map(r => keys.map(k => `"${String(r[k] ?? "").replace(/"/g, '""')}"`).join(","))
     ].join("\n");
-    const blob = new Blob([csv], { type: "text/csv" });
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
-    a.href = url; a.download = `${table}-${Date.now()}.csv`; a.click();
+    a.href = url; a.download = `${table}-${new Date().toISOString().slice(0, 10)}.csv`; a.click();
     URL.revokeObjectURL(url);
   };
 
