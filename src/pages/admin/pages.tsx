@@ -106,7 +106,9 @@ export const SiteSettingsEdit = () => {
     ["registration_fee_ssc", "Registration · SSC fee"],
     ["payment_nss_url", "Registration · NSS payment link"],
     ["registration_fee_nss", "Registration · NSS fee"],
+    ["paystack_secret_key", "Paystack secret key (used to verify webhooks)"],
   ] as const;
+  const secretKeys = new Set(["paystack_secret_key"]);
   const [data, setData] = useState<any>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -128,16 +130,24 @@ export const SiteSettingsEdit = () => {
   };
 
   if (loading) return <Loader2 className="animate-spin" />;
+  const webhookUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/paystack-webhook`;
   return (
     <div>
       <h1 className="font-serif text-2xl md:text-3xl font-bold mb-1">Site Settings</h1>
-      <p className="text-muted-foreground text-sm mb-6">Global text and contact details shown across the site.</p>
+      <p className="text-muted-foreground text-sm mb-6">Global text, contact details, and payment configuration.</p>
       <div className="bg-card border border-border rounded-lg p-6 space-y-4">
         {fields.map(([k, l]) => (
           <div key={k}>
             <label className="text-sm font-medium block mb-1.5">{l}</label>
-            <input value={data[k] ?? ""} onChange={(e) => setData({ ...data, [k]: e.target.value })}
-              className="w-full border border-border rounded-lg px-3 py-2 bg-background" />
+            <input type={secretKeys.has(k) ? "password" : "text"} autoComplete="off"
+              value={data[k] ?? ""} onChange={(e) => setData({ ...data, [k]: e.target.value })}
+              className="w-full border border-border rounded-lg px-3 py-2 bg-background font-mono text-sm" />
+            {k === "paystack_secret_key" && (
+              <p className="text-xs text-muted-foreground mt-1.5">
+                Add this Paystack webhook URL in your Paystack dashboard (Settings → API Keys & Webhooks):<br />
+                <code className="font-mono text-foreground break-all">{webhookUrl}</code>
+              </p>
+            )}
           </div>
         ))}
         <div className="flex justify-end pt-2">

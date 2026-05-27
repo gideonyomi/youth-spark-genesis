@@ -19,6 +19,8 @@ const InboxTable = ({ title, description, table, columns, statusOptions, hasStat
   const [rows, setRows] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<any | null>(null);
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
 
   const load = async () => {
     setLoading(true);
@@ -46,17 +48,24 @@ const InboxTable = ({ title, description, table, columns, statusOptions, hasStat
     setSelected(null); load();
   };
 
+  const filtered = rows.filter((r) => {
+    if (hasStatus && statusFilter !== "all" && r.status !== statusFilter) return false;
+    if (!search.trim()) return true;
+    const q = search.toLowerCase();
+    return Object.values(r).some((v) => String(v ?? "").toLowerCase().includes(q));
+  });
+
   const exportCsv = () => {
-    if (!rows.length) return;
-    const keys = Object.keys(rows[0]);
+    if (!filtered.length) return;
+    const keys = Object.keys(filtered[0]);
     const csv = [
       keys.join(","),
-      ...rows.map(r => keys.map(k => `"${String(r[k] ?? "").replace(/"/g, '""')}"`).join(","))
+      ...filtered.map(r => keys.map(k => `"${String(r[k] ?? "").replace(/"/g, '""')}"`).join(","))
     ].join("\n");
-    const blob = new Blob([csv], { type: "text/csv" });
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
-    a.href = url; a.download = `${table}-${Date.now()}.csv`; a.click();
+    a.href = url; a.download = `${table}-${new Date().toISOString().slice(0, 10)}.csv`; a.click();
     URL.revokeObjectURL(url);
   };
 
@@ -67,11 +76,27 @@ const InboxTable = ({ title, description, table, columns, statusOptions, hasStat
           <h1 className="font-serif text-2xl md:text-3xl font-bold">{title}</h1>
           {description && <p className="text-muted-foreground text-sm mt-1">{description}</p>}
         </div>
-        <button onClick={exportCsv} disabled={!rows.length}
+        <button onClick={exportCsv} disabled={!filtered.length}
           className="inline-flex items-center gap-2 text-sm border border-border px-3 py-2 rounded-md hover:bg-muted disabled:opacity-50">
           <Download className="w-4 h-4" /> Export CSV
         </button>
       </div>
+
+      {!loading && rows.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2 mb-4">
+          <input value={search} onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search…"
+            className="flex-1 min-w-[180px] text-sm border border-border rounded-md px-3 py-2 bg-background" />
+          {hasStatus && statusOptions && (
+            <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}
+              className="text-sm border border-border rounded-md px-3 py-2 bg-background">
+              <option value="all">All statuses</option>
+              {statusOptions.map((s) => <option key={s} value={s}>{s}</option>)}
+            </select>
+          )}
+          <span className="text-xs text-muted-foreground ml-1">{filtered.length} of {rows.length}</span>
+        </div>
+      )}
 
       {loading ? <Loader2 className="animate-spin" /> : !rows.length ? (
         <div className="text-center py-16 border border-dashed border-border rounded-lg">
@@ -90,7 +115,7 @@ const InboxTable = ({ title, description, table, columns, statusOptions, hasStat
                 </tr>
               </thead>
               <tbody>
-                {rows.map(r => (
+                {filtered.map(r => (
                   <tr key={r.id} className="border-t border-border hover:bg-muted/30 cursor-pointer" onClick={() => setSelected(r)}>
                     {columns.map(c => (
                       <td key={c.key} className={`px-4 py-3 ${c.truncate ? "max-w-xs truncate" : ""}`}>

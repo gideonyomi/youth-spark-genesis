@@ -32,12 +32,6 @@ const Navbar = () => {
             {link.label}
           </a>
         ))}
-        <a
-          href="#join"
-          className="bg-secondary text-secondary-foreground font-semibold text-sm px-5 py-2 rounded-full ml-1 transition-transform duration-150 active:scale-[0.97]"
-        >
-          Register
-        </a>
       </div>
 
       {/* Mobile */}
@@ -65,13 +59,6 @@ const Navbar = () => {
               {link.label}
             </a>
           ))}
-          <a
-            href="#join"
-            onClick={() => setOpen(false)}
-            className="bg-secondary text-secondary-foreground font-semibold text-sm px-5 py-3 rounded-full text-center mt-2 active:scale-[0.97] transition-transform"
-          >
-            Register Now
-          </a>
         </div>
       )}
     </nav>
