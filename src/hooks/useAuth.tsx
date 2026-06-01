@@ -24,15 +24,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isStaff, setIsStaff] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isEditor, setIsEditor] = useState(false);
+  const [isSupport, setIsSupport] = useState(false);
   const [pendingStatus, setPendingStatus] = useState<Ctx["pendingStatus"]>(null);
   const [loading, setLoading] = useState(true);
 
   const refresh = async (uid: string | undefined) => {
-    if (!uid) { setIsStaff(false); setIsAdmin(false); setPendingStatus(null); return; }
+    if (!uid) { setIsStaff(false); setIsAdmin(false); setIsEditor(false); setIsSupport(false); setPendingStatus(null); return; }
     const { data: rolesRows } = await supabase.from("user_roles").select("role").eq("user_id", uid);
     const roles = (rolesRows ?? []).map((r) => r.role);
-    setIsAdmin(roles.includes("admin"));
-    setIsStaff(roles.includes("admin") || roles.includes("editor"));
+    const admin = roles.includes("admin");
+    const editor = roles.includes("editor");
+    const support = roles.includes("support" as any);
+    setIsAdmin(admin);
+    setIsEditor(editor);
+    setIsSupport(support);
+    setIsStaff(admin || editor || support);
     const { data: pending } = await supabase.from("pending_signups").select("status").eq("user_id", uid).maybeSingle();
     setPendingStatus((pending?.status as Ctx["pendingStatus"]) ?? null);
   };
