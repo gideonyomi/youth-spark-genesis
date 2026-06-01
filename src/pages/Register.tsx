@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { ArrowLeft, Loader2, Upload, X, CheckCircle2 } from "lucide-react";
 import logo from "@/assets/blhm-logo.png";
 import { NIGERIAN_STATES } from "@/lib/nigerian-states";
+import BadgeDownloads from "@/components/BadgeDownloads";
 
 const EVENT_META: Record<string, { tag: string; title: string; blurb: string }> = {
   yec: { tag: "YEC", title: "Youth Empowerment Conference", blurb: "Holiness. Empowerment. Purpose." },
@@ -25,7 +26,7 @@ const Register = () => {
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const [done, setDone] = useState<{ code: string } | null>(null);
+  const [done, setDone] = useState<{ code: string; full_name: string; photo_url: string } | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -82,7 +83,7 @@ const Register = () => {
       } as any).select("registration_code").single();
       if (error) throw error;
 
-      setDone({ code: data.registration_code });
+      setDone({ code: data.registration_code, full_name: form.full_name, photo_url: pub.publicUrl });
       toast.success("Registration successful");
     } catch (err: any) {
       toast.error(err.message || "Could not submit. Try again.");
@@ -117,6 +118,18 @@ const Register = () => {
                 <p className="text-xs uppercase tracking-wider text-muted-foreground">Your Registration ID</p>
                 <p className="font-serif text-4xl font-bold tracking-wider mt-1">{done.code}</p>
               </div>
+
+              <div className="text-left mb-6">
+                <p className="text-sm font-semibold mb-3">Your conference badges</p>
+                <BadgeDownloads attendee={{
+                  full_name: done.full_name,
+                  registration_code: done.code,
+                  event: meta.tag,
+                  photo_url: done.photo_url,
+                }} />
+                <p className="text-xs text-muted-foreground mt-2">Download both files. Print on card stock for the event.</p>
+              </div>
+
 
               {paymentUrl && (
                 <div className="bg-secondary/10 border border-secondary/30 rounded-xl p-5 text-left mb-5">

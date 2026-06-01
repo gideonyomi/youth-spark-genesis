@@ -13,16 +13,18 @@ type AdminUser = {
   roles: string[];
 };
 
-const Badge = ({ role }: { role: string }) => (
-  <span
-    className={`inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full ${
-      role === "admin" ? "bg-primary/10 text-primary border border-primary/20" : "bg-secondary/15 text-secondary border border-secondary/25"
-    }`}
-  >
-    {role === "admin" ? <ShieldCheck className="w-3 h-3" /> : <Shield className="w-3 h-3" />}
-    {role}
-  </span>
-);
+const Badge = ({ role }: { role: string }) => {
+  const styles =
+    role === "admin" ? "bg-primary/10 text-primary border-primary/20"
+    : role === "editor" ? "bg-secondary/15 text-secondary border-secondary/25"
+    : "bg-muted text-foreground/80 border-border";
+  return (
+    <span className={`inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border ${styles}`}>
+      {role === "admin" ? <ShieldCheck className="w-3 h-3" /> : <Shield className="w-3 h-3" />}
+      {role}
+    </span>
+  );
+};
 
 const Toggle = ({ on, disabled, onChange, label }: { on: boolean; disabled?: boolean; onChange: (v: boolean) => void; label: string }) => (
   <button
@@ -62,7 +64,7 @@ const AdminUsers = () => {
 
   useEffect(() => { if (isStaff) load(); }, [isStaff]);
 
-  const toggle = async (u: AdminUser, role: "admin" | "editor", enabled: boolean) => {
+  const toggle = async (u: AdminUser, role: "admin" | "editor" | "support", enabled: boolean) => {
     const key = u.id + ":" + role;
     setBusyKey(key);
     const { data, error } = await supabase.functions.invoke("admin-users", {
@@ -84,7 +86,7 @@ const AdminUsers = () => {
     <div>
       <div className="flex items-start justify-between gap-3 mb-6">
         <div>
-          <h1 className="font-serif text-2xl md:text-3xl font-bold flex items-center gap-2"><UserCog className="w-6 h-6" /> Admins & Editors</h1>
+          <h1 className="font-serif text-2xl md:text-3xl font-bold flex items-center gap-2"><UserCog className="w-6 h-6" /> Team & Roles</h1>
           <p className="text-muted-foreground text-sm mt-1">
             Everyone with backend access. {callerIsAdmin ? "Toggle roles to grant or revoke privileges." : "Only admins can change roles."}
           </p>
@@ -110,6 +112,7 @@ const AdminUsers = () => {
                   <th className="text-left px-4 py-3 font-medium">Roles</th>
                   <th className="text-left px-4 py-3 font-medium">Admin</th>
                   <th className="text-left px-4 py-3 font-medium">Editor</th>
+                  <th className="text-left px-4 py-3 font-medium">Support</th>
                   <th className="text-left px-4 py-3 font-medium">Last sign-in</th>
                 </tr>
               </thead>
@@ -117,9 +120,11 @@ const AdminUsers = () => {
                 {users.map((u) => {
                   const isAdmin = u.roles.includes("admin");
                   const isEditor = u.roles.includes("editor");
+                  const isSupport = u.roles.includes("support");
                   const isSelf = u.id === callerId;
                   const adminDisabled = !callerIsAdmin || busyKey === `${u.id}:admin` || (isSelf && isAdmin);
                   const editorDisabled = !callerIsAdmin || busyKey === `${u.id}:editor`;
+                  const supportDisabled = !callerIsAdmin || busyKey === `${u.id}:support`;
                   return (
                     <tr key={u.id} className="border-t border-border hover:bg-muted/30 cursor-pointer" onClick={() => setSelected(u)}>
                       <td className="px-4 py-3">
@@ -143,6 +148,9 @@ const AdminUsers = () => {
                       </td>
                       <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
                         <Toggle on={isEditor} disabled={editorDisabled} onChange={(v) => toggle(u, "editor", v)} label="Toggle editor" />
+                      </td>
+                      <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
+                        <Toggle on={isSupport} disabled={supportDisabled} onChange={(v) => toggle(u, "support", v)} label="Toggle support" />
                       </td>
                       <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">
                         {u.last_sign_in_at ? format(new Date(u.last_sign_in_at), "MMM d, HH:mm") : "—"}

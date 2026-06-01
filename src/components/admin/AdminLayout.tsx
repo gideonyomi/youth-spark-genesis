@@ -6,11 +6,15 @@ import { useAuth } from "@/hooks/useAuth";
 import {
   HandHeart, MessageSquareQuote, ClipboardList, Mail, AtSign,
   Settings, Home, Info, UserCircle, Sparkles, Building2, CalendarDays,
-  History, Users, Radio, Star, LogOut, Loader2, Menu, UserCog
+  History, Users, Radio, Star, LogOut, Loader2, Menu, UserCog, IdCard
 } from "lucide-react";
 import { useState } from "react";
 
-const nav = [
+// `roles` controls which staff roles see this link. Missing = visible to all staff.
+type Item = { to: string; label: string; icon: any; roles?: ("admin" | "editor" | "support")[] };
+type Section = { section: string; items: Item[] };
+
+const nav: Section[] = [
   { section: "Inbox", items: [
     { to: "/admin/inbox/prayer", label: "Prayer Requests", icon: HandHeart },
     { to: "/admin/inbox/testimonies", label: "Testimonies", icon: MessageSquareQuote },
@@ -19,26 +23,28 @@ const nav = [
     { to: "/admin/inbox/newsletter", label: "Newsletter", icon: AtSign },
   ]},
   { section: "Team", items: [
-    { to: "/admin/team/users", label: "Admins & Editors", icon: UserCog },
-    { to: "/admin/team/approvals", label: "Pending Approvals", icon: HandHeart },
+    { to: "/admin/team/users", label: "Admins & Editors", icon: UserCog, roles: ["admin"] },
+    { to: "/admin/team/approvals", label: "Pending Approvals", icon: HandHeart, roles: ["admin"] },
   ]},
   { section: "Content", items: [
-    { to: "/admin/content/settings", label: "Site Settings", icon: Settings },
-    { to: "/admin/content/hero", label: "Home Page", icon: Home },
-    { to: "/admin/content/about", label: "About", icon: Info },
-    { to: "/admin/content/overseer", label: "General Overseer", icon: UserCircle },
-    { to: "/admin/content/programs", label: "Programs", icon: Sparkles },
-    { to: "/admin/content/ministries", label: "Ministries", icon: Building2 },
-    { to: "/admin/content/events", label: "Events", icon: CalendarDays },
-    { to: "/admin/content/history", label: "History", icon: History },
-    { to: "/admin/content/leadership", label: "Leadership", icon: Users },
-    { to: "/admin/content/livestream", label: "Live Stream", icon: Radio },
-    { to: "/admin/content/featured-testimonies", label: "Featured Testimonies", icon: Star },
+    { to: "/admin/content/settings", label: "Site Settings", icon: Settings, roles: ["admin", "editor"] },
+    { to: "/admin/content/hero", label: "Home Page", icon: Home, roles: ["admin", "editor"] },
+    { to: "/admin/content/about", label: "About", icon: Info, roles: ["admin", "editor"] },
+    { to: "/admin/content/overseer", label: "General Overseer", icon: UserCircle, roles: ["admin", "editor"] },
+    { to: "/admin/content/programs", label: "Programs", icon: Sparkles, roles: ["admin", "editor"] },
+    { to: "/admin/content/ministries", label: "Ministries", icon: Building2, roles: ["admin", "editor"] },
+    { to: "/admin/content/events", label: "Events", icon: CalendarDays, roles: ["admin", "editor"] },
+    { to: "/admin/content/history", label: "History", icon: History, roles: ["admin", "editor"] },
+    { to: "/admin/content/leadership", label: "Leadership", icon: Users, roles: ["admin", "editor"] },
+    { to: "/admin/content/livestream", label: "Live Stream", icon: Radio, roles: ["admin", "editor"] },
+    { to: "/admin/content/featured-testimonies", label: "Featured Testimonies", icon: Star, roles: ["admin", "editor"] },
+    { to: "/admin/content/badges", label: "Badge Templates", icon: IdCard, roles: ["admin", "editor"] },
   ]},
 ];
 
 const AdminLayout = ({ children }: { children?: ReactNode }) => {
-  const { user, isStaff, pendingStatus, loading, signOut } = useAuth();
+  const { user, isStaff, isAdmin, isEditor, isSupport, pendingStatus, loading, signOut } = useAuth();
+  const role: "admin" | "editor" | "support" | null = isAdmin ? "admin" : isEditor ? "editor" : isSupport ? "support" : null;
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
@@ -74,22 +80,33 @@ const AdminLayout = ({ children }: { children?: ReactNode }) => {
 
 
         <nav className="flex-1 overflow-y-auto p-3 space-y-5">
-          {nav.map((sec) => (
-            <div key={sec.section}>
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground px-3 mb-2">{sec.section}</p>
-              <div className="space-y-0.5">
-                {sec.items.map((it) => (
-                  <NavLink key={it.to} to={it.to} onClick={() => setOpen(false)}
-                    className={({ isActive }) =>
-                      `flex items-center gap-2.5 px-3 py-2 rounded-md text-sm transition-colors ${isActive ? "bg-primary text-primary-foreground" : "hover:bg-muted text-foreground/80"}`
-                    }>
-                    <it.icon className="w-4 h-4" />{it.label}
-                  </NavLink>
-                ))}
+          {nav.map((sec) => {
+            const items = sec.items.filter((it) => !it.roles || (role && it.roles.includes(role)));
+            if (!items.length) return null;
+            return (
+              <div key={sec.section}>
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground px-3 mb-2">{sec.section}</p>
+                <div className="space-y-0.5">
+                  {items.map((it) => (
+                    <NavLink key={it.to} to={it.to} onClick={() => setOpen(false)}
+                      className={({ isActive }) =>
+                        `flex items-center gap-2.5 px-3 py-2 rounded-md text-sm transition-colors ${isActive ? "bg-primary text-primary-foreground" : "hover:bg-muted text-foreground/80"}`
+                      }>
+                      <it.icon className="w-4 h-4" />{it.label}
+                    </NavLink>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </nav>
+        <div className="px-3 pb-2">
+          {role && (
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground px-1">
+              Signed in as <span className="text-foreground font-semibold">{role}</span>
+            </p>
+          )}
+        </div>
         <div className="p-3 border-t border-border">
           <p className="text-xs text-muted-foreground px-3 mb-2 truncate">{user.email}</p>
           <button onClick={async () => { await signOut(); navigate("/admin/login"); }}

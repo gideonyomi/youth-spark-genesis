@@ -122,7 +122,7 @@ Deno.serve(async (req) => {
     const target_user_id = String(body.user_id ?? "");
     const role = String(body.role ?? "");
     const enabled = Boolean(body.enabled);
-    if (!target_user_id || !["admin", "editor"].includes(role)) return json({ error: "Bad request" }, 400);
+    if (!target_user_id || !["admin", "editor", "support"].includes(role)) return json({ error: "Bad request" }, 400);
     if (enabled) {
       const { error } = await admin.from("user_roles")
         .upsert({ user_id: target_user_id, role }, { onConflict: "user_id,role" });
