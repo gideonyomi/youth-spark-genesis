@@ -119,6 +119,18 @@ const Register = () => {
                 <p className="font-serif text-4xl font-bold tracking-wider mt-1">{done.code}</p>
               </div>
 
+              <div className="text-left mb-6">
+                <p className="text-sm font-semibold mb-3">Your conference badges</p>
+                <BadgeDownloads attendee={{
+                  full_name: done.full_name,
+                  registration_code: done.code,
+                  event: meta.tag,
+                  photo_url: done.photo_url,
+                }} />
+                <p className="text-xs text-muted-foreground mt-2">Download both files. Print on card stock for the event.</p>
+              </div>
+
+
               {paymentUrl && (
                 <div className="bg-secondary/10 border border-secondary/30 rounded-xl p-5 text-left mb-5">
                   <p className="font-semibold mb-1">Complete your payment</p>
