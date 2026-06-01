@@ -120,9 +120,11 @@ const AdminUsers = () => {
                 {users.map((u) => {
                   const isAdmin = u.roles.includes("admin");
                   const isEditor = u.roles.includes("editor");
+                  const isSupport = u.roles.includes("support");
                   const isSelf = u.id === callerId;
                   const adminDisabled = !callerIsAdmin || busyKey === `${u.id}:admin` || (isSelf && isAdmin);
                   const editorDisabled = !callerIsAdmin || busyKey === `${u.id}:editor`;
+                  const supportDisabled = !callerIsAdmin || busyKey === `${u.id}:support`;
                   return (
                     <tr key={u.id} className="border-t border-border hover:bg-muted/30 cursor-pointer" onClick={() => setSelected(u)}>
                       <td className="px-4 py-3">
@@ -146,6 +148,9 @@ const AdminUsers = () => {
                       </td>
                       <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
                         <Toggle on={isEditor} disabled={editorDisabled} onChange={(v) => toggle(u, "editor", v)} label="Toggle editor" />
+                      </td>
+                      <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
+                        <Toggle on={isSupport} disabled={supportDisabled} onChange={(v) => toggle(u, "support", v)} label="Toggle support" />
                       </td>
                       <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">
                         {u.last_sign_in_at ? format(new Date(u.last_sign_in_at), "MMM d, HH:mm") : "—"}
