@@ -26,7 +26,7 @@ const Register = () => {
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const [done, setDone] = useState<{ code: string } | null>(null);
+  const [done, setDone] = useState<{ code: string; full_name: string; photo_url: string } | null>(null);
 
   useEffect(() => {
     (async () => {
