@@ -64,7 +64,7 @@ const AdminUsers = () => {
 
   useEffect(() => { if (isStaff) load(); }, [isStaff]);
 
-  const toggle = async (u: AdminUser, role: "admin" | "editor", enabled: boolean) => {
+  const toggle = async (u: AdminUser, role: "admin" | "editor" | "support", enabled: boolean) => {
     const key = u.id + ":" + role;
     setBusyKey(key);
     const { data, error } = await supabase.functions.invoke("admin-users", {
