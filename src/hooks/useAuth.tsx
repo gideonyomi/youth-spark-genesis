@@ -7,6 +7,9 @@ type Ctx = {
   session: Session | null;
   isStaff: boolean;
   isAdmin: boolean;
+  isEditor: boolean;
+  isSupport: boolean;
+  canEdit: boolean;
   pendingStatus: "pending" | "rejected" | "suspended" | "approved" | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
