@@ -6,11 +6,15 @@ import { useAuth } from "@/hooks/useAuth";
 import {
   HandHeart, MessageSquareQuote, ClipboardList, Mail, AtSign,
   Settings, Home, Info, UserCircle, Sparkles, Building2, CalendarDays,
-  History, Users, Radio, Star, LogOut, Loader2, Menu, UserCog
+  History, Users, Radio, Star, LogOut, Loader2, Menu, UserCog, IdCard
 } from "lucide-react";
 import { useState } from "react";
 
-const nav = [
+// `roles` controls which staff roles see this link. Missing = visible to all staff.
+type Item = { to: string; label: string; icon: any; roles?: ("admin" | "editor" | "support")[] };
+type Section = { section: string; items: Item[] };
+
+const nav: Section[] = [
   { section: "Inbox", items: [
     { to: "/admin/inbox/prayer", label: "Prayer Requests", icon: HandHeart },
     { to: "/admin/inbox/testimonies", label: "Testimonies", icon: MessageSquareQuote },
@@ -19,21 +23,22 @@ const nav = [
     { to: "/admin/inbox/newsletter", label: "Newsletter", icon: AtSign },
   ]},
   { section: "Team", items: [
-    { to: "/admin/team/users", label: "Admins & Editors", icon: UserCog },
-    { to: "/admin/team/approvals", label: "Pending Approvals", icon: HandHeart },
+    { to: "/admin/team/users", label: "Admins & Editors", icon: UserCog, roles: ["admin"] },
+    { to: "/admin/team/approvals", label: "Pending Approvals", icon: HandHeart, roles: ["admin"] },
   ]},
   { section: "Content", items: [
-    { to: "/admin/content/settings", label: "Site Settings", icon: Settings },
-    { to: "/admin/content/hero", label: "Home Page", icon: Home },
-    { to: "/admin/content/about", label: "About", icon: Info },
-    { to: "/admin/content/overseer", label: "General Overseer", icon: UserCircle },
-    { to: "/admin/content/programs", label: "Programs", icon: Sparkles },
-    { to: "/admin/content/ministries", label: "Ministries", icon: Building2 },
-    { to: "/admin/content/events", label: "Events", icon: CalendarDays },
-    { to: "/admin/content/history", label: "History", icon: History },
-    { to: "/admin/content/leadership", label: "Leadership", icon: Users },
-    { to: "/admin/content/livestream", label: "Live Stream", icon: Radio },
-    { to: "/admin/content/featured-testimonies", label: "Featured Testimonies", icon: Star },
+    { to: "/admin/content/settings", label: "Site Settings", icon: Settings, roles: ["admin", "editor"] },
+    { to: "/admin/content/hero", label: "Home Page", icon: Home, roles: ["admin", "editor"] },
+    { to: "/admin/content/about", label: "About", icon: Info, roles: ["admin", "editor"] },
+    { to: "/admin/content/overseer", label: "General Overseer", icon: UserCircle, roles: ["admin", "editor"] },
+    { to: "/admin/content/programs", label: "Programs", icon: Sparkles, roles: ["admin", "editor"] },
+    { to: "/admin/content/ministries", label: "Ministries", icon: Building2, roles: ["admin", "editor"] },
+    { to: "/admin/content/events", label: "Events", icon: CalendarDays, roles: ["admin", "editor"] },
+    { to: "/admin/content/history", label: "History", icon: History, roles: ["admin", "editor"] },
+    { to: "/admin/content/leadership", label: "Leadership", icon: Users, roles: ["admin", "editor"] },
+    { to: "/admin/content/livestream", label: "Live Stream", icon: Radio, roles: ["admin", "editor"] },
+    { to: "/admin/content/featured-testimonies", label: "Featured Testimonies", icon: Star, roles: ["admin", "editor"] },
+    { to: "/admin/content/badges", label: "Badge Templates", icon: IdCard, roles: ["admin", "editor"] },
   ]},
 ];
 
