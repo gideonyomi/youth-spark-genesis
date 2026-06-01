@@ -112,6 +112,7 @@ const AdminUsers = () => {
                   <th className="text-left px-4 py-3 font-medium">Roles</th>
                   <th className="text-left px-4 py-3 font-medium">Admin</th>
                   <th className="text-left px-4 py-3 font-medium">Editor</th>
+                  <th className="text-left px-4 py-3 font-medium">Support</th>
                   <th className="text-left px-4 py-3 font-medium">Last sign-in</th>
                 </tr>
               </thead>
