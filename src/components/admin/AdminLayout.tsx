@@ -80,22 +80,33 @@ const AdminLayout = ({ children }: { children?: ReactNode }) => {
 
 
         <nav className="flex-1 overflow-y-auto p-3 space-y-5">
-          {nav.map((sec) => (
-            <div key={sec.section}>
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground px-3 mb-2">{sec.section}</p>
-              <div className="space-y-0.5">
-                {sec.items.map((it) => (
-                  <NavLink key={it.to} to={it.to} onClick={() => setOpen(false)}
-                    className={({ isActive }) =>
-                      `flex items-center gap-2.5 px-3 py-2 rounded-md text-sm transition-colors ${isActive ? "bg-primary text-primary-foreground" : "hover:bg-muted text-foreground/80"}`
-                    }>
-                    <it.icon className="w-4 h-4" />{it.label}
-                  </NavLink>
-                ))}
+          {nav.map((sec) => {
+            const items = sec.items.filter((it) => !it.roles || (role && it.roles.includes(role)));
+            if (!items.length) return null;
+            return (
+              <div key={sec.section}>
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground px-3 mb-2">{sec.section}</p>
+                <div className="space-y-0.5">
+                  {items.map((it) => (
+                    <NavLink key={it.to} to={it.to} onClick={() => setOpen(false)}
+                      className={({ isActive }) =>
+                        `flex items-center gap-2.5 px-3 py-2 rounded-md text-sm transition-colors ${isActive ? "bg-primary text-primary-foreground" : "hover:bg-muted text-foreground/80"}`
+                      }>
+                      <it.icon className="w-4 h-4" />{it.label}
+                    </NavLink>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </nav>
+        <div className="px-3 pb-2">
+          {role && (
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground px-1">
+              Signed in as <span className="text-foreground font-semibold">{role}</span>
+            </p>
+          )}
+        </div>
         <div className="p-3 border-t border-border">
           <p className="text-xs text-muted-foreground px-3 mb-2 truncate">{user.email}</p>
           <button onClick={async () => { await signOut(); navigate("/admin/login"); }}
