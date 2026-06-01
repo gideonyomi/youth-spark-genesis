@@ -86,7 +86,7 @@ const AdminUsers = () => {
     <div>
       <div className="flex items-start justify-between gap-3 mb-6">
         <div>
-          <h1 className="font-serif text-2xl md:text-3xl font-bold flex items-center gap-2"><UserCog className="w-6 h-6" /> Admins & Editors</h1>
+          <h1 className="font-serif text-2xl md:text-3xl font-bold flex items-center gap-2"><UserCog className="w-6 h-6" /> Team & Roles</h1>
           <p className="text-muted-foreground text-sm mt-1">
             Everyone with backend access. {callerIsAdmin ? "Toggle roles to grant or revoke privileges." : "Only admins can change roles."}
           </p>
