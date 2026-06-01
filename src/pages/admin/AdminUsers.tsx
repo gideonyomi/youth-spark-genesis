@@ -13,16 +13,18 @@ type AdminUser = {
   roles: string[];
 };
 
-const Badge = ({ role }: { role: string }) => (
-  <span
-    className={`inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full ${
-      role === "admin" ? "bg-primary/10 text-primary border border-primary/20" : "bg-secondary/15 text-secondary border border-secondary/25"
-    }`}
-  >
-    {role === "admin" ? <ShieldCheck className="w-3 h-3" /> : <Shield className="w-3 h-3" />}
-    {role}
-  </span>
-);
+const Badge = ({ role }: { role: string }) => {
+  const styles =
+    role === "admin" ? "bg-primary/10 text-primary border-primary/20"
+    : role === "editor" ? "bg-secondary/15 text-secondary border-secondary/25"
+    : "bg-muted text-foreground/80 border-border";
+  return (
+    <span className={`inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border ${styles}`}>
+      {role === "admin" ? <ShieldCheck className="w-3 h-3" /> : <Shield className="w-3 h-3" />}
+      {role}
+    </span>
+  );
+};
 
 const Toggle = ({ on, disabled, onChange, label }: { on: boolean; disabled?: boolean; onChange: (v: boolean) => void; label: string }) => (
   <button
