@@ -83,7 +83,7 @@ const Register = () => {
       } as any).select("registration_code").single();
       if (error) throw error;
 
-      setDone({ code: data.registration_code });
+      setDone({ code: data.registration_code, full_name: form.full_name, photo_url: pub.publicUrl });
       toast.success("Registration successful");
     } catch (err: any) {
       toast.error(err.message || "Could not submit. Try again.");
