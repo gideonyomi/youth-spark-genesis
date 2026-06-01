@@ -44,6 +44,48 @@ export type Database = {
         }
         Relationships: []
       }
+      badge_templates: {
+        Row: {
+          active: boolean
+          background_url: string | null
+          created_at: string
+          event: string
+          height: number
+          id: string
+          layout: Json
+          name: string
+          updated_at: string
+          variant: string
+          width: number
+        }
+        Insert: {
+          active?: boolean
+          background_url?: string | null
+          created_at?: string
+          event: string
+          height?: number
+          id?: string
+          layout?: Json
+          name?: string
+          updated_at?: string
+          variant?: string
+          width?: number
+        }
+        Update: {
+          active?: boolean
+          background_url?: string | null
+          created_at?: string
+          event?: string
+          height?: number
+          id?: string
+          layout?: Json
+          name?: string
+          updated_at?: string
+          variant?: string
+          width?: number
+        }
+        Relationships: []
+      }
       contact_messages: {
         Row: {
           created_at: string
@@ -640,6 +682,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      can_edit: { Args: { _user_id: string }; Returns: boolean }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
