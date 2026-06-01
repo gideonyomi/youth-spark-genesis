@@ -43,7 +43,8 @@ const nav: Section[] = [
 ];
 
 const AdminLayout = ({ children }: { children?: ReactNode }) => {
-  const { user, isStaff, pendingStatus, loading, signOut } = useAuth();
+  const { user, isStaff, isAdmin, isEditor, isSupport, pendingStatus, loading, signOut } = useAuth();
+  const role: "admin" | "editor" | "support" | null = isAdmin ? "admin" : isEditor ? "editor" : isSupport ? "support" : null;
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
