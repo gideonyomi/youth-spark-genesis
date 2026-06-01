@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { ArrowLeft, Loader2, Upload, X, CheckCircle2 } from "lucide-react";
 import logo from "@/assets/blhm-logo.png";
 import { NIGERIAN_STATES } from "@/lib/nigerian-states";
+import BadgeDownloads from "@/components/BadgeDownloads";
 
 const EVENT_META: Record<string, { tag: string; title: string; blurb: string }> = {
   yec: { tag: "YEC", title: "Youth Empowerment Conference", blurb: "Holiness. Empowerment. Purpose." },
