@@ -55,6 +55,7 @@ const App = () => (
               <Route path="content/livestream" element={<LivestreamEdit />} />
               <Route path="content/featured-testimonies" element={<FeaturedTestimoniesEdit />} />
               <Route path="content/badges" element={<BadgeTemplates />} />
+              <Route path="badges/generate" element={<BadgeGenerator />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
