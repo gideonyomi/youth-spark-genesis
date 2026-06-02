@@ -691,6 +691,20 @@ export type Database = {
         Returns: boolean
       }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
+      submit_event_registration: {
+        Args: {
+          p_age_range: string
+          p_email: string
+          p_event: string
+          p_full_name: string
+          p_notes: string
+          p_phone: string
+          p_photo_url: string
+          p_state: string
+          p_zone_fellowship: string
+        }
+        Returns: string
+      }
     }
     Enums: {
       app_role: "admin" | "editor" | "support"
