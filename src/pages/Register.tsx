@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { ArrowLeft, Loader2, Upload, X, CheckCircle2 } from "lucide-react";
 import logo from "@/assets/blhm-logo.png";
 import { NIGERIAN_STATES } from "@/lib/nigerian-states";
-import BadgeDownloads from "@/components/BadgeDownloads";
+
 
 const EVENT_META: Record<string, { tag: string; title: string; blurb: string }> = {
   yec: { tag: "YEC", title: "Youth Empowerment Conference", blurb: "Holiness. Empowerment. Purpose." },
@@ -119,16 +119,11 @@ const Register = () => {
                 <p className="font-serif text-4xl font-bold tracking-wider mt-1">{done.code}</p>
               </div>
 
-              <div className="text-left mb-6">
-                <p className="text-sm font-semibold mb-3">Your conference badges</p>
-                <BadgeDownloads attendee={{
-                  full_name: done.full_name,
-                  registration_code: done.code,
-                  event: meta.tag,
-                  photo_url: done.photo_url,
-                }} />
-                <p className="text-xs text-muted-foreground mt-2">Download both files. Print on card stock for the event.</p>
-              </div>
+              <p className="text-sm text-muted-foreground mb-6">
+                Your conference name tag will be prepared by our team and made available at the event check-in. Keep your Registration ID handy.
+              </p>
+
+
 
 
               {paymentUrl && (

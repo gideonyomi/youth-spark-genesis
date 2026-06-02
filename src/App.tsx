@@ -13,6 +13,7 @@ import AdminLayout from "./components/admin/AdminLayout";
 import AdminUsers from "./pages/admin/AdminUsers";
 import PendingApprovals from "./pages/admin/PendingApprovals";
 import BadgeTemplates from "./pages/admin/BadgeTemplates";
+import BadgeGenerator from "./pages/admin/BadgeGenerator";
 import {
   Dashboard, PrayerInbox, TestimonyInbox, RegistrationInbox, ContactInbox, NewsletterInbox,
   SiteSettingsEdit, HeroEdit, AboutEdit, OverseerEdit,
@@ -54,6 +55,7 @@ const App = () => (
               <Route path="content/livestream" element={<LivestreamEdit />} />
               <Route path="content/featured-testimonies" element={<FeaturedTestimoniesEdit />} />
               <Route path="content/badges" element={<BadgeTemplates />} />
+              <Route path="badges/generate" element={<BadgeGenerator />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

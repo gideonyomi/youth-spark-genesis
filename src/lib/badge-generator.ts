@@ -180,24 +180,25 @@ export const defaultTemplate = (event: string, variant: "primary" | "secondary")
       },
     };
   }
-  // Secondary: compact name tag (landscape)
+  // Secondary: portrait name tag (matches conference badge orientation, lighter palette)
   return {
     event,
     variant,
     name: `${event} – Name tag`,
     background_url: null,
-    width: 900,
-    height: 500,
+    width: 600,
+    height: 900,
     layout: {
       backgroundColor: "#ffffff",
       fields: [
-        { type: "text", key: "static", text: "BLHMYOUTH", x: 40, y: 60, size: 18, weight: "700", color: "#0f1b3d", uppercase: true },
-        { type: "text", key: "event", x: 860, y: 60, size: 18, weight: "700", color: "#c9a84c", align: "right", uppercase: true },
-        { type: "photo", x: 40, y: 100, width: 280, height: 280, shape: "circle", borderColor: "#0f1b3d", borderWidth: 4 },
-        { type: "text", key: "static", text: "Hello, my name is", x: 360, y: 170, size: 16, weight: "500", color: "#64748b" },
-        { type: "text", key: "name", x: 360, y: 240, size: 44, weight: "700", color: "#0f1b3d", family: "Fraunces, serif", maxWidth: 500, uppercase: true },
-        { type: "text", key: "code", x: 360, y: 310, size: 28, weight: "700", color: "#c9a84c", family: "JetBrains Mono, monospace" },
-        { type: "text", key: "static", text: "Rooted in Holiness · Empowered for Purpose", x: 360, y: 420, size: 13, weight: "500", color: "#64748b" },
+        { type: "text", key: "static", text: "BLHMYOUTH", x: 300, y: 70, size: 20, weight: "700", color: "#0f1b3d", align: "center", uppercase: true },
+        { type: "text", key: "event", x: 300, y: 110, size: 16, weight: "600", color: "#c9a84c", align: "center", uppercase: true },
+        { type: "photo", x: 175, y: 150, width: 250, height: 250, shape: "circle", borderColor: "#0f1b3d", borderWidth: 5 },
+        { type: "text", key: "static", text: "Hello, my name is", x: 300, y: 470, size: 15, weight: "500", color: "#64748b", align: "center" },
+        { type: "text", key: "name", x: 300, y: 540, size: 38, weight: "700", color: "#0f1b3d", align: "center", family: "Fraunces, serif", maxWidth: 540, uppercase: true },
+        { type: "text", key: "static", text: "Registration ID", x: 300, y: 650, size: 13, weight: "500", color: "#64748b", align: "center", uppercase: true },
+        { type: "text", key: "code", x: 300, y: 710, size: 48, weight: "700", color: "#c9a84c", align: "center", family: "JetBrains Mono, monospace" },
+        { type: "text", key: "static", text: "Rooted in Holiness · Empowered for Purpose", x: 300, y: 840, size: 12, weight: "500", color: "#64748b", align: "center" },
       ],
     },
   };
