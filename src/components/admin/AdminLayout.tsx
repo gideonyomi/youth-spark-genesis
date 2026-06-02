@@ -21,6 +21,7 @@ const nav: Section[] = [
     { to: "/admin/inbox/registrations", label: "Event Registrations", icon: ClipboardList },
     { to: "/admin/inbox/contact", label: "Contact Messages", icon: Mail },
     { to: "/admin/inbox/newsletter", label: "Newsletter", icon: AtSign },
+    { to: "/admin/badges/generate", label: "Generate Badges", icon: IdCard, roles: ["admin"] },
   ]},
   { section: "Team", items: [
     { to: "/admin/team/users", label: "Admins & Editors", icon: UserCog, roles: ["admin"] },
