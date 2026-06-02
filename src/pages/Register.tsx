@@ -70,20 +70,20 @@ const Register = () => {
       if (up.error) throw up.error;
       const { data: pub } = supabase.storage.from("registration-photos").getPublicUrl(path);
 
-      const { data, error } = await supabase.from("event_registrations").insert({
-        full_name: form.full_name,
-        email: form.email,
-        phone: form.phone || null,
-        event: meta.tag,
-        age_range: form.age_range,
-        state: form.state,
-        zone_fellowship: form.zone_fellowship.trim(),
-        notes: form.notes || null,
-        photo_url: pub.publicUrl,
-      } as any).select("registration_code").single();
+      const { data: code, error } = await supabase.rpc("submit_event_registration", {
+        p_full_name: form.full_name,
+        p_email: form.email,
+        p_phone: form.phone || null,
+        p_event: meta.tag,
+        p_age_range: form.age_range,
+        p_state: form.state,
+        p_zone_fellowship: form.zone_fellowship.trim(),
+        p_notes: form.notes || null,
+        p_photo_url: pub.publicUrl,
+      });
       if (error) throw error;
 
-      setDone({ code: data.registration_code, full_name: form.full_name, photo_url: pub.publicUrl });
+      setDone({ code: code as string, full_name: form.full_name, photo_url: pub.publicUrl });
       toast.success("Registration successful");
     } catch (err: any) {
       toast.error(err.message || "Could not submit. Try again.");
