@@ -120,9 +120,18 @@ const Register = () => {
                 <p className="font-serif text-4xl font-bold tracking-wider mt-1">{done.code}</p>
               </div>
 
-              <p className="text-sm text-muted-foreground mb-6">
-                Your conference name tag will be prepared by our team and made available at the event check-in. Keep your Registration ID handy.
-              </p>
+              <div className="mb-6">
+                <NameTagDownload attendee={{
+                  full_name: done.full_name,
+                  registration_code: done.code,
+                  event: meta.tag,
+                  photo_url: done.photo_url,
+                }} />
+                <p className="text-xs text-muted-foreground mt-3">
+                  Save or print your name tag. Your official conference badge will be issued at check-in.
+                </p>
+              </div>
+
 
 
 
