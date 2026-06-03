@@ -53,6 +53,13 @@ const InboxTable = ({ title, description, table, columns, statusOptions, hasStat
 
   const filtered = rows.filter((r) => {
     if (hasStatus && statusFilter !== "all" && r.status !== statusFilter) return false;
+    for (const f of extraFilters) {
+      const v = extra[f.key];
+      if (v && v !== "all") {
+        const ok = f.matches ? f.matches(r, v) : (r[f.key] === v);
+        if (!ok) return false;
+      }
+    }
     if (!search.trim()) return true;
     const q = search.toLowerCase();
     return Object.values(r).some((v) => String(v ?? "").toLowerCase().includes(q));
