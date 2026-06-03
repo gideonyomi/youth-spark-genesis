@@ -104,6 +104,14 @@ const InboxTable = ({ title, description, table, columns, statusOptions, hasStat
               {statusOptions.map((s) => <option key={s} value={s}>{s}</option>)}
             </select>
           )}
+          {extraFilters.map((f) => (
+            <select key={f.key} value={extra[f.key] ?? "all"}
+              onChange={(e) => setExtra({ ...extra, [f.key]: e.target.value })}
+              className="text-sm border border-border rounded-md px-3 py-2 bg-background">
+              <option value="all">{f.label}</option>
+              {f.options.map((o) => <option key={o} value={o}>{o}</option>)}
+            </select>
+          ))}
           <span className="text-xs text-muted-foreground ml-1">{filtered.length} of {rows.length}</span>
         </div>
       )}
