@@ -26,8 +26,12 @@ export const TestimonyInbox = () => (
     ]} />
 );
 export const RegistrationInbox = () => (
-  <InboxTable title="Event Registrations" description="People who registered for YEC, SSC, or NSS."
+  <InboxTable title="Event Registrations" description="Paid attendees for YEC, SSC, and NSS. Only confirmed payments appear here."
     table="event_registrations" statusOptions={["new", "confirmed", "attended", "cancelled"]}
+    extraFilters={[
+      { key: "payment_status", label: "All payments", options: ["paid", "unpaid", "pending", "failed", "refunded"] },
+      { key: "event", label: "All events", options: ["YEC", "SSC", "NSS"] },
+    ]}
     columns={[
       { key: "registration_code", label: "ID", render: r => <span className="font-mono font-semibold">{r.registration_code || "—"}</span> },
       { key: "photo_url", label: "Photo", render: r => r.photo_url
@@ -35,12 +39,12 @@ export const RegistrationInbox = () => (
         : <span className="text-muted-foreground">—</span> },
       { key: "full_name", label: "Name" },
       { key: "email", label: "Email" },
-      { key: "phone", label: "Phone" },
       { key: "event", label: "Event" },
       { key: "state", label: "State" },
-      { key: "zone_fellowship", label: "Zone / Fellowship", truncate: true },
-      { key: "age_range", label: "Age" },
-      { key: "payment_status", label: "Payment", render: r => <span className={`text-xs px-2 py-0.5 rounded-full ${r.payment_status === "paid" ? "bg-secondary/20 text-secondary" : "bg-muted"}`}>{r.payment_status || "unpaid"}</span> },
+      { key: "payment_status", label: "Payment", render: r => <span className={`text-xs px-2 py-0.5 rounded-full ${r.payment_status === "paid" ? "bg-secondary/20 text-secondary" : r.payment_status === "failed" ? "bg-destructive/15 text-destructive" : "bg-muted"}`}>{r.payment_status || "unpaid"}</span> },
+      { key: "payment_amount", label: "Amount", render: r => r.payment_amount ? `₦${(r.payment_amount / 100).toLocaleString()}` : "—" },
+      { key: "payment_reference", label: "Reference", render: r => r.payment_reference ? <span className="font-mono text-xs">{r.payment_reference}</span> : "—" },
+      { key: "paid_at", label: "Paid", render: r => r.paid_at ? new Date(r.paid_at).toLocaleString() : "—" },
     ]} />
 );
 export const ContactInbox = () => (
