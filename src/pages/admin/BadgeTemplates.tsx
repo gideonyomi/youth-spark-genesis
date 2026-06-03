@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Navigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { IdCard, Loader2, Plus, Save, Trash2 } from "lucide-react";
@@ -6,6 +7,7 @@ import {
   BadgeField, BadgeTemplate, defaultTemplate, renderBadge,
 } from "@/lib/badge-generator";
 import ImageUpload from "@/components/admin/ImageUpload";
+import { useAuth } from "@/hooks/useAuth";
 
 const EVENTS = ["YEC", "SSC", "NSS"];
 const VARIANTS: ("primary" | "secondary")[] = ["primary", "secondary"];
@@ -18,6 +20,8 @@ const sampleAttendee = (event: string) => ({
 });
 
 const BadgeTemplates = () => {
+  const { isAdmin, loading: authLoading } = useAuth();
+  if (!authLoading && !isAdmin) return <Navigate to="/admin" replace />;
   const [event, setEvent] = useState("YEC");
   const [variant, setVariant] = useState<"primary" | "secondary">("primary");
   const [template, setTemplate] = useState<BadgeTemplate | null>(null);
