@@ -39,7 +39,7 @@ const nav: Section[] = [
     { to: "/admin/content/leadership", label: "Leadership", icon: Users, roles: ["admin", "editor"] },
     { to: "/admin/content/livestream", label: "Live Stream", icon: Radio, roles: ["admin", "editor"] },
     { to: "/admin/content/featured-testimonies", label: "Featured Testimonies", icon: Star, roles: ["admin", "editor"] },
-    { to: "/admin/content/badges", label: "Badge Templates", icon: IdCard, roles: ["admin", "editor"] },
+    { to: "/admin/content/badges", label: "Badge Templates", icon: IdCard, roles: ["admin"] },
   ]},
 ];
 
