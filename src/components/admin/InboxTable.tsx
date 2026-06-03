@@ -5,6 +5,7 @@ import { Loader2, Trash2, Download } from "lucide-react";
 import { format } from "date-fns";
 
 type Col = { key: string; label: string; render?: (row: any) => React.ReactNode; truncate?: boolean };
+type ExtraFilter = { key: string; label: string; options: string[]; matches?: (row: any, value: string) => boolean };
 
 type Props = {
   title: string;
@@ -13,9 +14,11 @@ type Props = {
   columns: Col[];
   statusOptions?: string[];
   hasStatus?: boolean;
+  extraFilters?: ExtraFilter[];
 };
 
-const InboxTable = ({ title, description, table, columns, statusOptions, hasStatus = true }: Props) => {
+const InboxTable = ({ title, description, table, columns, statusOptions, hasStatus = true, extraFilters = [] }: Props) => {
+  const [extra, setExtra] = useState<Record<string, string>>({});
   const [rows, setRows] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<any | null>(null);
