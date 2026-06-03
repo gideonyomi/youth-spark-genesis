@@ -98,15 +98,10 @@ export const SiteSettingsEdit = () => {
     ["email", "Contact email"], ["phone", "Phone"],
     ["instagram", "Instagram handle"], ["facebook", "Facebook handle"],
     ["youtube", "YouTube handle"],
-    ["payment_button_label", "Registration · Payment button label"],
-    ["payment_instructions", "Registration · Payment instructions (shown to registrants)"],
-    ["payment_yec_url", "Registration · YEC payment link"],
-    ["registration_fee_yec", "Registration · YEC fee (e.g. ₦5,000)"],
-    ["payment_ssc_url", "Registration · SSC payment link"],
-    ["registration_fee_ssc", "Registration · SSC fee"],
-    ["payment_nss_url", "Registration · NSS payment link"],
-    ["registration_fee_nss", "Registration · NSS fee"],
-    ["paystack_secret_key", "Paystack secret key (used to verify webhooks)"],
+    ["paystack_amount_yec", "Paystack · YEC fee amount in Naira (e.g. 5000)"],
+    ["paystack_amount_ssc", "Paystack · SSC fee amount in Naira"],
+    ["paystack_amount_nss", "Paystack · NSS fee amount in Naira"],
+    ["paystack_secret_key", "Paystack secret key (server-side; used to initialize, verify, and validate webhooks)"],
   ] as const;
   const secretKeys = new Set(["paystack_secret_key"]);
   const [data, setData] = useState<any>({});
