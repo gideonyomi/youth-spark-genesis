@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { ArrowLeft, Loader2, Upload, X, CheckCircle2 } from "lucide-react";
 import logo from "@/assets/blhm-logo.png";
 import { NIGERIAN_STATES } from "@/lib/nigerian-states";
+import NameTagDownload from "@/components/NameTagDownload";
 
 
 const EVENT_META: Record<string, { tag: string; title: string; blurb: string }> = {
