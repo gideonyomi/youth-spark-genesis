@@ -125,6 +125,8 @@ export type Database = {
           full_name: string
           id: string
           notes: string | null
+          paid_at: string | null
+          payment_amount: number | null
           payment_reference: string | null
           payment_status: string
           phone: string | null
@@ -142,6 +144,8 @@ export type Database = {
           full_name: string
           id?: string
           notes?: string | null
+          paid_at?: string | null
+          payment_amount?: number | null
           payment_reference?: string | null
           payment_status?: string
           phone?: string | null
@@ -159,6 +163,8 @@ export type Database = {
           full_name?: string
           id?: string
           notes?: string | null
+          paid_at?: string | null
+          payment_amount?: number | null
           payment_reference?: string | null
           payment_status?: string
           phone?: string | null
@@ -458,6 +464,42 @@ export type Database = {
           created_at?: string
           email?: string
           id?: string
+        }
+        Relationships: []
+      }
+      pending_registrations: {
+        Row: {
+          amount_kobo: number
+          created_at: string
+          data: Json
+          email: string
+          event: string
+          finalized_registration_id: string | null
+          reference: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount_kobo: number
+          created_at?: string
+          data: Json
+          email: string
+          event: string
+          finalized_registration_id?: string | null
+          reference: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount_kobo?: number
+          created_at?: string
+          data?: Json
+          email?: string
+          event?: string
+          finalized_registration_id?: string | null
+          reference?: string
+          status?: string
+          updated_at?: string
         }
         Relationships: []
       }
