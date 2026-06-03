@@ -5,6 +5,7 @@ import { Loader2, Trash2, Download } from "lucide-react";
 import { format } from "date-fns";
 
 type Col = { key: string; label: string; render?: (row: any) => React.ReactNode; truncate?: boolean };
+type ExtraFilter = { key: string; label: string; options: string[]; matches?: (row: any, value: string) => boolean };
 
 type Props = {
   title: string;
@@ -13,9 +14,11 @@ type Props = {
   columns: Col[];
   statusOptions?: string[];
   hasStatus?: boolean;
+  extraFilters?: ExtraFilter[];
 };
 
-const InboxTable = ({ title, description, table, columns, statusOptions, hasStatus = true }: Props) => {
+const InboxTable = ({ title, description, table, columns, statusOptions, hasStatus = true, extraFilters = [] }: Props) => {
+  const [extra, setExtra] = useState<Record<string, string>>({});
   const [rows, setRows] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<any | null>(null);
@@ -50,6 +53,13 @@ const InboxTable = ({ title, description, table, columns, statusOptions, hasStat
 
   const filtered = rows.filter((r) => {
     if (hasStatus && statusFilter !== "all" && r.status !== statusFilter) return false;
+    for (const f of extraFilters) {
+      const v = extra[f.key];
+      if (v && v !== "all") {
+        const ok = f.matches ? f.matches(r, v) : (r[f.key] === v);
+        if (!ok) return false;
+      }
+    }
     if (!search.trim()) return true;
     const q = search.toLowerCase();
     return Object.values(r).some((v) => String(v ?? "").toLowerCase().includes(q));
@@ -94,6 +104,14 @@ const InboxTable = ({ title, description, table, columns, statusOptions, hasStat
               {statusOptions.map((s) => <option key={s} value={s}>{s}</option>)}
             </select>
           )}
+          {extraFilters.map((f) => (
+            <select key={f.key} value={extra[f.key] ?? "all"}
+              onChange={(e) => setExtra({ ...extra, [f.key]: e.target.value })}
+              className="text-sm border border-border rounded-md px-3 py-2 bg-background">
+              <option value="all">{f.label}</option>
+              {f.options.map((o) => <option key={o} value={o}>{o}</option>)}
+            </select>
+          ))}
           <span className="text-xs text-muted-foreground ml-1">{filtered.length} of {rows.length}</span>
         </div>
       )}

@@ -26,8 +26,12 @@ export const TestimonyInbox = () => (
     ]} />
 );
 export const RegistrationInbox = () => (
-  <InboxTable title="Event Registrations" description="People who registered for YEC, SSC, or NSS."
+  <InboxTable title="Event Registrations" description="Paid attendees for YEC, SSC, and NSS. Only confirmed payments appear here."
     table="event_registrations" statusOptions={["new", "confirmed", "attended", "cancelled"]}
+    extraFilters={[
+      { key: "payment_status", label: "All payments", options: ["paid", "unpaid", "pending", "failed", "refunded"] },
+      { key: "event", label: "All events", options: ["YEC", "SSC", "NSS"] },
+    ]}
     columns={[
       { key: "registration_code", label: "ID", render: r => <span className="font-mono font-semibold">{r.registration_code || "—"}</span> },
       { key: "photo_url", label: "Photo", render: r => r.photo_url
@@ -35,12 +39,12 @@ export const RegistrationInbox = () => (
         : <span className="text-muted-foreground">—</span> },
       { key: "full_name", label: "Name" },
       { key: "email", label: "Email" },
-      { key: "phone", label: "Phone" },
       { key: "event", label: "Event" },
       { key: "state", label: "State" },
-      { key: "zone_fellowship", label: "Zone / Fellowship", truncate: true },
-      { key: "age_range", label: "Age" },
-      { key: "payment_status", label: "Payment", render: r => <span className={`text-xs px-2 py-0.5 rounded-full ${r.payment_status === "paid" ? "bg-secondary/20 text-secondary" : "bg-muted"}`}>{r.payment_status || "unpaid"}</span> },
+      { key: "payment_status", label: "Payment", render: r => <span className={`text-xs px-2 py-0.5 rounded-full ${r.payment_status === "paid" ? "bg-secondary/20 text-secondary" : r.payment_status === "failed" ? "bg-destructive/15 text-destructive" : "bg-muted"}`}>{r.payment_status || "unpaid"}</span> },
+      { key: "payment_amount", label: "Amount", render: r => r.payment_amount ? `₦${(r.payment_amount / 100).toLocaleString()}` : "—" },
+      { key: "payment_reference", label: "Reference", render: r => r.payment_reference ? <span className="font-mono text-xs">{r.payment_reference}</span> : "—" },
+      { key: "paid_at", label: "Paid", render: r => r.paid_at ? new Date(r.paid_at).toLocaleString() : "—" },
     ]} />
 );
 export const ContactInbox = () => (
@@ -98,15 +102,10 @@ export const SiteSettingsEdit = () => {
     ["email", "Contact email"], ["phone", "Phone"],
     ["instagram", "Instagram handle"], ["facebook", "Facebook handle"],
     ["youtube", "YouTube handle"],
-    ["payment_button_label", "Registration · Payment button label"],
-    ["payment_instructions", "Registration · Payment instructions (shown to registrants)"],
-    ["payment_yec_url", "Registration · YEC payment link"],
-    ["registration_fee_yec", "Registration · YEC fee (e.g. ₦5,000)"],
-    ["payment_ssc_url", "Registration · SSC payment link"],
-    ["registration_fee_ssc", "Registration · SSC fee"],
-    ["payment_nss_url", "Registration · NSS payment link"],
-    ["registration_fee_nss", "Registration · NSS fee"],
-    ["paystack_secret_key", "Paystack secret key (used to verify webhooks)"],
+    ["paystack_amount_yec", "Paystack · YEC fee amount in Naira (e.g. 5000)"],
+    ["paystack_amount_ssc", "Paystack · SSC fee amount in Naira"],
+    ["paystack_amount_nss", "Paystack · NSS fee amount in Naira"],
+    ["paystack_secret_key", "Paystack secret key (server-side; used to initialize, verify, and validate webhooks)"],
   ] as const;
   const secretKeys = new Set(["paystack_secret_key"]);
   const [data, setData] = useState<any>({});
