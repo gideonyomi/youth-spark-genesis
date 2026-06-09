@@ -6,7 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import {
   HandHeart, MessageSquareQuote, ClipboardList, Mail, AtSign,
   Settings, Home, Info, UserCircle, Sparkles, Building2, CalendarDays,
-  History, Users, Radio, Star, LogOut, Loader2, Menu, UserCog, IdCard
+  History, Users, Radio, Star, LogOut, Loader2, Menu, UserCog, IdCard, ClipboardCheck, MessagesSquare
 } from "lucide-react";
 import { useState } from "react";
 
@@ -22,6 +22,10 @@ const nav: Section[] = [
     { to: "/admin/inbox/contact", label: "Contact Messages", icon: Mail },
     { to: "/admin/inbox/newsletter", label: "Newsletter", icon: AtSign },
     { to: "/admin/badges/generate", label: "Generate Badges", icon: IdCard, roles: ["admin"] },
+  ]},
+  { section: "Evaluations", items: [
+    { to: "/admin/evaluations/forms", label: "Evaluation Forms", icon: ClipboardCheck, roles: ["admin", "editor"] },
+    { to: "/admin/evaluations/submissions", label: "Submissions", icon: MessagesSquare },
   ]},
   { section: "Team", items: [
     { to: "/admin/team/users", label: "Admins & Editors", icon: UserCog, roles: ["admin"] },

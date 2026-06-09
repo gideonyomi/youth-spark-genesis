@@ -116,15 +116,102 @@ export type Database = {
         }
         Relationships: []
       }
+      evaluation_forms: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          event: string
+          id: string
+          is_active: boolean
+          sections: Json
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          event: string
+          id?: string
+          is_active?: boolean
+          sections?: Json
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          event?: string
+          id?: string
+          is_active?: boolean
+          sections?: Json
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      evaluation_submissions: {
+        Row: {
+          answers: Json
+          event: string
+          form_id: string
+          id: string
+          registration_code: string
+          registration_id: string | null
+          submitted_at: string
+        }
+        Insert: {
+          answers?: Json
+          event: string
+          form_id: string
+          id?: string
+          registration_code: string
+          registration_id?: string | null
+          submitted_at?: string
+        }
+        Update: {
+          answers?: Json
+          event?: string
+          form_id?: string
+          id?: string
+          registration_code?: string
+          registration_id?: string | null
+          submitted_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evaluation_submissions_form_id_fkey"
+            columns: ["form_id"]
+            isOneToOne: false
+            referencedRelation: "evaluation_forms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "evaluation_submissions_registration_id_fkey"
+            columns: ["registration_id"]
+            isOneToOne: false
+            referencedRelation: "event_registrations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       event_registrations: {
         Row: {
           age_range: string | null
+          city: string | null
+          country: string | null
           created_at: string
+          date_of_birth: string | null
           email: string
           event: string
           full_name: string
+          gender: string | null
           id: string
+          marital_status: string | null
           notes: string | null
+          occupation: string | null
           paid_at: string | null
           payment_amount: number | null
           payment_reference: string | null
@@ -138,12 +225,18 @@ export type Database = {
         }
         Insert: {
           age_range?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string
+          date_of_birth?: string | null
           email: string
           event: string
           full_name: string
+          gender?: string | null
           id?: string
+          marital_status?: string | null
           notes?: string | null
+          occupation?: string | null
           paid_at?: string | null
           payment_amount?: number | null
           payment_reference?: string | null
@@ -157,12 +250,18 @@ export type Database = {
         }
         Update: {
           age_range?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string
+          date_of_birth?: string | null
           email?: string
           event?: string
           full_name?: string
+          gender?: string | null
           id?: string
+          marital_status?: string | null
           notes?: string | null
+          occupation?: string | null
           paid_at?: string | null
           payment_amount?: number | null
           payment_reference?: string | null
@@ -733,6 +832,15 @@ export type Database = {
         Returns: boolean
       }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
+      submit_evaluation: {
+        Args: {
+          _answers: Json
+          _code: string
+          _event: string
+          _form_id: string
+        }
+        Returns: Json
+      }
       submit_event_registration: {
         Args: {
           p_age_range: string
@@ -746,6 +854,10 @@ export type Database = {
           p_zone_fellowship: string
         }
         Returns: string
+      }
+      validate_registration_code: {
+        Args: { _code: string; _event: string }
+        Returns: Json
       }
     }
     Enums: {
