@@ -20,7 +20,10 @@ Deno.serve(async (req) => {
   let body: any;
   try { body = await req.json(); } catch { return json({ error: "Invalid JSON" }, 400); }
 
-  const { event, full_name, email, phone, age_range, state, zone_fellowship, notes, photo_url, callback_url } = body ?? {};
+  const {
+    event, full_name, email, phone, age_range, state, zone_fellowship, notes, photo_url, callback_url,
+    country, city, gender, date_of_birth, marital_status, occupation,
+  } = body ?? {};
 
   if (!event || !full_name || !email || !age_range || !state || !zone_fellowship || !photo_url) {
     return json({ error: "Missing required fields" }, 400);
@@ -28,14 +31,12 @@ Deno.serve(async (req) => {
 
   const ev = String(event).toUpperCase();
 
-  // Load settings (Paystack secret key + per-event amount)
   const { data: settingsRow } = await admin.from("site_settings").select("data").eq("id", 1).maybeSingle();
   const s = (settingsRow?.data as any) ?? {};
 
   const secret = s.paystack_secret_key || Deno.env.get("PAYSTACK_SECRET_KEY") || "";
   if (!secret) return json({ error: "Payment provider not configured. Contact the administrator." }, 500);
 
-  // Amount in NGN — admin sets `paystack_amount_yec` / `_ssc` / `_nss` (whole naira)
   const amountKey = `paystack_amount_${ev.toLowerCase()}`;
   const fallbackKey = "paystack_amount";
   const amountNgn = Number(s[amountKey] ?? s[fallbackKey] ?? 0);
@@ -56,32 +57,25 @@ Deno.serve(async (req) => {
     zone_fellowship: String(zone_fellowship).trim(),
     notes: notes ? String(notes).trim() : null,
     photo_url: String(photo_url),
+    country: country ? String(country).trim() : null,
+    city: city ? String(city).trim() : null,
+    gender: gender ? String(gender).trim() : null,
+    date_of_birth: date_of_birth ? String(date_of_birth) : null,
+    marital_status: marital_status ? String(marital_status).trim() : null,
+    occupation: occupation ? String(occupation).trim() : null,
   };
 
   const { error: insErr } = await admin.from("pending_registrations").insert({
-    reference,
-    event: ev,
-    email: data.email,
-    amount_kobo: amountKobo,
-    data,
-    status: "pending",
+    reference, event: ev, email: data.email, amount_kobo: amountKobo, data, status: "pending",
   });
   if (insErr) return json({ error: insErr.message }, 500);
 
-  // Call Paystack to initialize
   const initRes = await fetch("https://api.paystack.co/transaction/initialize", {
     method: "POST",
     headers: { Authorization: `Bearer ${secret}`, "Content-Type": "application/json" },
     body: JSON.stringify({
-      email: data.email,
-      amount: amountKobo,
-      reference,
-      callback_url,
-      metadata: {
-        event: ev,
-        full_name: data.full_name,
-        registration_pending: true,
-      },
+      email: data.email, amount: amountKobo, reference, callback_url,
+      metadata: { event: ev, full_name: data.full_name, registration_pending: true },
     }),
   });
   const initJson: any = await initRes.json();
@@ -91,11 +85,8 @@ Deno.serve(async (req) => {
   }
 
   await admin.from("webhook_logs").insert({
-    source: "paystack",
-    event_type: "initialize",
-    status: "ok",
-    message: `Initialized ${reference} for ${data.email}`,
-    signature_valid: true,
+    source: "paystack", event_type: "initialize", status: "ok",
+    message: `Initialized ${reference} for ${data.email}`, signature_valid: true,
     payload: { reference, amountKobo, event: ev },
   });
 
