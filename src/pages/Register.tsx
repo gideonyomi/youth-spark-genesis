@@ -266,22 +266,15 @@ const Register = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold mb-1.5">Age range <span className="text-destructive">*</span></label>
-                  <select required value={form.age_range} onChange={(e) => setForm({ ...form, age_range: e.target.value })} className={inputCls}>
-                    <option value="">Select age range</option>
-                    {AGE_RANGES.map(a => <option key={a} value={a}>{a}</option>)}
-                  </select>
-                </div>
-              </div>
-
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div>
                   <label className="block text-sm font-semibold mb-1.5">Marital status <span className="text-destructive">*</span></label>
                   <select required value={form.marital_status} onChange={(e) => setForm({ ...form, marital_status: e.target.value })} className={inputCls}>
                     <option value="">Select marital status</option>
                     {MARITAL.map(m => <option key={m} value={m}>{m}</option>)}
                   </select>
                 </div>
+              </div>
+
+              <div className="grid sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-semibold mb-1.5">Occupation <span className="text-destructive">*</span></label>
                   <select required value={form.occupation} onChange={(e) => setForm({ ...form, occupation: e.target.value })} className={inputCls}>
