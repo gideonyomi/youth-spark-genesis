@@ -22,7 +22,7 @@ Deno.serve(async (req) => {
 
   const {
     event, full_name, email, phone, age_range, state, zone_fellowship, notes, photo_url, callback_url,
-    country, city, gender, date_of_birth, marital_status, occupation,
+    country, city, gender, marital_status, occupation,
   } = body ?? {};
 
   if (!event || !full_name || !email || !age_range || !state || !zone_fellowship || !photo_url) {
@@ -60,7 +60,6 @@ Deno.serve(async (req) => {
     country: country ? String(country).trim() : null,
     city: city ? String(city).trim() : null,
     gender: gender ? String(gender).trim() : null,
-    date_of_birth: date_of_birth ? String(date_of_birth) : null,
     marital_status: marital_status ? String(marital_status).trim() : null,
     occupation: occupation ? String(occupation).trim() : null,
   };

@@ -85,7 +85,7 @@ Deno.serve(async (req) => {
     age_range: d.age_range, state: d.state, zone_fellowship: d.zone_fellowship,
     notes: d.notes, photo_url: d.photo_url,
     country: d.country ?? null, city: d.city ?? null,
-    gender: d.gender ?? null, date_of_birth: d.date_of_birth ?? null,
+    gender: d.gender ?? null,
     marital_status: d.marital_status ?? null, occupation: d.occupation ?? null,
     payment_status: "paid", payment_reference: reference,
     payment_amount: amountKobo, paid_at: paidAt, status: "confirmed",

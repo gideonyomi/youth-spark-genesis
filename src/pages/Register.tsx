@@ -28,7 +28,7 @@ const Register = () => {
   const [form, setForm] = useState({
     full_name: "", email: "", phone: "",
     country: "Nigeria", state: "", city: "",
-    age_range: "", gender: "", date_of_birth: "",
+    age_range: "", gender: "",
     marital_status: "", occupation: "",
     zone_fellowship: "", notes: "",
   });
@@ -102,7 +102,6 @@ const Register = () => {
     if (!form.state.trim()) return toast.error("Please enter your state/province/region");
     if (!form.city.trim()) return toast.error("Please enter your city");
     if (!form.gender) return toast.error("Please select gender");
-    if (!form.date_of_birth) return toast.error("Please enter date of birth");
     if (!form.marital_status) return toast.error("Please select marital status");
     if (!form.occupation) return toast.error("Please select occupation");
     if (!form.age_range) return toast.error("Please select an age range");
@@ -128,7 +127,6 @@ const Register = () => {
           state: form.state.trim(),
           city: form.city.trim(),
           gender: form.gender,
-          date_of_birth: form.date_of_birth,
           marital_status: form.marital_status,
           occupation: form.occupation,
           age_range: form.age_range,
@@ -251,9 +249,11 @@ const Register = () => {
                     placeholder="Include country code if outside Nigeria" className={inputCls} />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold mb-1.5">Date of birth <span className="text-destructive">*</span></label>
-                  <input required type="date" value={form.date_of_birth} max={new Date().toISOString().slice(0,10)}
-                    onChange={(e) => setForm({ ...form, date_of_birth: e.target.value })} className={inputCls} />
+                  <label className="block text-sm font-semibold mb-1.5">Age range <span className="text-destructive">*</span></label>
+                  <select required value={form.age_range} onChange={(e) => setForm({ ...form, age_range: e.target.value })} className={inputCls}>
+                    <option value="">Select age range</option>
+                    {AGE_RANGES.map(a => <option key={a} value={a}>{a}</option>)}
+                  </select>
                 </div>
               </div>
 
@@ -266,22 +266,15 @@ const Register = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold mb-1.5">Age range <span className="text-destructive">*</span></label>
-                  <select required value={form.age_range} onChange={(e) => setForm({ ...form, age_range: e.target.value })} className={inputCls}>
-                    <option value="">Select age range</option>
-                    {AGE_RANGES.map(a => <option key={a} value={a}>{a}</option>)}
-                  </select>
-                </div>
-              </div>
-
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div>
                   <label className="block text-sm font-semibold mb-1.5">Marital status <span className="text-destructive">*</span></label>
                   <select required value={form.marital_status} onChange={(e) => setForm({ ...form, marital_status: e.target.value })} className={inputCls}>
                     <option value="">Select marital status</option>
                     {MARITAL.map(m => <option key={m} value={m}>{m}</option>)}
                   </select>
                 </div>
+              </div>
+
+              <div className="grid sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-semibold mb-1.5">Occupation <span className="text-destructive">*</span></label>
                   <select required value={form.occupation} onChange={(e) => setForm({ ...form, occupation: e.target.value })} className={inputCls}>
