@@ -14,8 +14,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        serif: ["Fraunces", "Georgia", "serif"],
-        sans: ["Plus Jakarta Sans", "system-ui", "sans-serif"],
+        serif: ["Bebas Neue", "Impact", "sans-serif"],
+        sans: ["Montserrat", "system-ui", "sans-serif"],
+        display: ["Bebas Neue", "Impact", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",

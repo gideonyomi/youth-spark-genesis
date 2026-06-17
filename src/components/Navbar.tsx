@@ -3,12 +3,12 @@ import { Menu, X } from "lucide-react";
 import logo from "@/assets/blhm-logo.png";
 
 const navLinks = [
-  { label: "About", href: "#about" },
-  { label: "Ministries", href: "#ministries" },
-  { label: "Events", href: "#events" },
-  { label: "History", href: "#history" },
-  { label: "Stories", href: "#testimonials" },
-  { label: "Prayer", href: "#prayer" },
+  { label: "About", href: "/#about" },
+  { label: "Ministries", href: "/#ministries" },
+  { label: "Events", href: "/#events" },
+  { label: "Blog", href: "/blog" },
+  { label: "Stories", href: "/#testimonials" },
+  { label: "Prayer", href: "/#prayer" },
 ];
 
 const Navbar = () => {
