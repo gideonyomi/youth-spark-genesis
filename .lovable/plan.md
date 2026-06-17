@@ -1,101 +1,65 @@
-## Overview
+# Blog Module + Design Token Refresh
 
-Build a secure `/admin` area where authorised staff can:
-1. **Receive "mail"** — view all form submissions from the public site (prayer requests, testimonies, event registrations, newsletter sign-ups, contact messages).
-2. **Manage content** — edit every section of the homepage (Hero, About, General Overseer, Programs, Ministries, Events, History timeline, Leadership directory, Live Stream links, Testimonies featured, Footer/contact info) without touching code.
+## 1. Design tokens (global, low-risk)
 
-This requires enabling **Lovable Cloud** (database, auth, file storage for photos).
+Update `src/index.css` and `tailwind.config.ts` so the existing design system keeps working — only the values change:
 
----
+- `--primary` → Navy `#000080` (HSL `240 100% 25%`)
+- `--accent` / `--secondary` accent → Gold `#FFCC00` (HSL `48 100% 50%`)
+- `--ring`, `--sidebar-*` re-pointed to the new palette
+- Fonts: load Bebas Neue + Montserrat from Google Fonts; set `--font-serif: 'Bebas Neue'` (used by `h1–h4`) and `--font-sans: 'Montserrat'` (used by `body`)
+- Tailwind `fontFamily.serif` / `fontFamily.sans` updated to match
 
-## Step 1 — Enable Lovable Cloud
-Provisions Postgres, Auth, and Storage. Required before anything else.
+No component markup changes — every page picks up the new look automatically through the existing tokens.
 
-## Step 2 — Auth & roles
-- Email/password sign-in for staff.
-- Separate `user_roles` table with an `app_role` enum (`admin`, `editor`).
-- `has_role()` security-definer function used in all RLS policies.
-- First admin promoted manually via SQL after first sign-up.
-- `/admin/login` page + protected `/admin/*` routes.
+## 2. Database (one migration)
 
-## Step 3 — Database schema
+New tables in `public`:
 
-**Submission inboxes** (public can INSERT, only admins SELECT):
-- `prayer_requests` — name, email, message, anonymous, status (new/praying/done), created_at
-- `testimonies` — name, location, story, status (pending/approved/featured), created_at
-- `event_registrations` — full_name, email, phone, event (YEC/SSC/NSS), notes, created_at
-- `newsletter_subscribers` — email, created_at
-- `contact_messages` — name, email, subject, message, created_at
+- `blog_categories` — `name`, `slug` (unique)
+- `blog_tags` — `name`, `slug` (unique)
+- `blog_posts` — `title`, `slug` (unique), `excerpt`, `content` (markdown/HTML), `cover_image_url`, `status` (`draft` | `published`), `published_at`, `category_id`, `author_id`, `seo_title`, `seo_description`, `reading_minutes`
+- `blog_post_tags` — join table
 
-**Content tables** (public SELECT, admins ALL):
-- `site_settings` — single-row key/value JSON store for global text (tagline, theme verse, mission, contact details, social links).
-- `hero_content` — headline, subhead, CTA labels, hero image URL.
-- `about_content` — body paragraphs, watchword statement.
-- `general_overseer` — name, title, bio, photo URL.
-- `programs` — title, description, image URL, sort_order (list).
-- `ministries` — title, description, icon name, sort_order (list).
-- `events` — tag, title, badge, date, location, description, image URL, sort_order (list).
-- `history_milestones` — year, theme, description, sort_order (list).
-- `leadership` — group (chairman/national/state), name, role, photo URL, sort_order (list).
-- `livestream_links` — platform, handle, url.
-- `featured_testimonies` — references `testimonies.id` or stores its own copy with sort_order.
+RLS:
+- Public can `SELECT` posts where `status = 'published'` and categories/tags
+- Admins + Editors (via `can_edit`) can do everything
 
-Storage bucket `site-images` (public read, admin write) for uploaded photos.
+Trigger: auto-fill `published_at` when a post transitions to `published`. Standard `updated_at` trigger.
 
-## Step 4 — Admin UI (`/admin`)
+GRANTs per house rules (anon read on published, authenticated full for editors, service_role all).
 
-Layout: collapsible sidebar (shadcn sidebar) + main panel.
+## 3. Admin UI (Admins + Editors only)
 
-**Sidebar sections:**
-- 📬 Inbox
-  - Prayer Requests
-  - Testimony Submissions
-  - Event Registrations
-  - Newsletter
-  - Contact Messages
-- ✏️ Content
-  - Site Settings
-  - Hero
-  - About / Watchword
-  - General Overseer
-  - Programs
-  - Ministries
-  - Events
-  - History Timeline
-  - Leadership
-  - Live Stream
-  - Featured Testimonies
-- 👤 Users (admin only — invite/promote)
+New nav group "Blog" under `AdminLayout` with three links (roles `["admin","editor"]`):
 
-**Inbox pages:** sortable table, status filters, detail drawer, mark-as-read/approve/archive actions, CSV export, unread count badges in sidebar.
+- `/admin/blog/posts` — table of posts with status badge, search, "New post" button
+- `/admin/blog/posts/new` and `/admin/blog/posts/:id` — editor form: title (auto-slug), excerpt, cover image (reusing `ImageUpload`), category dropdown, multi-tag picker, markdown/textarea body, SEO title/description, status toggle (Draft / Publish)
+- `/admin/blog/taxonomy` — manage categories + tags inline
 
-**Content pages:** form for singletons (Hero, About, GO, Settings); list + drag-to-reorder + create/edit/delete for collections (Programs, Events, etc.); image uploader with preview that writes to the storage bucket.
+Reuses existing `CollectionEditor`-style patterns and shadcn components — no new design language.
 
-## Step 5 — Wire the public site to the database
-Refactor each section component (`HeroSection`, `AboutSection`, `EventsSection`, etc.) to read its content from the database via React Query instead of hard-coded constants. Public forms (`PrayerRequestSection`, testimony submission, `JoinSection` registration, newsletter) write directly to their tables via the Supabase client with proper RLS.
+## 4. Public blog
 
-Seed the new tables with the current hard-coded content so nothing visually changes on launch.
+- `/blog` — grid of published posts (cover, category chip, title in Bebas, excerpt, date, reading time)
+- `/blog/:slug` — full post page with cover, title, meta, rendered body, tag chips, "Back to blog" link, JSON-LD `BlogPosting` for SEO, `<title>` + meta description from SEO fields
+- Add "Blog" link to the main `Navbar`
 
-## Step 6 — Polish
-- Toast notifications on submit/save.
-- Loading skeletons.
-- Empty states.
-- Optional: email notification to admins on new submissions (edge function + Lovable Emails) — can be added later.
+## 5. Technical notes
 
----
+- Slug generated client-side from title with a small util, validated unique server-side
+- Markdown rendered with `marked` + `DOMPurify` (already-installed-friendly; add if missing)
+- Reading time = `Math.max(1, Math.round(wordCount / 200))`
+- Cover images stored in the existing `site-images` bucket
+- All queries via `supabase` client; published-only filter on public routes
+- `src/integrations/supabase/types.ts` regenerates after the migration is approved
 
-## Technical notes
-- Frontend: new routes `/admin/login`, `/admin`, `/admin/inbox/*`, `/admin/content/*` added to `App.tsx`.
-- Data layer: `src/integrations/supabase/` auto-generated by Cloud.
-- Reusable admin components: `DataTable`, `ImageUpload`, `SortableList`, `RichTextField`.
-- All mutations invalidate React Query caches so the public site reflects edits immediately.
-- RLS on every table — no client-side-only auth checks.
+## Files to add/edit
 
----
+- edit: `src/index.css`, `tailwind.config.ts`, `index.html` (font preconnect), `src/App.tsx`, `src/components/admin/AdminLayout.tsx`, `src/components/Navbar.tsx`
+- new: `supabase/migrations/<ts>_blog.sql`
+- new: `src/pages/Blog.tsx`, `src/pages/BlogPost.tsx`
+- new: `src/pages/admin/BlogPosts.tsx`, `src/pages/admin/BlogPostEditor.tsx`, `src/pages/admin/BlogTaxonomy.tsx`
+- new: `src/lib/blog.ts` (slug, reading-time, markdown render helpers)
 
-## What I need from you to start
-1. **Confirm to enable Lovable Cloud** (one click — it provisions the backend).
-2. **First admin email** — the email address you'll use to sign in. After you sign up, I'll mark that account as admin.
-3. **Email notifications on new submissions?** Yes/No (can be added later).
-
-Once you confirm, I'll build it in this order: Cloud → auth → schema → admin shell → inbox pages → content pages → wire public site → seed data.
+Approve and I'll ship it.
