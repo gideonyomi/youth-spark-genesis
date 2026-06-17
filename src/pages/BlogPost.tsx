@@ -19,7 +19,7 @@ const BlogPost = () => {
     (async () => {
       setLoading(true);
       const { data } = await supabase.from("blog_posts" as any).select("*").eq("slug", slug).eq("status", "published").maybeSingle();
-      const p = data as BlogPostT | null;
+      const p = (data as unknown) as BlogPostT | null;
       if (!p) {
         setNotFound(true);
         setLoading(false);
