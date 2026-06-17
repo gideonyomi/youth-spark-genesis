@@ -6,7 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import {
   HandHeart, MessageSquareQuote, ClipboardList, Mail, AtSign,
   Settings, Home, Info, UserCircle, Sparkles, Building2, CalendarDays,
-  History, Users, Radio, Star, LogOut, Loader2, Menu, UserCog, IdCard, ClipboardCheck, MessagesSquare
+  History, Users, Radio, Star, LogOut, Loader2, Menu, UserCog, IdCard, ClipboardCheck, MessagesSquare, FileText, Tags
 } from "lucide-react";
 import { useState } from "react";
 
@@ -26,6 +26,10 @@ const nav: Section[] = [
   { section: "Evaluations", items: [
     { to: "/admin/evaluations/forms", label: "Evaluation Forms", icon: ClipboardCheck, roles: ["admin", "editor"] },
     { to: "/admin/evaluations/submissions", label: "Submissions", icon: MessagesSquare },
+  ]},
+  { section: "Blog", items: [
+    { to: "/admin/blog/posts", label: "Posts", icon: FileText, roles: ["admin", "editor"] },
+    { to: "/admin/blog/taxonomy", label: "Categories & Tags", icon: Tags, roles: ["admin", "editor"] },
   ]},
   { section: "Team", items: [
     { to: "/admin/team/users", label: "Admins & Editors", icon: UserCog, roles: ["admin"] },

@@ -17,6 +17,11 @@ import BadgeGenerator from "./pages/admin/BadgeGenerator";
 import Evaluate from "./pages/Evaluate";
 import EvaluationForms from "./pages/admin/EvaluationForms";
 import EvaluationSubmissions from "./pages/admin/EvaluationSubmissions";
+import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
+import BlogPosts from "./pages/admin/BlogPosts";
+import BlogPostEditor from "./pages/admin/BlogPostEditor";
+import BlogTaxonomy from "./pages/admin/BlogTaxonomy";
 import {
   Dashboard, PrayerInbox, TestimonyInbox, RegistrationInbox, ContactInbox, NewsletterInbox,
   SiteSettingsEdit, HeroEdit, AboutEdit, OverseerEdit,
@@ -37,6 +42,8 @@ const App = () => (
             <Route path="/register/:event" element={<Register />} />
             <Route path="/evaluate/:event" element={<Evaluate />} />
             <Route path="/leadership" element={<Leadership />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/admin/login" element={<Login />} />
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<Dashboard />} />
@@ -62,6 +69,9 @@ const App = () => (
               <Route path="badges/generate" element={<BadgeGenerator />} />
               <Route path="evaluations/forms" element={<EvaluationForms />} />
               <Route path="evaluations/submissions" element={<EvaluationSubmissions />} />
+              <Route path="blog/posts" element={<BlogPosts />} />
+              <Route path="blog/posts/:id" element={<BlogPostEditor />} />
+              <Route path="blog/taxonomy" element={<BlogTaxonomy />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
