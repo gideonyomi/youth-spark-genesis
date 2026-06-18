@@ -6,6 +6,7 @@ import { format } from "date-fns";
 
 type Col = { key: string; label: string; render?: (row: any) => React.ReactNode; truncate?: boolean };
 type ExtraFilter = { key: string; label: string; options: string[]; matches?: (row: any, value: string) => boolean };
+type EditableSelect = { key: string; label: string; options: string[] };
 
 type Props = {
   title: string;
@@ -15,9 +16,10 @@ type Props = {
   statusOptions?: string[];
   hasStatus?: boolean;
   extraFilters?: ExtraFilter[];
+  editableSelects?: EditableSelect[];
 };
 
-const InboxTable = ({ title, description, table, columns, statusOptions, hasStatus = true, extraFilters = [] }: Props) => {
+const InboxTable = ({ title, description, table, columns, statusOptions, hasStatus = true, extraFilters = [], editableSelects = [] }: Props) => {
   const [extra, setExtra] = useState<Record<string, string>>({});
   const [rows, setRows] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -40,6 +42,14 @@ const InboxTable = ({ title, description, table, columns, statusOptions, hasStat
     if (error) return toast.error(error.message);
     toast.success("Updated");
     setSelected((s: any) => s ? { ...s, status } : s);
+    load();
+  };
+
+  const updateField = async (id: string, key: string, value: string) => {
+    const { error } = await supabase.from(table as any).update({ [key]: value }).eq("id", id);
+    if (error) return toast.error(error.message);
+    toast.success(`${key.replace(/_/g, " ")} updated`);
+    setSelected((s: any) => s ? { ...s, [key]: value } : s);
     load();
   };
 
