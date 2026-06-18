@@ -48,9 +48,9 @@
     --font-serif: 'Bebas Neue', Impact, sans-serif;
     --font-sans: 'Montserrat', system-ui, sans-serif;
 
-    --shadow-sm: 0 2px 4px hsla(240, 100%, 18%, 0.06);
-    --shadow-md: 0 12px 24px hsla(240, 100%, 18%, 0.1);
-    --shadow-lg: 0 24px 48px hsla(240, 100%, 18%, 0.15);
+    --shadow-sm: 0 1px 2px hsla(240, 30%, 18%, 0.05);
+    --shadow-md: 0 8px 20px hsla(240, 40%, 18%, 0.08);
+    --shadow-lg: 0 24px 48px hsla(240, 50%, 18%, 0.12);
 
     --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
     --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);

@@ -341,17 +341,20 @@ export type Database = {
         Row: {
           age_range: string | null
           city: string | null
+          class_level: string | null
           country: string | null
           created_at: string
           date_of_birth: string | null
           email: string
           event: string
+          first_time_attendee: boolean | null
           full_name: string
           gender: string | null
           id: string
           marital_status: string | null
           notes: string | null
           occupation: string | null
+          original_event: string | null
           paid_at: string | null
           payment_amount: number | null
           payment_reference: string | null
@@ -366,17 +369,20 @@ export type Database = {
         Insert: {
           age_range?: string | null
           city?: string | null
+          class_level?: string | null
           country?: string | null
           created_at?: string
           date_of_birth?: string | null
           email: string
           event: string
+          first_time_attendee?: boolean | null
           full_name: string
           gender?: string | null
           id?: string
           marital_status?: string | null
           notes?: string | null
           occupation?: string | null
+          original_event?: string | null
           paid_at?: string | null
           payment_amount?: number | null
           payment_reference?: string | null
@@ -391,17 +397,20 @@ export type Database = {
         Update: {
           age_range?: string | null
           city?: string | null
+          class_level?: string | null
           country?: string | null
           created_at?: string
           date_of_birth?: string | null
           email?: string
           event?: string
+          first_time_attendee?: boolean | null
           full_name?: string
           gender?: string | null
           id?: string
           marital_status?: string | null
           notes?: string | null
           occupation?: string | null
+          original_event?: string | null
           paid_at?: string | null
           payment_amount?: number | null
           payment_reference?: string | null
@@ -714,6 +723,7 @@ export type Database = {
           email: string
           event: string
           finalized_registration_id: string | null
+          original_event: string | null
           reference: string
           status: string
           updated_at: string
@@ -725,6 +735,7 @@ export type Database = {
           email: string
           event: string
           finalized_registration_id?: string | null
+          original_event?: string | null
           reference: string
           status?: string
           updated_at?: string
@@ -736,6 +747,7 @@ export type Database = {
           email?: string
           event?: string
           finalized_registration_id?: string | null
+          original_event?: string | null
           reference?: string
           status?: string
           updated_at?: string

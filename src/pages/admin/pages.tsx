@@ -28,9 +28,15 @@ export const TestimonyInbox = () => (
 export const RegistrationInbox = () => (
   <InboxTable title="Event Registrations" description="Paid attendees for YEC, SSC, and NSS. Only confirmed payments appear here."
     table="event_registrations" statusOptions={["new", "confirmed", "attended", "cancelled"]}
+    editableSelects={[{ key: "event", label: "Reassign event", options: ["YEC", "SSC", "NSS"] }]}
     extraFilters={[
-      { key: "payment_status", label: "All payments", options: ["paid", "unpaid", "pending", "failed", "refunded"] },
       { key: "event", label: "All events", options: ["YEC", "SSC", "NSS"] },
+      { key: "payment_status", label: "All payments", options: ["paid", "unpaid", "pending", "failed", "refunded"] },
+      { key: "age_range", label: "All ages", options: ["12–16", "16–20", "21–25", "25–30", "30+"] },
+      { key: "class_level", label: "All classes", options: ["JSS 1", "JSS 2", "JSS 3", "SS 1", "SS 2", "SS 3", "Seeking Admission", "100 Level", "200 Level"] },
+      { key: "occupation", label: "All occupations", options: ["Student", "Undergraduate (300 Level and Above)", "Employed", "Self-Employed", "Unemployed"] },
+      { key: "first_time_attendee", label: "First-time?", options: ["Yes", "No"],
+        matches: (r, v) => v === "Yes" ? r.first_time_attendee === true : r.first_time_attendee === false },
     ]}
     columns={[
       { key: "registration_code", label: "ID", render: r => <span className="font-mono font-semibold">{r.registration_code || "—"}</span> },
@@ -38,15 +44,25 @@ export const RegistrationInbox = () => (
         ? <a href={r.photo_url} target="_blank" rel="noreferrer"><img src={r.photo_url} alt="" className="w-10 h-10 rounded-full object-cover" /></a>
         : <span className="text-muted-foreground">—</span> },
       { key: "full_name", label: "Name" },
-      { key: "email", label: "Email" },
-      { key: "event", label: "Event" },
+      { key: "email", label: "Email", render: r => r.email || <span className="text-muted-foreground">—</span> },
+      { key: "event", label: "Event", render: r => (
+        <span className="inline-flex items-center gap-1">
+          <span className="font-semibold">{r.event}</span>
+          {r.original_event && r.original_event !== r.event && (
+            <span className="text-[10px] text-muted-foreground" title={`Originally registered for ${r.original_event}`}>↪{r.original_event}</span>
+          )}
+        </span>
+      ) },
+      { key: "age_range", label: "Age" },
+      { key: "class_level", label: "Class" },
+      { key: "occupation", label: "Occupation" },
+      { key: "first_time_attendee", label: "First-time", render: r => r.first_time_attendee === true ? "Yes" : r.first_time_attendee === false ? "No" : "—" },
       { key: "country", label: "Country" },
       { key: "state", label: "State" },
       { key: "city", label: "City" },
       { key: "gender", label: "Gender" },
       { key: "marital_status", label: "Marital" },
-      { key: "occupation", label: "Occupation" },
-      { key: "payment_status", label: "Payment", render: r => <span className={`text-xs px-2 py-0.5 rounded-full ${r.payment_status === "paid" ? "bg-secondary/20 text-secondary" : r.payment_status === "failed" ? "bg-destructive/15 text-destructive" : "bg-muted"}`}>{r.payment_status || "unpaid"}</span> },
+      { key: "payment_status", label: "Payment", render: r => <span className={`text-xs px-2 py-0.5 rounded-full ${r.payment_status === "paid" ? "bg-secondary/20 text-secondary-foreground" : r.payment_status === "failed" ? "bg-destructive/15 text-destructive" : "bg-muted"}`}>{r.payment_status || "unpaid"}</span> },
       { key: "payment_amount", label: "Amount", render: r => r.payment_amount ? `₦${(r.payment_amount / 100).toLocaleString()}` : "—" },
       { key: "payment_reference", label: "Reference", render: r => r.payment_reference ? <span className="font-mono text-xs">{r.payment_reference}</span> : "—" },
       { key: "paid_at", label: "Paid", render: r => r.paid_at ? new Date(r.paid_at).toLocaleString() : "—" },

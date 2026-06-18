@@ -82,11 +82,14 @@ Deno.serve(async (req) => {
 
   const { data: created, error: createErr } = await admin.from("event_registrations").insert({
     full_name: d.full_name, email: d.email, phone: d.phone, event: d.event,
-    age_range: d.age_range, state: d.state, zone_fellowship: d.zone_fellowship,
+    age_range: d.age_range ?? null, state: d.state, zone_fellowship: d.zone_fellowship,
     notes: d.notes, photo_url: d.photo_url,
     country: d.country ?? null, city: d.city ?? null,
     gender: d.gender ?? null,
     marital_status: d.marital_status ?? null, occupation: d.occupation ?? null,
+    class_level: d.class_level ?? null,
+    first_time_attendee: typeof d.first_time_attendee === "boolean" ? d.first_time_attendee : null,
+    original_event: d.original_event ?? null,
     payment_status: "paid", payment_reference: reference,
     payment_amount: amountKobo, paid_at: paidAt, status: "confirmed",
   }).select("id, registration_code").single();
