@@ -70,9 +70,9 @@ export default {
         xl: "calc(var(--radius) + 8px)",
       },
       boxShadow: {
-        soft: "0 2px 4px hsla(150, 45%, 13%, 0.05)",
-        medium: "0 12px 24px hsla(150, 45%, 13%, 0.1)",
-        heavy: "0 24px 48px hsla(150, 45%, 13%, 0.15)",
+        soft: "0 1px 2px hsla(240, 30%, 18%, 0.05)",
+        medium: "0 8px 20px hsla(240, 40%, 18%, 0.08)",
+        heavy: "0 24px 48px hsla(240, 50%, 18%, 0.12)",
       },
       keyframes: {
         "accordion-down": {

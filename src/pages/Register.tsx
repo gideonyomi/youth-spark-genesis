@@ -17,12 +17,17 @@ const EVENT_META: Record<string, { tag: string; title: string; blurb: string }> 
 const AGE_RANGES = ["12–16", "16–20", "21–25", "25–30", "30+"];
 const GENDERS = ["Male", "Female"];
 const MARITAL = ["Single", "Engaged", "Married"];
-const OCCUPATIONS = ["Employed", "Student", "Self-Employed"];
+
+const SSC_CLASSES = ["JSS 1", "JSS 2", "JSS 3", "SS 1", "SS 2", "SS 3", "Seeking Admission", "100 Level", "200 Level"];
+const SSC_OCCUPATIONS = ["Student", "Employed", "Self-Employed"];
+const YEC_OCCUPATIONS = ["Undergraduate (300 Level and Above)", "Employed", "Self-Employed", "Unemployed"];
+const NSS_OCCUPATIONS = ["Employed", "Student", "Self-Employed"];
 
 const Register = () => {
   const { event } = useParams<{ event: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
   const meta = event ? EVENT_META[event.toLowerCase()] : null;
+  const tag = meta?.tag ?? "";
 
   const [settings, setSettings] = useState<any>({});
   const [form, setForm] = useState({
@@ -30,13 +35,15 @@ const Register = () => {
     country: "Nigeria", state: "", city: "",
     age_range: "", gender: "",
     marital_status: "", occupation: "",
+    class_level: "",
+    first_time_attendee: "",
     zone_fellowship: "", notes: "",
   });
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
-  const [done, setDone] = useState<{ code: string; full_name: string; photo_url: string } | null>(null);
+  const [done, setDone] = useState<{ code: string; full_name: string; photo_url: string; event: string } | null>(null);
   const [verifying, setVerifying] = useState(false);
   const [failed, setFailed] = useState<string | null>(null);
 
@@ -61,6 +68,7 @@ const Register = () => {
             code: data.registration.code,
             full_name: data.registration.full_name,
             photo_url: data.registration.photo_url,
+            event: data.registration.event,
           });
           toast.success("Payment confirmed — you're registered!");
         } else {
@@ -87,6 +95,12 @@ const Register = () => {
   if (!meta) return <Navigate to="/" replace />;
 
   const isNigeria = form.country === "Nigeria";
+  const isSSC = tag === "SSC";
+  const isYEC = tag === "YEC";
+  const isNSS = tag === "NSS";
+  const occupationOptions = isYEC ? YEC_OCCUPATIONS : isSSC ? SSC_OCCUPATIONS : NSS_OCCUPATIONS;
+  const askFirstTime = isSSC || isYEC;
+  const emailRequired = !isSSC;
 
   const onPhoto = (file: File) => {
     if (file.size > 3 * 1024 * 1024) return toast.error("Photo must be 3MB or less");
@@ -105,12 +119,15 @@ const Register = () => {
     if (!form.marital_status) return toast.error("Please select marital status");
     if (!form.occupation) return toast.error("Please select occupation");
     if (!form.age_range) return toast.error("Please select an age range");
+    if (isSSC && !form.class_level) return toast.error("Please select your class");
+    if (askFirstTime && !form.first_time_attendee) return toast.error("Please answer the first-time attendee question");
     if (!form.zone_fellowship.trim()) return toast.error("Please enter your zone / fellowship");
+    if (emailRequired && !form.email.trim()) return toast.error("Email is required");
 
     setBusy(true);
     try {
       const ext = photoFile.name.split(".").pop();
-      const path = `${meta.tag}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const path = `${tag}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
       const up = await supabase.storage.from("registration-photos").upload(path, photoFile, { upsert: false });
       if (up.error) throw up.error;
       const { data: pub } = supabase.storage.from("registration-photos").getPublicUrl(path);
@@ -119,9 +136,9 @@ const Register = () => {
 
       const { data, error } = await supabase.functions.invoke("paystack-initialize", {
         body: {
-          event: meta.tag,
+          event: tag,
           full_name: form.full_name,
-          email: form.email,
+          email: form.email.trim() || null,
           phone: form.phone || null,
           country: form.country,
           state: form.state.trim(),
@@ -130,6 +147,8 @@ const Register = () => {
           marital_status: form.marital_status,
           occupation: form.occupation,
           age_range: form.age_range,
+          class_level: form.class_level || null,
+          first_time_attendee: askFirstTime ? form.first_time_attendee === "Yes" : null,
           zone_fellowship: form.zone_fellowship.trim(),
           notes: form.notes || null,
           photo_url: pub.publicUrl,
@@ -159,7 +178,7 @@ const Register = () => {
           <div className="bg-primary text-primary-foreground p-7 md:p-9 flex items-center gap-4">
             <img src={logo} alt="" className="w-12 h-12 object-contain bg-card/10 rounded-lg p-1" />
             <div>
-              <p className="text-xs uppercase tracking-[0.18em] opacity-80">Register · {meta.tag}</p>
+              <p className="text-xs uppercase tracking-[0.18em] opacity-80">Register · {tag}</p>
               <h1 className="font-serif text-2xl md:text-3xl font-bold mt-1 leading-tight">{meta.title}</h1>
               <p className="text-sm opacity-90 mt-1">{meta.blurb}</p>
             </div>
@@ -175,7 +194,15 @@ const Register = () => {
             <div className="p-8 md:p-10 text-center">
               <CheckCircle2 className="w-14 h-14 mx-auto text-secondary mb-3" />
               <h2 className="font-serif text-2xl font-bold mb-2">You're registered!</h2>
-              <p className="text-muted-foreground mb-6">Payment confirmed. Save your registration ID — you'll need it on the event day.</p>
+              <p className="text-muted-foreground mb-2">
+                Payment confirmed for <span className="font-semibold text-foreground">{done.event}</span>.
+              </p>
+              {done.event !== tag && (
+                <p className="text-sm text-muted-foreground mb-4">
+                  Based on your answers, we placed you in the most suitable programme.
+                </p>
+              )}
+              <p className="text-muted-foreground mb-6">Save your registration ID — you'll need it on the event day.</p>
               <div className="inline-block bg-muted rounded-xl px-8 py-5 mb-6">
                 <p className="text-xs uppercase tracking-wider text-muted-foreground">Your Registration ID</p>
                 <p className="font-serif text-4xl font-bold tracking-wider mt-1">{done.code}</p>
@@ -185,7 +212,7 @@ const Register = () => {
                 <NameTagDownload attendee={{
                   full_name: done.full_name,
                   registration_code: done.code,
-                  event: meta.tag,
+                  event: done.event,
                   photo_url: done.photo_url,
                 }} />
                 <p className="text-xs text-muted-foreground mt-3">
@@ -237,8 +264,11 @@ const Register = () => {
                   <input required value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })} className={inputCls} />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold mb-1.5">Email <span className="text-destructive">*</span></label>
-                  <input required type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className={inputCls} />
+                  <label className="block text-sm font-semibold mb-1.5">
+                    Email {emailRequired ? <span className="text-destructive">*</span> : <span className="text-muted-foreground font-normal">(optional)</span>}
+                  </label>
+                  <input required={emailRequired} type="email" value={form.email}
+                    onChange={(e) => setForm({ ...form, email: e.target.value })} className={inputCls} />
                 </div>
               </div>
 
@@ -279,10 +309,37 @@ const Register = () => {
                   <label className="block text-sm font-semibold mb-1.5">Occupation <span className="text-destructive">*</span></label>
                   <select required value={form.occupation} onChange={(e) => setForm({ ...form, occupation: e.target.value })} className={inputCls}>
                     <option value="">Select occupation</option>
-                    {OCCUPATIONS.map(o => <option key={o} value={o}>{o}</option>)}
+                    {occupationOptions.map(o => <option key={o} value={o}>{o}</option>)}
                   </select>
                 </div>
+                {isSSC && (
+                  <div>
+                    <label className="block text-sm font-semibold mb-1.5">Class / Level <span className="text-destructive">*</span></label>
+                    <select required value={form.class_level} onChange={(e) => setForm({ ...form, class_level: e.target.value })} className={inputCls}>
+                      <option value="">Select class</option>
+                      {SSC_CLASSES.map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  </div>
+                )}
               </div>
+
+              {askFirstTime && (
+                <div>
+                  <label className="block text-sm font-semibold mb-2">
+                    Are you attending our program for the first time? <span className="text-destructive">*</span>
+                  </label>
+                  <div className="flex gap-3">
+                    {["Yes", "No"].map(v => (
+                      <label key={v} className={`flex-1 cursor-pointer border rounded-lg px-4 py-3 text-sm font-medium text-center transition ${form.first_time_attendee === v ? "border-primary bg-primary/5 text-primary" : "border-border hover:bg-muted"}`}>
+                        <input type="radio" name="first_time" value={v} className="sr-only"
+                          checked={form.first_time_attendee === v}
+                          onChange={() => setForm({ ...form, first_time_attendee: v })} />
+                        {v}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <div className="grid sm:grid-cols-3 gap-4">
                 <div>
@@ -334,7 +391,7 @@ const Register = () => {
               <button type="submit" disabled={busy}
                 className="w-full bg-secondary text-secondary-foreground font-semibold py-4 rounded-full text-base transition-all active:scale-[0.97] hover:shadow-medium disabled:opacity-60 inline-flex items-center justify-center gap-2">
                 {busy && <Loader2 className="w-4 h-4 animate-spin" />}
-                {busy ? "Redirecting to payment…" : `Pay & Register for ${meta.tag}`}
+                {busy ? "Redirecting to payment…" : `Pay & Register for ${tag}`}
               </button>
             </form>
           )}
