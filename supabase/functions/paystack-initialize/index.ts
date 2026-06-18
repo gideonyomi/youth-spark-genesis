@@ -11,6 +11,35 @@ const corsHeaders = {
 const json = (b: unknown, s = 200) =>
   new Response(JSON.stringify(b), { status: s, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
+// Intelligent placement: route registrant to the most appropriate event based on
+// their academic level, occupation, and age. NSS registrations are left alone.
+function routeEvent(submitted: string, d: {
+  class_level?: string | null;
+  occupation?: string | null;
+  age_range?: string | null;
+}): string {
+  if (submitted === "NSS") return "NSS";
+
+  const yecOccupations = new Set([
+    "Undergraduate (300 Level and Above)",
+    "Employed",
+    "Self-Employed",
+    "Unemployed",
+  ]);
+  if (d.occupation && yecOccupations.has(d.occupation)) return "YEC";
+
+  const sscClasses = new Set([
+    "JSS 1", "JSS 2", "JSS 3",
+    "SS 1", "SS 2", "SS 3",
+    "Seeking Admission", "100 Level", "200 Level",
+  ]);
+  if (d.class_level && sscClasses.has(d.class_level)) return "SSC";
+
+  if (d.age_range && (d.age_range === "12–16" || d.age_range === "16–20")) return "SSC";
+
+  return submitted;
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
@@ -23,13 +52,21 @@ Deno.serve(async (req) => {
   const {
     event, full_name, email, phone, age_range, state, zone_fellowship, notes, photo_url, callback_url,
     country, city, gender, marital_status, occupation,
+    class_level, first_time_attendee,
   } = body ?? {};
 
-  if (!event || !full_name || !email || !age_range || !state || !zone_fellowship || !photo_url) {
+  const submittedEvent = String(event ?? "").toUpperCase();
+
+  // SSC allows missing email (younger participants); all others require it.
+  const emailRequired = submittedEvent !== "SSC";
+  if (!submittedEvent || !full_name || !state || !zone_fellowship || !photo_url) {
     return json({ error: "Missing required fields" }, 400);
   }
+  if (emailRequired && !email) {
+    return json({ error: "Email is required" }, 400);
+  }
 
-  const ev = String(event).toUpperCase();
+  const ev = routeEvent(submittedEvent, { class_level, occupation, age_range });
 
   const { data: settingsRow } = await admin.from("site_settings").select("data").eq("id", 1).maybeSingle();
   const s = (settingsRow?.data as any) ?? {};
@@ -47,12 +84,18 @@ Deno.serve(async (req) => {
 
   const reference = `${ev}-${Date.now()}-${crypto.randomUUID().slice(0, 8)}`;
 
+  // Build a stable email for Paystack (it requires one). When SSC participants don't
+  // provide an email, we generate a deterministic placeholder so the transaction can proceed.
+  const emailRaw = email ? String(email).trim().toLowerCase() : "";
+  const emailForPaystack = emailRaw || `ssc-${reference.toLowerCase()}@blhmyouth.placeholder`;
+
   const data = {
     full_name: String(full_name).trim(),
-    email: String(email).trim().toLowerCase(),
+    email: emailRaw || null,
     phone: phone ? String(phone).trim() : null,
     event: ev,
-    age_range: String(age_range),
+    original_event: submittedEvent,
+    age_range: age_range ? String(age_range) : null,
     state: String(state),
     zone_fellowship: String(zone_fellowship).trim(),
     notes: notes ? String(notes).trim() : null,
@@ -62,10 +105,13 @@ Deno.serve(async (req) => {
     gender: gender ? String(gender).trim() : null,
     marital_status: marital_status ? String(marital_status).trim() : null,
     occupation: occupation ? String(occupation).trim() : null,
+    class_level: class_level ? String(class_level).trim() : null,
+    first_time_attendee: typeof first_time_attendee === "boolean" ? first_time_attendee : null,
   };
 
   const { error: insErr } = await admin.from("pending_registrations").insert({
-    reference, event: ev, email: data.email, amount_kobo: amountKobo, data, status: "pending",
+    reference, event: ev, original_event: submittedEvent,
+    email: emailForPaystack, amount_kobo: amountKobo, data, status: "pending",
   });
   if (insErr) return json({ error: insErr.message }, 500);
 
@@ -73,8 +119,8 @@ Deno.serve(async (req) => {
     method: "POST",
     headers: { Authorization: `Bearer ${secret}`, "Content-Type": "application/json" },
     body: JSON.stringify({
-      email: data.email, amount: amountKobo, reference, callback_url,
-      metadata: { event: ev, full_name: data.full_name, registration_pending: true },
+      email: emailForPaystack, amount: amountKobo, reference, callback_url,
+      metadata: { event: ev, original_event: submittedEvent, full_name: data.full_name, registration_pending: true },
     }),
   });
   const initJson: any = await initRes.json();
@@ -85,13 +131,16 @@ Deno.serve(async (req) => {
 
   await admin.from("webhook_logs").insert({
     source: "paystack", event_type: "initialize", status: "ok",
-    message: `Initialized ${reference} for ${data.email}`, signature_valid: true,
-    payload: { reference, amountKobo, event: ev },
+    message: `Initialized ${reference} for ${emailForPaystack} (submitted ${submittedEvent} → routed ${ev})`,
+    signature_valid: true,
+    payload: { reference, amountKobo, event: ev, submitted: submittedEvent },
   });
 
   return json({
     authorization_url: initJson.data.authorization_url,
     access_code: initJson.data.access_code,
     reference,
+    routed_event: ev,
+    submitted_event: submittedEvent,
   });
 });
