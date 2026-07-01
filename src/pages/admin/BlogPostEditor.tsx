@@ -84,10 +84,18 @@ const BlogPostEditor = () => {
 
   const mins = useMemo(() => readingMinutes(form.content), [form.content]);
 
-  const save = async (status?: "draft" | "published") => {
+  const save = async (status?: "draft" | "published" | "scheduled") => {
     if (!form.title.trim()) return toast.error("Title is required");
     const finalSlug = form.slug.trim() || slugify(form.title);
     const finalStatus = status ?? form.status;
+    let scheduledIso: string | null = null;
+    if (finalStatus === "scheduled") {
+      if (!form.scheduled_at) { return toast.error("Pick a schedule date/time"); }
+      const d = new Date(form.scheduled_at);
+      if (isNaN(d.getTime())) return toast.error("Invalid schedule date");
+      if (d.getTime() <= Date.now()) return toast.error("Schedule date must be in the future");
+      scheduledIso = d.toISOString();
+    }
     setSaving(true);
     const payload: any = {
       title: form.title.trim(),
@@ -96,6 +104,7 @@ const BlogPostEditor = () => {
       content: form.content,
       cover_image_url: form.cover_image_url,
       status: finalStatus,
+      scheduled_at: finalStatus === "scheduled" ? scheduledIso : null,
       category_id: form.category_id,
       seo_title: form.seo_title.trim() || null,
       seo_description: form.seo_description.trim() || null,
@@ -122,10 +131,15 @@ const BlogPostEditor = () => {
     }
 
     setSaving(false);
-    toast.success(finalStatus === "published" ? "Post published" : "Saved");
+    toast.success(
+      finalStatus === "published" ? "Post published"
+      : finalStatus === "scheduled" ? `Scheduled for ${new Date(scheduledIso!).toLocaleString()}`
+      : "Saved"
+    );
     if (isNew && postId) navigate(`/admin/blog/posts/${postId}`, { replace: true });
     setForm((f) => ({ ...f, status: finalStatus }));
   };
+
 
   if (loading) return <div className="p-10 grid place-items-center"><Loader2 className="animate-spin text-muted-foreground" /></div>;
 
