@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import ImageUpload from "@/components/admin/ImageUpload";
 import { BlogCategory, BlogTag, readingMinutes, renderMarkdown, slugify } from "@/lib/blog";
 import { useAuth } from "@/hooks/useAuth";
-import { ArrowLeft, Eye, Loader2, Save } from "lucide-react";
+import { ArrowLeft, CalendarClock, Eye, Loader2, Save } from "lucide-react";
 import { toast } from "sonner";
 
 type FormState = {
@@ -13,7 +13,8 @@ type FormState = {
   excerpt: string;
   content: string;
   cover_image_url: string | null;
-  status: "draft" | "published";
+  status: "draft" | "published" | "scheduled";
+  scheduled_at: string; // datetime-local value
   category_id: string | null;
   seo_title: string;
   seo_description: string;
@@ -22,8 +23,17 @@ type FormState = {
 
 const empty: FormState = {
   title: "", slug: "", excerpt: "", content: "", cover_image_url: null,
-  status: "draft", category_id: null, seo_title: "", seo_description: "", tag_ids: [],
+  status: "draft", scheduled_at: "", category_id: null, seo_title: "", seo_description: "", tag_ids: [],
 };
+
+// Convert a UTC ISO string to a value suitable for <input type="datetime-local">
+const toLocalInput = (iso: string | null) => {
+  if (!iso) return "";
+  const d = new Date(iso);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+};
+
 
 const BlogPostEditor = () => {
   const { id } = useParams();
@@ -58,7 +68,9 @@ const BlogPostEditor = () => {
       const { data: pt } = await supabase.from("blog_post_tags" as any).select("tag_id").eq("post_id", p.id);
       setForm({
         title: p.title, slug: p.slug, excerpt: p.excerpt ?? "", content: p.content ?? "",
-        cover_image_url: p.cover_image_url, status: p.status, category_id: p.category_id,
+        cover_image_url: p.cover_image_url, status: p.status,
+        scheduled_at: toLocalInput(p.scheduled_at),
+        category_id: p.category_id,
         seo_title: p.seo_title ?? "", seo_description: p.seo_description ?? "",
         tag_ids: ((pt as any) ?? []).map((r: any) => r.tag_id),
       });
@@ -72,10 +84,18 @@ const BlogPostEditor = () => {
 
   const mins = useMemo(() => readingMinutes(form.content), [form.content]);
 
-  const save = async (status?: "draft" | "published") => {
+  const save = async (status?: "draft" | "published" | "scheduled") => {
     if (!form.title.trim()) return toast.error("Title is required");
     const finalSlug = form.slug.trim() || slugify(form.title);
     const finalStatus = status ?? form.status;
+    let scheduledIso: string | null = null;
+    if (finalStatus === "scheduled") {
+      if (!form.scheduled_at) { return toast.error("Pick a schedule date/time"); }
+      const d = new Date(form.scheduled_at);
+      if (isNaN(d.getTime())) return toast.error("Invalid schedule date");
+      if (d.getTime() <= Date.now()) return toast.error("Schedule date must be in the future");
+      scheduledIso = d.toISOString();
+    }
     setSaving(true);
     const payload: any = {
       title: form.title.trim(),
@@ -84,6 +104,7 @@ const BlogPostEditor = () => {
       content: form.content,
       cover_image_url: form.cover_image_url,
       status: finalStatus,
+      scheduled_at: finalStatus === "scheduled" ? scheduledIso : null,
       category_id: form.category_id,
       seo_title: form.seo_title.trim() || null,
       seo_description: form.seo_description.trim() || null,
@@ -110,10 +131,15 @@ const BlogPostEditor = () => {
     }
 
     setSaving(false);
-    toast.success(finalStatus === "published" ? "Post published" : "Saved");
+    toast.success(
+      finalStatus === "published" ? "Post published"
+      : finalStatus === "scheduled" ? `Scheduled for ${new Date(scheduledIso!).toLocaleString()}`
+      : "Saved"
+    );
     if (isNew && postId) navigate(`/admin/blog/posts/${postId}`, { replace: true });
     setForm((f) => ({ ...f, status: finalStatus }));
   };
+
 
   if (loading) return <div className="p-10 grid place-items-center"><Loader2 className="animate-spin text-muted-foreground" /></div>;
 
@@ -130,6 +156,9 @@ const BlogPostEditor = () => {
           </button>
           <button onClick={() => save("draft")} disabled={saving} className="inline-flex items-center gap-2 px-3 py-2 text-sm border border-border rounded-md hover:bg-muted">
             <Save className="w-4 h-4" /> Save draft
+          </button>
+          <button onClick={() => save("scheduled")} disabled={saving || !form.scheduled_at} title={form.scheduled_at ? "" : "Pick a schedule date in the sidebar first"} className="inline-flex items-center gap-2 px-3 py-2 text-sm border border-border rounded-md hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed">
+            <CalendarClock className="w-4 h-4" /> Schedule
           </button>
           <button onClick={() => save("published")} disabled={saving} className="inline-flex items-center gap-2 px-4 py-2 text-sm bg-primary text-primary-foreground rounded-md hover:bg-primary/90">
             {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : null} Publish
@@ -182,10 +211,28 @@ const BlogPostEditor = () => {
           <div className="border border-border rounded-md p-4 bg-card">
             <p className="text-xs uppercase tracking-wider text-muted-foreground mb-2 font-semibold">Status</p>
             <p className="text-sm">
-              <span className={`inline-block text-[11px] uppercase tracking-wider px-2 py-0.5 rounded-full font-semibold ${form.status === "published" ? "bg-accent text-accent-foreground" : "bg-muted text-muted-foreground"}`}>
+              <span className={`inline-block text-[11px] uppercase tracking-wider px-2 py-0.5 rounded-full font-semibold ${form.status === "published" ? "bg-accent text-accent-foreground" : form.status === "scheduled" ? "bg-primary/15 text-primary" : "bg-muted text-muted-foreground"}`}>
                 {form.status}
               </span>
             </p>
+          </div>
+
+          <div className="border border-border rounded-md p-4 bg-card space-y-2">
+            <p className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">Schedule</p>
+            <input
+              type="datetime-local"
+              value={form.scheduled_at}
+              onChange={(e) => setForm({ ...form, scheduled_at: e.target.value })}
+              className="w-full px-3 py-2 text-sm border border-border rounded-md bg-background"
+            />
+            <p className="text-[11px] text-muted-foreground">
+              Pick a future date/time, then click <span className="font-semibold">Schedule</span>. The post auto-publishes at that time (checked every 5 minutes).
+            </p>
+            {form.scheduled_at && (
+              <button type="button" onClick={() => setForm({ ...form, scheduled_at: "" })} className="text-xs underline text-muted-foreground hover:text-foreground">
+                Clear schedule
+              </button>
+            )}
           </div>
 
           <div className="border border-border rounded-md p-4 bg-card space-y-2">
