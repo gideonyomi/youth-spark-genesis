@@ -211,10 +211,28 @@ const BlogPostEditor = () => {
           <div className="border border-border rounded-md p-4 bg-card">
             <p className="text-xs uppercase tracking-wider text-muted-foreground mb-2 font-semibold">Status</p>
             <p className="text-sm">
-              <span className={`inline-block text-[11px] uppercase tracking-wider px-2 py-0.5 rounded-full font-semibold ${form.status === "published" ? "bg-accent text-accent-foreground" : "bg-muted text-muted-foreground"}`}>
+              <span className={`inline-block text-[11px] uppercase tracking-wider px-2 py-0.5 rounded-full font-semibold ${form.status === "published" ? "bg-accent text-accent-foreground" : form.status === "scheduled" ? "bg-primary/15 text-primary" : "bg-muted text-muted-foreground"}`}>
                 {form.status}
               </span>
             </p>
+          </div>
+
+          <div className="border border-border rounded-md p-4 bg-card space-y-2">
+            <p className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">Schedule</p>
+            <input
+              type="datetime-local"
+              value={form.scheduled_at}
+              onChange={(e) => setForm({ ...form, scheduled_at: e.target.value })}
+              className="w-full px-3 py-2 text-sm border border-border rounded-md bg-background"
+            />
+            <p className="text-[11px] text-muted-foreground">
+              Pick a future date/time, then click <span className="font-semibold">Schedule</span>. The post auto-publishes at that time (checked every 5 minutes).
+            </p>
+            {form.scheduled_at && (
+              <button type="button" onClick={() => setForm({ ...form, scheduled_at: "" })} className="text-xs underline text-muted-foreground hover:text-foreground">
+                Clear schedule
+              </button>
+            )}
           </div>
 
           <div className="border border-border rounded-md p-4 bg-card space-y-2">
