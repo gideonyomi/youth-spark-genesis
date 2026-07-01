@@ -151,6 +151,7 @@ export type Database = {
           id: string
           published_at: string | null
           reading_minutes: number
+          scheduled_at: string | null
           seo_description: string | null
           seo_title: string | null
           slug: string
@@ -168,6 +169,7 @@ export type Database = {
           id?: string
           published_at?: string | null
           reading_minutes?: number
+          scheduled_at?: string | null
           seo_description?: string | null
           seo_title?: string | null
           slug: string
@@ -185,6 +187,7 @@ export type Database = {
           id?: string
           published_at?: string | null
           reading_minutes?: number
+          scheduled_at?: string | null
           seo_description?: string | null
           seo_title?: string | null
           slug?: string
@@ -984,6 +987,7 @@ export type Database = {
         Returns: boolean
       }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
+      publish_scheduled_blog_posts: { Args: never; Returns: undefined }
       submit_evaluation: {
         Args: {
           _answers: Json
