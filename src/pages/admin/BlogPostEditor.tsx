@@ -68,7 +68,9 @@ const BlogPostEditor = () => {
       const { data: pt } = await supabase.from("blog_post_tags" as any).select("tag_id").eq("post_id", p.id);
       setForm({
         title: p.title, slug: p.slug, excerpt: p.excerpt ?? "", content: p.content ?? "",
-        cover_image_url: p.cover_image_url, status: p.status, category_id: p.category_id,
+        cover_image_url: p.cover_image_url, status: p.status,
+        scheduled_at: toLocalInput(p.scheduled_at),
+        category_id: p.category_id,
         seo_title: p.seo_title ?? "", seo_description: p.seo_description ?? "",
         tag_ids: ((pt as any) ?? []).map((r: any) => r.tag_id),
       });
