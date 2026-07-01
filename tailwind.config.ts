@@ -14,9 +14,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        serif: ["Bebas Neue", "Impact", "sans-serif"],
+        serif: ["Montserrat", "system-ui", "sans-serif"],
         sans: ["Montserrat", "system-ui", "sans-serif"],
-        display: ["Bebas Neue", "Impact", "sans-serif"],
+        display: ["Montserrat", "system-ui", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
