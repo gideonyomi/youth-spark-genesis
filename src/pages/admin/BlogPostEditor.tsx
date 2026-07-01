@@ -13,7 +13,8 @@ type FormState = {
   excerpt: string;
   content: string;
   cover_image_url: string | null;
-  status: "draft" | "published";
+  status: "draft" | "published" | "scheduled";
+  scheduled_at: string; // datetime-local value
   category_id: string | null;
   seo_title: string;
   seo_description: string;
@@ -22,8 +23,17 @@ type FormState = {
 
 const empty: FormState = {
   title: "", slug: "", excerpt: "", content: "", cover_image_url: null,
-  status: "draft", category_id: null, seo_title: "", seo_description: "", tag_ids: [],
+  status: "draft", scheduled_at: "", category_id: null, seo_title: "", seo_description: "", tag_ids: [],
 };
+
+// Convert a UTC ISO string to a value suitable for <input type="datetime-local">
+const toLocalInput = (iso: string | null) => {
+  if (!iso) return "";
+  const d = new Date(iso);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+};
+
 
 const BlogPostEditor = () => {
   const { id } = useParams();
