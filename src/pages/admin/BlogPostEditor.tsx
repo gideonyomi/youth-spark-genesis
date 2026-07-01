@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import ImageUpload from "@/components/admin/ImageUpload";
 import { BlogCategory, BlogTag, readingMinutes, renderMarkdown, slugify } from "@/lib/blog";
 import { useAuth } from "@/hooks/useAuth";
-import { ArrowLeft, Eye, Loader2, Save } from "lucide-react";
+import { ArrowLeft, CalendarClock, Eye, Loader2, Save } from "lucide-react";
 import { toast } from "sonner";
 
 type FormState = {
