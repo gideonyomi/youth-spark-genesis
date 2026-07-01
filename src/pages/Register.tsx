@@ -116,7 +116,7 @@ const Register = () => {
     if (!form.state.trim()) return toast.error("Please enter your state/province/region");
     if (!form.city.trim()) return toast.error("Please enter your city");
     if (!form.gender) return toast.error("Please select gender");
-    if (!form.marital_status) return toast.error("Please select marital status");
+    if (!isSSC && !form.marital_status) return toast.error("Please select marital status");
     if (!form.occupation) return toast.error("Please select occupation");
     if (!form.age_range) return toast.error("Please select an age range");
     if (isSSC && !form.class_level) return toast.error("Please select your class");
@@ -295,13 +295,15 @@ const Register = () => {
                     {GENDERS.map(g => <option key={g} value={g}>{g}</option>)}
                   </select>
                 </div>
-                <div>
-                  <label className="block text-sm font-semibold mb-1.5">Marital status <span className="text-destructive">*</span></label>
-                  <select required value={form.marital_status} onChange={(e) => setForm({ ...form, marital_status: e.target.value })} className={inputCls}>
-                    <option value="">Select marital status</option>
-                    {MARITAL.map(m => <option key={m} value={m}>{m}</option>)}
-                  </select>
-                </div>
+                {!isSSC && (
+                  <div>
+                    <label className="block text-sm font-semibold mb-1.5">Marital status <span className="text-destructive">*</span></label>
+                    <select required value={form.marital_status} onChange={(e) => setForm({ ...form, marital_status: e.target.value })} className={inputCls}>
+                      <option value="">Select marital status</option>
+                      {MARITAL.map(m => <option key={m} value={m}>{m}</option>)}
+                    </select>
+                  </div>
+                )}
               </div>
 
               <div className="grid sm:grid-cols-2 gap-4">
