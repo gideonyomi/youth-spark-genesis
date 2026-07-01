@@ -295,13 +295,15 @@ const Register = () => {
                     {GENDERS.map(g => <option key={g} value={g}>{g}</option>)}
                   </select>
                 </div>
-                <div>
-                  <label className="block text-sm font-semibold mb-1.5">Marital status <span className="text-destructive">*</span></label>
-                  <select required value={form.marital_status} onChange={(e) => setForm({ ...form, marital_status: e.target.value })} className={inputCls}>
-                    <option value="">Select marital status</option>
-                    {MARITAL.map(m => <option key={m} value={m}>{m}</option>)}
-                  </select>
-                </div>
+                {!isSSC && (
+                  <div>
+                    <label className="block text-sm font-semibold mb-1.5">Marital status <span className="text-destructive">*</span></label>
+                    <select required value={form.marital_status} onChange={(e) => setForm({ ...form, marital_status: e.target.value })} className={inputCls}>
+                      <option value="">Select marital status</option>
+                      {MARITAL.map(m => <option key={m} value={m}>{m}</option>)}
+                    </select>
+                  </div>
+                )}
               </div>
 
               <div className="grid sm:grid-cols-2 gap-4">
