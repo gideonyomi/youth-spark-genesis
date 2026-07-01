@@ -157,6 +157,9 @@ const BlogPostEditor = () => {
           <button onClick={() => save("draft")} disabled={saving} className="inline-flex items-center gap-2 px-3 py-2 text-sm border border-border rounded-md hover:bg-muted">
             <Save className="w-4 h-4" /> Save draft
           </button>
+          <button onClick={() => save("scheduled")} disabled={saving || !form.scheduled_at} title={form.scheduled_at ? "" : "Pick a schedule date in the sidebar first"} className="inline-flex items-center gap-2 px-3 py-2 text-sm border border-border rounded-md hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed">
+            <CalendarClock className="w-4 h-4" /> Schedule
+          </button>
           <button onClick={() => save("published")} disabled={saving} className="inline-flex items-center gap-2 px-4 py-2 text-sm bg-primary text-primary-foreground rounded-md hover:bg-primary/90">
             {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : null} Publish
           </button>
