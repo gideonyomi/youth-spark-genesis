@@ -116,7 +116,7 @@ const Register = () => {
     if (!form.state.trim()) return toast.error("Please enter your state/province/region");
     if (!form.city.trim()) return toast.error("Please enter your city");
     if (!form.gender) return toast.error("Please select gender");
-    if (!form.marital_status) return toast.error("Please select marital status");
+    if (!isSSC && !form.marital_status) return toast.error("Please select marital status");
     if (!form.occupation) return toast.error("Please select occupation");
     if (!form.age_range) return toast.error("Please select an age range");
     if (isSSC && !form.class_level) return toast.error("Please select your class");
