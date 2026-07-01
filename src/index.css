@@ -7,45 +7,45 @@
 @layer base {
   :root {
     --background: 40 33% 97%;
-    --foreground: 240 100% 12%;
+    --foreground: 215 77% 12%;
 
     --card: 0 0% 100%;
-    --card-foreground: 240 100% 12%;
+    --card-foreground: 215 77% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 240 100% 12%;
+    --popover-foreground: 215 77% 12%;
 
-    --primary: 240 100% 25%;
+    --primary: 215 77% 12%;
     --primary-foreground: 48 100% 96%;
 
     --secondary: 48 100% 50%;
-    --secondary-foreground: 240 100% 18%;
+    --secondary-foreground: 215 77% 12%;
 
-    --muted: 240 20% 94%;
-    --muted-foreground: 240 12% 38%;
+    --muted: 215 20% 94%;
+    --muted-foreground: 215 15% 38%;
 
     --accent: 48 100% 50%;
-    --accent-foreground: 240 100% 18%;
+    --accent-foreground: 215 77% 12%;
 
     --destructive: 0 70% 45%;
     --destructive-foreground: 48 100% 96%;
 
-    --border: 240 20% 88%;
-    --input: 240 20% 88%;
-    --ring: 240 100% 25%;
+    --border: 215 20% 88%;
+    --input: 215 20% 88%;
+    --ring: 215 77% 12%;
 
     --radius: 1rem;
 
-    --sidebar-background: 240 100% 25%;
+    --sidebar-background: 215 77% 12%;
     --sidebar-foreground: 48 100% 96%;
     --sidebar-primary: 48 100% 50%;
-    --sidebar-primary-foreground: 240 100% 18%;
-    --sidebar-accent: 240 100% 32%;
+    --sidebar-primary-foreground: 215 77% 12%;
+    --sidebar-accent: 215 77% 18%;
     --sidebar-accent-foreground: 48 100% 96%;
-    --sidebar-border: 240 100% 32%;
+    --sidebar-border: 215 77% 18%;
     --sidebar-ring: 48 100% 50%;
 
-    --font-serif: 'Bebas Neue', Impact, sans-serif;
+    --font-serif: 'Montserrat', system-ui, sans-serif;
     --font-sans: 'Montserrat', system-ui, sans-serif;
 
     --shadow-sm: 0 1px 2px hsla(240, 30%, 18%, 0.05);
