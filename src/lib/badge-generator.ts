@@ -156,49 +156,47 @@ export const downloadCanvas = async (canvas: HTMLCanvasElement, filename: string
   setTimeout(() => URL.revokeObjectURL(url), 2000);
 };
 
+import badgePrimaryBg from "@/assets/badge-primary-bg.png.asset.json";
+import badgeSecondaryBg from "@/assets/badge-secondary-bg.png.asset.json";
+
 // Built-in fallbacks so the system works before any admin uploads templates.
+// Backgrounds are the official Emergence 2026 artwork (1240×1748).
 export const defaultTemplate = (event: string, variant: "primary" | "secondary"): BadgeTemplate => {
   if (variant === "primary") {
+    // Conference Badge – "Registration Tag" artwork with a rounded photo cutout
+    // and three white info bars underneath.
     return {
       event,
       variant,
-      name: `${event} – Default badge`,
-      background_url: null,
-      width: 600,
-      height: 900,
+      name: `${event} – Conference Badge`,
+      background_url: badgePrimaryBg.url,
+      width: 1240,
+      height: 1748,
       layout: {
-        backgroundColor: "#0f1b3d",
+        backgroundColor: "#ffffff",
         fields: [
-          { type: "text", key: "static", text: "BLHMYOUTH", x: 300, y: 70, size: 22, weight: "700", color: "#c9a84c", align: "center", uppercase: true },
-          { type: "text", key: "event", x: 300, y: 110, size: 18, weight: "600", color: "#e8edf3", align: "center", uppercase: true },
-          { type: "photo", x: 175, y: 160, width: 250, height: 250, shape: "circle", borderColor: "#c9a84c", borderWidth: 6 },
-          { type: "text", key: "name", x: 300, y: 480, size: 36, weight: "700", color: "#ffffff", align: "center", family: "Fraunces, serif", maxWidth: 540, uppercase: true },
-          { type: "text", key: "static", text: "Registration ID", x: 300, y: 600, size: 14, weight: "500", color: "#94a3b8", align: "center", uppercase: true },
-          { type: "text", key: "code", x: 300, y: 660, size: 56, weight: "700", color: "#c9a84c", align: "center", family: "JetBrains Mono, monospace" },
-          { type: "text", key: "static", text: "Rooted in Holiness, Empowered for Purpose", x: 300, y: 830, size: 13, weight: "500", color: "#94a3b8", align: "center" },
+          { type: "photo", x: 270, y: 430, width: 700, height: 800, shape: "rect" },
+          // White info bars (centered around x=622)
+          { type: "text", key: "name", x: 622, y: 1355, size: 44, weight: "700", color: "#0f1b3d", align: "center", family: "Fraunces, serif", maxWidth: 880, uppercase: true },
+          { type: "text", key: "code", x: 622, y: 1460, size: 44, weight: "700", color: "#0f1b3d", align: "center", family: "JetBrains Mono, monospace", maxWidth: 880 },
+          { type: "text", key: "event", x: 622, y: 1565, size: 32, weight: "700", color: "#0f1b3d", align: "center", maxWidth: 880, uppercase: true },
         ],
       },
     };
   }
-  // Secondary: portrait name tag (matches conference badge orientation, lighter palette)
+  // Name Tag – artwork with a rounded photo cutout on the left; the rest of
+  // the layout (event, venue, socials) is baked into the artwork.
   return {
     event,
     variant,
-    name: `${event} – Name tag`,
-    background_url: null,
-    width: 600,
-    height: 900,
+    name: `${event} – Name Tag`,
+    background_url: badgeSecondaryBg.url,
+    width: 1240,
+    height: 1748,
     layout: {
       backgroundColor: "#ffffff",
       fields: [
-        { type: "text", key: "static", text: "BLHMYOUTH", x: 300, y: 70, size: 20, weight: "700", color: "#0f1b3d", align: "center", uppercase: true },
-        { type: "text", key: "event", x: 300, y: 110, size: 16, weight: "600", color: "#c9a84c", align: "center", uppercase: true },
-        { type: "photo", x: 175, y: 150, width: 250, height: 250, shape: "circle", borderColor: "#0f1b3d", borderWidth: 5 },
-        { type: "text", key: "static", text: "Hello, my name is", x: 300, y: 470, size: 15, weight: "500", color: "#64748b", align: "center" },
-        { type: "text", key: "name", x: 300, y: 540, size: 38, weight: "700", color: "#0f1b3d", align: "center", family: "Fraunces, serif", maxWidth: 540, uppercase: true },
-        { type: "text", key: "static", text: "Registration ID", x: 300, y: 650, size: 13, weight: "500", color: "#64748b", align: "center", uppercase: true },
-        { type: "text", key: "code", x: 300, y: 710, size: 48, weight: "700", color: "#c9a84c", align: "center", family: "JetBrains Mono, monospace" },
-        { type: "text", key: "static", text: "Rooted in Holiness · Empowered for Purpose", x: 300, y: 840, size: 12, weight: "500", color: "#64748b", align: "center" },
+        { type: "photo", x: 75, y: 440, width: 455, height: 610, shape: "rect" },
       ],
     },
   };
