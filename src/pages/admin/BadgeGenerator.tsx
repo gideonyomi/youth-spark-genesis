@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2, Download, FileImage, FileText, Eye, Search, CheckSquare, Square } from "lucide-react";
+import { Loader2, Download, FileImage, FileText, Eye, Search, CheckSquare, Square, LayoutGrid, ChevronLeft, ChevronRight, X } from "lucide-react";
 import jsPDF from "jspdf";
 import JSZip from "jszip";
 import {
@@ -21,6 +21,45 @@ type Reg = {
 
 const VARIANTS: ("primary" | "secondary")[] = ["primary", "secondary"];
 const VARIANT_LABEL: Record<string, string> = { primary: "Conference badge", secondary: "Name tag" };
+
+// A4 landscape sheet layout: 4 columns × 2 rows = 8 badges per page.
+// Portrait badges (2:3) fit landscape A4 cells cleanly.
+const SHEET = {
+  pageW: 297, // mm (A4 landscape)
+  pageH: 210,
+  cols: 4,
+  rows: 2,
+  marginX: 10, // mm
+  marginY: 10,
+  gutterX: 6,
+  gutterY: 6,
+  bleed: 2, // mm
+};
+const PER_PAGE = SHEET.cols * SHEET.rows;
+
+const computeCells = () => {
+  const cellW = (SHEET.pageW - 2 * SHEET.marginX - (SHEET.cols - 1) * SHEET.gutterX) / SHEET.cols;
+  const cellH = (SHEET.pageH - 2 * SHEET.marginY - (SHEET.rows - 1) * SHEET.gutterY) / SHEET.rows;
+  const cells: { x: number; y: number; w: number; h: number }[] = [];
+  for (let r = 0; r < SHEET.rows; r++) {
+    for (let c = 0; c < SHEET.cols; c++) {
+      cells.push({
+        x: SHEET.marginX + c * (cellW + SHEET.gutterX),
+        y: SHEET.marginY + r * (cellH + SHEET.gutterY),
+        w: cellW,
+        h: cellH,
+      });
+    }
+  }
+  return cells;
+};
+
+const fitAspect = (cellW: number, cellH: number, aspect: number) => {
+  let w = cellW;
+  let h = cellW / aspect;
+  if (h > cellH) { h = cellH; w = cellH * aspect; }
+  return { w, h, ox: (cellW - w) / 2, oy: (cellH - h) / 2 };
+};
 
 const useTemplate = (event: string, variant: "primary" | "secondary") => {
   const [tpl, setTpl] = useState<BadgeTemplate | null>(null);
@@ -47,6 +86,11 @@ const BadgeGenerator = () => {
   const [previewing, setPreviewing] = useState<Reg | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [sheetItems, setSheetItems] = useState<Reg[]>([]);
+  const [sheetPage, setSheetPage] = useState(0);
+  const [sheetPreview, setSheetPreview] = useState<string | null>(null);
+  const [sheetLoading, setSheetLoading] = useState(false);
   const tplCache = useRef<Record<string, BadgeTemplate>>({});
 
   useEffect(() => {
@@ -177,6 +221,134 @@ const BadgeGenerator = () => {
     } finally { setBusy(null); }
   };
 
+  // 8-up A4 sheet: render a single page preview onto a canvas.
+  const renderSheetPreview = async (items: Reg[], pageIdx: number) => {
+    const pxPerMm = 4; // ≈ 1188×840 preview
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(SHEET.pageW * pxPerMm);
+    canvas.height = Math.round(SHEET.pageH * pxPerMm);
+    const ctx = canvas.getContext("2d")!;
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    const cells = computeCells();
+    for (let i = 0; i < PER_PAGE; i++) {
+      const reg = items[pageIdx * PER_PAGE + i];
+      if (!reg) continue;
+      const cell = cells[i];
+      const tpl = await getTemplate(reg.event, variant);
+      const bcanvas = await renderFor(reg, variant);
+      const aspect = tpl.width / tpl.height;
+      const fit = fitAspect(cell.w, cell.h, aspect);
+      const bx = (cell.x + fit.ox) * pxPerMm;
+      const by = (cell.y + fit.oy) * pxPerMm;
+      const bw = fit.w * pxPerMm;
+      const bh = fit.h * pxPerMm;
+      const bleedPx = SHEET.bleed * pxPerMm;
+      if (tpl.layout.backgroundColor) {
+        ctx.fillStyle = tpl.layout.backgroundColor;
+        ctx.fillRect(bx - bleedPx, by - bleedPx, bw + 2 * bleedPx, bh + 2 * bleedPx);
+      }
+      ctx.drawImage(bcanvas, bx, by, bw, bh);
+      // crop marks
+      ctx.strokeStyle = "#94a3b8";
+      ctx.lineWidth = 0.6;
+      const m = 3 * pxPerMm, gap = 1 * pxPerMm;
+      const corners: [number, number][] = [
+        [bx - bleedPx, by - bleedPx],
+        [bx + bw + bleedPx, by - bleedPx],
+        [bx - bleedPx, by + bh + bleedPx],
+        [bx + bw + bleedPx, by + bh + bleedPx],
+      ];
+      for (const [mx, my] of corners) {
+        ctx.beginPath();
+        ctx.moveTo(mx - m, my); ctx.lineTo(mx - gap, my);
+        ctx.moveTo(mx + gap, my); ctx.lineTo(mx + m, my);
+        ctx.moveTo(mx, my - m); ctx.lineTo(mx, my - gap);
+        ctx.moveTo(mx, my + gap); ctx.lineTo(mx, my + m);
+        ctx.stroke();
+      }
+    }
+    return canvas;
+  };
+
+  const openSheetPreview = async () => {
+    const items = filtered.filter(r => selected[r.id]);
+    if (!items.length) return toast.error("Select at least one registrant");
+    setSheetItems(items);
+    setSheetPage(0);
+    setSheetOpen(true);
+  };
+
+  // Update preview when page / items change
+  useEffect(() => {
+    let alive = true;
+    if (!sheetOpen || !sheetItems.length) { setSheetPreview(null); return; }
+    (async () => {
+      setSheetLoading(true);
+      try {
+        const canvas = await renderSheetPreview(sheetItems, sheetPage);
+        if (!alive) return;
+        setSheetPreview(canvas.toDataURL("image/jpeg", 0.85));
+      } finally {
+        if (alive) setSheetLoading(false);
+      }
+    })();
+    return () => { alive = false; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sheetOpen, sheetItems, sheetPage, variant]);
+
+  const totalSheetPages = Math.max(1, Math.ceil(sheetItems.length / PER_PAGE));
+
+  const downloadSheetPdf = async () => {
+    if (!sheetItems.length) return;
+    setBusy("sheet-pdf");
+    try {
+      // 300 DPI: with jsPDF images we let the source canvases (rendered at 2× template
+      // resolution, ~1200×1800 px) drive quality. At ~65mm wide that is >450 DPI.
+      const pdf = new jsPDF({ unit: "mm", format: "a4", orientation: "landscape", compress: true });
+      const cells = computeCells();
+      for (let p = 0; p < totalSheetPages; p++) {
+        if (p > 0) pdf.addPage("a4", "landscape");
+        for (let i = 0; i < PER_PAGE; i++) {
+          const reg = sheetItems[p * PER_PAGE + i];
+          if (!reg) continue;
+          const cell = cells[i];
+          const tpl = await getTemplate(reg.event, variant);
+          const canvas = await renderFor(reg, variant);
+          const aspect = tpl.width / tpl.height;
+          const fit = fitAspect(cell.w, cell.h, aspect);
+          const bx = cell.x + fit.ox;
+          const by = cell.y + fit.oy;
+          if (tpl.layout.backgroundColor) {
+            try { pdf.setFillColor(tpl.layout.backgroundColor); } catch { pdf.setFillColor(255, 255, 255); }
+            pdf.rect(bx - SHEET.bleed, by - SHEET.bleed, fit.w + 2 * SHEET.bleed, fit.h + 2 * SHEET.bleed, "F");
+          }
+          pdf.addImage(canvas.toDataURL("image/png"), "PNG", bx, by, fit.w, fit.h, undefined, "FAST");
+          // crop marks
+          pdf.setDrawColor(140, 140, 140);
+          pdf.setLineWidth(0.1);
+          const m = 3, gap = 1;
+          const corners: [number, number][] = [
+            [bx - SHEET.bleed, by - SHEET.bleed],
+            [bx + fit.w + SHEET.bleed, by - SHEET.bleed],
+            [bx - SHEET.bleed, by + fit.h + SHEET.bleed],
+            [bx + fit.w + SHEET.bleed, by + fit.h + SHEET.bleed],
+          ];
+          for (const [mx, my] of corners) {
+            pdf.line(mx - m, my, mx - gap, my);
+            pdf.line(mx + gap, my, mx + m, my);
+            pdf.line(mx, my - m, mx, my - gap);
+            pdf.line(mx, my + gap, mx, my + m);
+          }
+        }
+      }
+      pdf.save(`${variant}-sheet-8up-${sheetItems.length}.pdf`);
+      toast.success(`Exported ${totalSheetPages} A4 page${totalSheetPages > 1 ? "s" : ""} (${sheetItems.length} badges)`);
+    } catch (e: any) {
+      toast.error(e.message || "Sheet PDF export failed");
+    } finally { setBusy(null); }
+  };
+
   if (loading) return <Loader2 className="animate-spin" />;
   if (!isAdmin) return <Navigate to="/admin" replace />;
 
@@ -215,14 +387,18 @@ const BadgeGenerator = () => {
 
       <div className="flex flex-wrap items-center gap-2 mb-3">
         <span className="text-xs text-muted-foreground">{selectedCount} selected · {filtered.length} shown</span>
-        <div className="ml-auto flex gap-2">
+        <div className="ml-auto flex flex-wrap gap-2">
           <button onClick={() => bulkDownload("png")} disabled={!selectedCount || !!busy}
             className="inline-flex items-center gap-1.5 text-sm border border-border px-3 py-2 rounded-md hover:bg-muted disabled:opacity-50">
             {busy === "bulk-png" ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileImage className="w-4 h-4" />} Bulk PNG (.zip)
           </button>
           <button onClick={() => bulkDownload("pdf")} disabled={!selectedCount || !!busy}
+            className="inline-flex items-center gap-1.5 text-sm border border-border px-3 py-2 rounded-md hover:bg-muted disabled:opacity-50">
+            {busy === "bulk-pdf" ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileText className="w-4 h-4" />} Bulk PDF (1/page)
+          </button>
+          <button onClick={openSheetPreview} disabled={!selectedCount || !!busy}
             className="inline-flex items-center gap-1.5 text-sm bg-primary text-primary-foreground px-3 py-2 rounded-md hover:shadow-medium disabled:opacity-50">
-            {busy === "bulk-pdf" ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileText className="w-4 h-4" />} Bulk PDF
+            <LayoutGrid className="w-4 h-4" /> Preview 8-up A4 sheet
           </button>
         </div>
       </div>
@@ -314,6 +490,45 @@ const BadgeGenerator = () => {
                 <Download className="w-4 h-4" /> PDF
               </button>
               <button onClick={() => setPreviewing(null)} className="text-sm px-3 py-2 rounded-md hover:bg-muted">Close</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {sheetOpen && (
+        <div className="fixed inset-0 bg-black/60 z-50 grid place-items-center p-4" onClick={() => setSheetOpen(false)}>
+          <div className="bg-card rounded-xl w-full max-w-5xl p-5 max-h-[94vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4 gap-4">
+              <div>
+                <h3 className="font-serif text-lg font-bold">8-up A4 sheet preview</h3>
+                <p className="text-xs text-muted-foreground">
+                  A4 landscape · 4 × 2 grid · {SHEET.gutterX}mm gutters · {SHEET.bleed}mm bleed · crop marks · {sheetItems.length} badges → {totalSheetPages} page{totalSheetPages > 1 ? "s" : ""}
+                </p>
+              </div>
+              <button onClick={() => setSheetOpen(false)} className="p-1.5 rounded hover:bg-muted"><X className="w-4 h-4" /></button>
+            </div>
+
+            <div className="bg-muted/40 rounded-lg overflow-hidden grid place-items-center" style={{ aspectRatio: `${SHEET.pageW} / ${SHEET.pageH}` }}>
+              {sheetLoading || !sheetPreview
+                ? <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+                : <img src={sheetPreview} alt="Sheet preview" className="w-full h-full object-contain bg-white" />}
+            </div>
+
+            <div className="flex flex-wrap items-center justify-between gap-3 mt-4">
+              <div className="inline-flex items-center gap-2">
+                <button onClick={() => setSheetPage(p => Math.max(0, p - 1))} disabled={sheetPage === 0 || sheetLoading}
+                  className="p-1.5 rounded border border-border hover:bg-muted disabled:opacity-40"><ChevronLeft className="w-4 h-4" /></button>
+                <span className="text-xs text-muted-foreground">Page {sheetPage + 1} / {totalSheetPages}</span>
+                <button onClick={() => setSheetPage(p => Math.min(totalSheetPages - 1, p + 1))} disabled={sheetPage >= totalSheetPages - 1 || sheetLoading}
+                  className="p-1.5 rounded border border-border hover:bg-muted disabled:opacity-40"><ChevronRight className="w-4 h-4" /></button>
+              </div>
+              <div className="flex gap-2">
+                <button onClick={() => setSheetOpen(false)} className="text-sm px-3 py-2 rounded-md hover:bg-muted">Cancel</button>
+                <button onClick={downloadSheetPdf} disabled={busy === "sheet-pdf"}
+                  className="inline-flex items-center gap-1.5 text-sm bg-primary text-primary-foreground px-4 py-2 rounded-md hover:shadow-medium disabled:opacity-50">
+                  {busy === "sheet-pdf" ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />} Download print-ready PDF
+                </button>
+              </div>
             </div>
           </div>
         </div>
