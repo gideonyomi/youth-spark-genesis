@@ -101,6 +101,7 @@ const Register = () => {
   const isYEC = tag === "YEC";
   const isNSS = tag === "NSS";
   const occupationOptions = isYEC ? YEC_OCCUPATIONS : isSSC ? SSC_OCCUPATIONS : NSS_OCCUPATIONS;
+  const ageRanges = isSSC ? AGE_RANGES_SSC : AGE_RANGES_COMMON;
   const askFirstTime = isSSC || isYEC;
   const emailRequired = !isSSC;
 
