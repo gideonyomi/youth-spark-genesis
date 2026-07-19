@@ -103,11 +103,20 @@ const Register = () => {
   const askFirstTime = isSSC || isYEC;
   const emailRequired = !isSSC;
 
-  const onPhoto = (file: File) => {
-    if (file.size > 3 * 1024 * 1024) return toast.error("Photo must be 3MB or less");
+  const [processingPhoto, setProcessingPhoto] = useState(false);
+  const onPhoto = async (file: File) => {
     if (!file.type.startsWith("image/")) return toast.error("Please choose an image file");
-    setPhotoFile(file);
-    setPhotoPreview(URL.createObjectURL(file));
+    setProcessingPhoto(true);
+    try {
+      const result = await processPassportPhoto(file);
+      setPhotoFile(result.file);
+      setPhotoPreview(result.dataUrl);
+      toast.success("Photo optimized for your badge");
+    } catch (err: any) {
+      toast.error(err.message || "Could not process that photo");
+    } finally {
+      setProcessingPhoto(false);
+    }
   };
 
   const submit = async (e: React.FormEvent) => {
