@@ -15,7 +15,8 @@ const EVENT_META: Record<string, { tag: string; title: string; blurb: string }> 
   nss: { tag: "NSS", title: "National Singles' Summit", blurb: "Purposeful living for singles, in holiness." },
 };
 
-const AGE_RANGES = ["12–16", "16–20", "21–25", "25–30", "30+"];
+const AGE_RANGES_COMMON = ["16–20", "21–25", "25–30", "30+"];
+const AGE_RANGES_SSC = ["12–16", "16–20", "21–25"];
 const GENDERS = ["Male", "Female"];
 const MARITAL = ["Single", "Engaged", "Married"];
 
