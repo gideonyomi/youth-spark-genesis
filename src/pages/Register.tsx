@@ -249,23 +249,27 @@ const Register = () => {
                 <div className="flex items-center gap-4">
                   {photoPreview ? (
                     <div className="relative">
-                      <img src={photoPreview} alt="" className="w-20 h-20 rounded-full object-cover border border-border" />
+                      <img src={photoPreview} alt="Passport preview" className="w-24 h-32 rounded-lg object-cover border border-border shadow-sm" />
                       <button type="button" onClick={() => { setPhotoFile(null); setPhotoPreview(null); }}
                         className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground rounded-full p-1">
                         <X className="w-3 h-3" />
                       </button>
                     </div>
                   ) : (
-                    <div className="w-20 h-20 rounded-full bg-muted grid place-items-center text-muted-foreground text-xs">No photo</div>
+                    <div className="w-24 h-32 rounded-lg bg-muted grid place-items-center text-muted-foreground text-xs text-center px-2">
+                      {processingPhoto ? <Loader2 className="w-4 h-4 animate-spin" /> : "Passport preview"}
+                    </div>
                   )}
-                  <label className="inline-flex items-center gap-2 text-sm border border-dashed border-border px-4 py-2.5 rounded-lg cursor-pointer hover:bg-muted">
-                    <Upload className="w-4 h-4" />
-                    {photoFile ? "Replace" : "Upload photo"}
+                  <label className={`inline-flex items-center gap-2 text-sm border border-dashed border-border px-4 py-2.5 rounded-lg hover:bg-muted ${processingPhoto ? "opacity-60 pointer-events-none" : "cursor-pointer"}`}>
+                    {processingPhoto ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                    {processingPhoto ? "Optimizing…" : photoFile ? "Replace" : "Upload photo"}
                     <input type="file" accept="image/*" className="hidden"
                       onChange={(e) => e.target.files?.[0] && onPhoto(e.target.files[0])} />
                   </label>
                 </div>
-                <p className="text-xs text-muted-foreground mt-2">Required. JPG or PNG. Max 3MB.</p>
+                <p className="text-xs text-muted-foreground mt-2">
+                  JPG or PNG, at least 400px on the short side. We auto-crop and center your face for the badge — a clear, front-facing headshot works best.
+                </p>
               </div>
 
               <div className="grid sm:grid-cols-2 gap-4">
