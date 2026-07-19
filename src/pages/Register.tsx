@@ -298,7 +298,7 @@ const Register = () => {
                   <label className="block text-sm font-semibold mb-1.5">Age range <span className="text-destructive">*</span></label>
                   <select required value={form.age_range} onChange={(e) => setForm({ ...form, age_range: e.target.value })} className={inputCls}>
                     <option value="">Select age range</option>
-                    {AGE_RANGES.map(a => <option key={a} value={a}>{a}</option>)}
+                    {ageRanges.map(a => <option key={a} value={a}>{a}</option>)}
                   </select>
                 </div>
               </div>
