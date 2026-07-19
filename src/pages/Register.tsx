@@ -15,7 +15,8 @@ const EVENT_META: Record<string, { tag: string; title: string; blurb: string }> 
   nss: { tag: "NSS", title: "National Singles' Summit", blurb: "Purposeful living for singles, in holiness." },
 };
 
-const AGE_RANGES = ["12–16", "16–20", "21–25", "25–30", "30+"];
+const AGE_RANGES_COMMON = ["16–20", "21–25", "25–30", "30+"];
+const AGE_RANGES_SSC = ["12–16", "16–20", "21–25"];
 const GENDERS = ["Male", "Female"];
 const MARITAL = ["Single", "Engaged", "Married"];
 
@@ -100,6 +101,7 @@ const Register = () => {
   const isYEC = tag === "YEC";
   const isNSS = tag === "NSS";
   const occupationOptions = isYEC ? YEC_OCCUPATIONS : isSSC ? SSC_OCCUPATIONS : NSS_OCCUPATIONS;
+  const ageRanges = isSSC ? AGE_RANGES_SSC : AGE_RANGES_COMMON;
   const askFirstTime = isSSC || isYEC;
   const emailRequired = !isSSC;
 
@@ -296,7 +298,7 @@ const Register = () => {
                   <label className="block text-sm font-semibold mb-1.5">Age range <span className="text-destructive">*</span></label>
                   <select required value={form.age_range} onChange={(e) => setForm({ ...form, age_range: e.target.value })} className={inputCls}>
                     <option value="">Select age range</option>
-                    {AGE_RANGES.map(a => <option key={a} value={a}>{a}</option>)}
+                    {ageRanges.map(a => <option key={a} value={a}>{a}</option>)}
                   </select>
                 </div>
               </div>
