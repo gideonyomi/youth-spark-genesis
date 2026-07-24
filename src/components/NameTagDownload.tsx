@@ -16,8 +16,10 @@ const NameTagDownload = ({ attendee }: Props) => {
   useEffect(() => {
     (async () => {
       const { data } = await supabase.from("badge_templates" as any)
-        .select("*").eq("event", attendee.event).eq("variant", "secondary").eq("active", true).maybeSingle();
-      const tpl = (data as any) ?? defaultTemplate(attendee.event, "secondary");
+        .select("*").eq("event", attendee.event).eq("variant", "secondary").eq("active", true)
+        .order("updated_at", { ascending: false }).limit(1);
+      const row = Array.isArray(data) && data.length ? data[0] : null;
+      const tpl = (row as any) ?? defaultTemplate(attendee.event, "secondary");
       setTemplate(tpl);
       const canvas = await renderBadge(tpl, attendee);
       canvasRef.current = canvas;
