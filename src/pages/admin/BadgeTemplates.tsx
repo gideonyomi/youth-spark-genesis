@@ -66,14 +66,9 @@ const BadgeTemplates = () => {
   const save = async () => {
     if (!template) return;
     setSaving(true);
-    const payload = {
-      event, variant, name: template.name,
-      background_url: template.background_url ?? null,
-      width: template.width, height: template.height,
-      layout: template.layout, active: true,
-    };
-    // Always update the current active row for this (event, variant) if one
-    // exists — never insert a second one, which is what caused duplicates.
+    // Look up the current active row for this (event, variant) so we always
+    // update it in place instead of inserting a duplicate. The RPC handles
+    // deactivation of any stragglers atomically to avoid unique-constraint hits.
     const { data: existing } = await supabase.from("badge_templates" as any)
       .select("id")
       .eq("event", event)
@@ -81,10 +76,17 @@ const BadgeTemplates = () => {
       .eq("active", true)
       .order("updated_at", { ascending: false })
       .limit(1);
-    const existingId = Array.isArray(existing) && existing.length ? (existing[0] as any).id : template.id;
-    const { error } = existingId
-      ? await supabase.from("badge_templates" as any).update(payload).eq("id", existingId)
-      : await supabase.from("badge_templates" as any).insert(payload);
+    const existingId = Array.isArray(existing) && existing.length ? (existing[0] as any).id : null;
+    const { error } = await supabase.rpc("save_badge_template" as any, {
+      _id: existingId,
+      _event: event,
+      _variant: variant,
+      _name: template.name,
+      _background_url: template.background_url ?? null,
+      _width: template.width,
+      _height: template.height,
+      _layout: template.layout as any,
+    });
     setSaving(false);
     if (error) return toast.error(error.message);
     toast.success("Badge template saved");
