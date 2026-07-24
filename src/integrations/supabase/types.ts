@@ -988,6 +988,37 @@ export type Database = {
       }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
       publish_scheduled_blog_posts: { Args: never; Returns: undefined }
+      save_badge_template: {
+        Args: {
+          _background_url: string
+          _event: string
+          _height: number
+          _id: string
+          _layout: Json
+          _name: string
+          _variant: string
+          _width: number
+        }
+        Returns: {
+          active: boolean
+          background_url: string | null
+          created_at: string
+          event: string
+          height: number
+          id: string
+          layout: Json
+          name: string
+          updated_at: string
+          variant: string
+          width: number
+        }
+        SetofOptions: {
+          from: "*"
+          to: "badge_templates"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       submit_evaluation: {
         Args: {
           _answers: Json
