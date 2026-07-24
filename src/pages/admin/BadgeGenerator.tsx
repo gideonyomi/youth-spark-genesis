@@ -67,8 +67,10 @@ const useTemplate = (event: string, variant: "primary" | "secondary") => {
     let alive = true;
     (async () => {
       const { data } = await supabase.from("badge_templates" as any)
-        .select("*").eq("event", event).eq("variant", variant).eq("active", true).maybeSingle();
-      if (alive) setTpl((data as any) ?? defaultTemplate(event, variant));
+        .select("*").eq("event", event).eq("variant", variant).eq("active", true)
+        .order("updated_at", { ascending: false }).limit(1);
+      const row = Array.isArray(data) && data.length ? data[0] : null;
+      if (alive) setTpl((row as any) ?? defaultTemplate(event, variant));
     })();
     return () => { alive = false; };
   }, [event, variant]);
