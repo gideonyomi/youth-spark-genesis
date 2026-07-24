@@ -32,20 +32,33 @@ const BadgeTemplates = () => {
 
   const load = async () => {
     setLoading(true);
+    // Fetch the most recent active template. Older code used .maybeSingle()
+    // which errors out when duplicate rows exist and silently falls back to
+    // the built-in default — making every upload appear to have no effect.
     const { data, error } = await supabase.from("badge_templates" as any)
-      .select("*").eq("event", event).eq("variant", variant).maybeSingle();
+      .select("*")
+      .eq("event", event)
+      .eq("variant", variant)
+      .eq("active", true)
+      .order("updated_at", { ascending: false })
+      .limit(1);
     setLoading(false);
-    if (error && error.code !== "PGRST116") return toast.error(error.message);
-    setTemplate((data as any) || defaultTemplate(event, variant));
+    if (error) return toast.error(error.message);
+    const row = Array.isArray(data) && data.length ? data[0] : null;
+    setTemplate((row as any) || defaultTemplate(event, variant));
   };
   useEffect(() => { load(); /* eslint-disable-line */ }, [event, variant]);
 
-  // Live preview (debounced)
+  // Live preview (debounced) — bust the browser cache on the background image
+  // so a freshly uploaded template is drawn instead of the previous one.
   useEffect(() => {
     if (!template) return;
     clearTimeout(renderTimer.current);
     renderTimer.current = setTimeout(async () => {
-      const c = await renderBadge(template, sampleAttendee(event));
+      const bust = template.background_url
+        ? `${template.background_url}${template.background_url.includes("?") ? "&" : "?"}v=${Date.now()}`
+        : template.background_url;
+      const c = await renderBadge({ ...template, background_url: bust }, sampleAttendee(event));
       setPreview(c.toDataURL("image/png"));
     }, 200);
   }, [template, event]);
@@ -59,8 +72,18 @@ const BadgeTemplates = () => {
       width: template.width, height: template.height,
       layout: template.layout, active: true,
     };
-    const { error } = template.id
-      ? await supabase.from("badge_templates" as any).update(payload).eq("id", template.id)
+    // Always update the current active row for this (event, variant) if one
+    // exists — never insert a second one, which is what caused duplicates.
+    const { data: existing } = await supabase.from("badge_templates" as any)
+      .select("id")
+      .eq("event", event)
+      .eq("variant", variant)
+      .eq("active", true)
+      .order("updated_at", { ascending: false })
+      .limit(1);
+    const existingId = Array.isArray(existing) && existing.length ? (existing[0] as any).id : template.id;
+    const { error } = existingId
+      ? await supabase.from("badge_templates" as any).update(payload).eq("id", existingId)
       : await supabase.from("badge_templates" as any).insert(payload);
     setSaving(false);
     if (error) return toast.error(error.message);
