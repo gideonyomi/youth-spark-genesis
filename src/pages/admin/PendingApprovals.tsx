@@ -4,6 +4,8 @@ import { toast } from "sonner";
 import { Loader2, RefreshCw, Check, X, PauseOctagon, UserPlus } from "lucide-react";
 import { format } from "date-fns";
 import { useAuth } from "@/hooks/useAuth";
+import { edgeErrorMessage } from "@/lib/edge-error";
+
 
 type Pending = {
   id: string;
