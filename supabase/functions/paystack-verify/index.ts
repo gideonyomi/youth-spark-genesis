@@ -30,12 +30,14 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
 
+  try {
   const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 
   let body: any;
   try { body = await req.json(); } catch { return json({ error: "Invalid JSON" }, 400); }
   const reference = (body?.reference || "").toString();
   if (!reference) return json({ error: "reference required" }, 400);
+
 
   const log = (status: string, message: string, payload: unknown) =>
     admin.from("webhook_logs").insert({
