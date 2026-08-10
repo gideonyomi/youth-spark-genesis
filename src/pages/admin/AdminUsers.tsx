@@ -4,6 +4,8 @@ import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { Loader2, Shield, ShieldCheck, RefreshCw, UserCog } from "lucide-react";
 import { format } from "date-fns";
+import { edgeErrorMessage } from "@/lib/edge-error";
+
 
 type AdminUser = {
   id: string;
@@ -56,7 +58,7 @@ const AdminUsers = () => {
     setLoading(true);
     const { data, error } = await supabase.functions.invoke("admin-users", { body: { action: "list" } });
     setLoading(false);
-    if (error) return toast.error(error.message || "Could not load admins");
+    if (error) return toast.error(await edgeErrorMessage(error, "Could not load admins"));
     if ((data as any)?.error) return toast.error((data as any).error);
     setUsers((data as any).users ?? []);
     setCallerId((data as any).callerId ?? null);
@@ -71,7 +73,9 @@ const AdminUsers = () => {
       body: { action: "toggle", user_id: u.id, role, enabled },
     });
     setBusyKey(null);
-    if (error || (data as any)?.error) return toast.error((data as any)?.error || error?.message || "Failed");
+    if (error) return toast.error(await edgeErrorMessage(error, "Failed"));
+    if ((data as any)?.error) return toast.error((data as any).error);
+
     toast.success(`${enabled ? "Granted" : "Revoked"} ${role}`);
     load();
     if (selected?.id === u.id) {

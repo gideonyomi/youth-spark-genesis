@@ -8,6 +8,8 @@ import { NIGERIAN_STATES } from "@/lib/nigerian-states";
 import { COUNTRIES } from "@/lib/countries";
 import NameTagDownload from "@/components/NameTagDownload";
 import { processPassportPhoto } from "@/lib/photo-processor";
+import { edgeErrorMessage } from "@/lib/edge-error";
+
 
 const EVENT_META: Record<string, { tag: string; title: string; blurb: string }> = {
   yec: { tag: "YEC", title: "Youth Empowerment Conference", blurb: "Holiness. Empowerment. Purpose." },
@@ -64,7 +66,7 @@ const Register = () => {
       setFailed(null);
       try {
         const { data, error } = await supabase.functions.invoke("paystack-verify", { body: { reference } });
-        if (error) throw error;
+        if (error) throw new Error(await edgeErrorMessage(error, "Could not verify payment."));
         if (data?.status === "paid" && data.registration) {
           setDone({
             code: data.registration.code,
@@ -79,6 +81,7 @@ const Register = () => {
       } catch (err: any) {
         setFailed(err.message || "Could not verify payment.");
       } finally {
+
         setVerifying(false);
         const sp = new URLSearchParams(searchParams);
         sp.delete("reference"); sp.delete("trxref");
@@ -167,7 +170,7 @@ const Register = () => {
           callback_url,
         },
       });
-      if (error) throw error;
+      if (error) throw new Error(await edgeErrorMessage(error, "Could not start payment."));
       if (!data?.authorization_url) throw new Error("Could not start payment");
 
       window.location.href = data.authorization_url;

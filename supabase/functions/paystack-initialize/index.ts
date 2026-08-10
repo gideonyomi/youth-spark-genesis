@@ -44,6 +44,7 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
 
+  try {
   const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 
   let body: any;
@@ -59,12 +60,17 @@ Deno.serve(async (req) => {
 
   // SSC allows missing email (younger participants); all others require it.
   const emailRequired = submittedEvent !== "SSC";
-  if (!submittedEvent || !full_name || !state || !zone_fellowship || !photo_url) {
-    return json({ error: "Missing required fields" }, 400);
+  const missing: string[] = [];
+  if (!submittedEvent) missing.push("event");
+  if (!full_name) missing.push("full name");
+  if (!state) missing.push("state");
+  if (!zone_fellowship) missing.push("zone / fellowship");
+  if (!photo_url) missing.push("photo");
+  if (emailRequired && !email) missing.push("email");
+  if (missing.length) {
+    return json({ error: `Missing required field(s): ${missing.join(", ")}` }, 400);
   }
-  if (emailRequired && !email) {
-    return json({ error: "Email is required" }, 400);
-  }
+
 
   const ev = routeEvent(submittedEvent, { class_level, occupation, age_range });
 
@@ -84,10 +90,12 @@ Deno.serve(async (req) => {
 
   const reference = `${ev}-${Date.now()}-${crypto.randomUUID().slice(0, 8)}`;
 
-  // Build a stable email for Paystack (it requires one). When SSC participants don't
-  // provide an email, we generate a deterministic placeholder so the transaction can proceed.
+  // Build a stable email for Paystack (it requires a syntactically valid address).
+  // When SSC participants don't provide an email, generate a deterministic placeholder
+  // on a real TLD — Paystack rejects invented TLDs like ".placeholder".
   const emailRaw = email ? String(email).trim().toLowerCase() : "";
-  const emailForPaystack = emailRaw || `ssc-${reference.toLowerCase()}@blhmyouth.placeholder`;
+  const emailForPaystack = emailRaw || `no-reply.${reference.toLowerCase()}@blhmyouth.org`;
+
 
   const data = {
     full_name: String(full_name).trim(),
@@ -143,4 +151,9 @@ Deno.serve(async (req) => {
     routed_event: ev,
     submitted_event: submittedEvent,
   });
+  } catch (err) {
+    console.error("paystack-initialize unexpected error:", err);
+    return json({ error: "Unexpected server error while starting payment." }, 500);
+  }
 });
+
