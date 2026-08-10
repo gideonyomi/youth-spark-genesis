@@ -8,6 +8,8 @@ import { NIGERIAN_STATES } from "@/lib/nigerian-states";
 import { COUNTRIES } from "@/lib/countries";
 import NameTagDownload from "@/components/NameTagDownload";
 import { processPassportPhoto } from "@/lib/photo-processor";
+import { edgeErrorMessage } from "@/lib/edge-error";
+
 
 const EVENT_META: Record<string, { tag: string; title: string; blurb: string }> = {
   yec: { tag: "YEC", title: "Youth Empowerment Conference", blurb: "Holiness. Empowerment. Purpose." },
