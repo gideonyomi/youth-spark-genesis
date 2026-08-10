@@ -118,4 +118,9 @@ Deno.serve(async (req) => {
       photo_url: created.photo_url, event: created.event,
     },
   });
+  } catch (err) {
+    console.error("paystack-verify unexpected error:", err);
+    return json({ status: "error", error: "Unexpected server error while verifying payment." }, 500);
+  }
 });
+
