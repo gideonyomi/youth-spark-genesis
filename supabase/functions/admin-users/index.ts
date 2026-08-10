@@ -143,4 +143,9 @@ Deno.serve(async (req) => {
   }
 
   return json({ error: "Unknown action" }, 400);
+  } catch (err) {
+    console.error("admin-users unexpected error:", err);
+    return json({ error: "Unexpected server error." }, 500);
+  }
 });
+
