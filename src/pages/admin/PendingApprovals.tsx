@@ -24,7 +24,7 @@ const PendingApprovals = () => {
     setLoading(true);
     const { data, error } = await supabase.functions.invoke("admin-users", { body: { action: "list_pending" } });
     setLoading(false);
-    if (error) return toast.error(error.message || "Could not load");
+    if (error) return toast.error(await edgeErrorMessage(error, "Could not load"));
     if ((data as any)?.error) return toast.error((data as any).error);
     setRows((data as any).pending ?? []);
   };
@@ -36,10 +36,12 @@ const PendingApprovals = () => {
     setBusy(id + action);
     const { data, error } = await supabase.functions.invoke("admin-users", { body: { action, id } });
     setBusy(null);
-    if (error || (data as any)?.error) return toast.error((data as any)?.error || error?.message || "Failed");
+    if (error) return toast.error(await edgeErrorMessage(error, "Failed"));
+    if ((data as any)?.error) return toast.error((data as any).error);
     toast.success(action === "approve" ? "Editor approved" : action === "reject" ? "Request rejected" : "Account suspended");
     load();
   };
+
 
   return (
     <div>
