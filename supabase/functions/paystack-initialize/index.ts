@@ -44,6 +44,7 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
 
+  try {
   const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 
   let body: any;
@@ -59,12 +60,17 @@ Deno.serve(async (req) => {
 
   // SSC allows missing email (younger participants); all others require it.
   const emailRequired = submittedEvent !== "SSC";
-  if (!submittedEvent || !full_name || !state || !zone_fellowship || !photo_url) {
-    return json({ error: "Missing required fields" }, 400);
+  const missing: string[] = [];
+  if (!submittedEvent) missing.push("event");
+  if (!full_name) missing.push("full name");
+  if (!state) missing.push("state");
+  if (!zone_fellowship) missing.push("zone / fellowship");
+  if (!photo_url) missing.push("photo");
+  if (emailRequired && !email) missing.push("email");
+  if (missing.length) {
+    return json({ error: `Missing required field(s): ${missing.join(", ")}` }, 400);
   }
-  if (emailRequired && !email) {
-    return json({ error: "Email is required" }, 400);
-  }
+
 
   const ev = routeEvent(submittedEvent, { class_level, occupation, age_range });
 
