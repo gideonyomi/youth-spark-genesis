@@ -64,7 +64,7 @@ const Register = () => {
       setFailed(null);
       try {
         const { data, error } = await supabase.functions.invoke("paystack-verify", { body: { reference } });
-        if (error) throw error;
+        if (error) throw new Error(await edgeErrorMessage(error, "Could not verify payment."));
         if (data?.status === "paid" && data.registration) {
           setDone({
             code: data.registration.code,
@@ -79,6 +79,7 @@ const Register = () => {
       } catch (err: any) {
         setFailed(err.message || "Could not verify payment.");
       } finally {
+
         setVerifying(false);
         const sp = new URLSearchParams(searchParams);
         sp.delete("reference"); sp.delete("trxref");
