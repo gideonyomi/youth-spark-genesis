@@ -149,4 +149,9 @@ Deno.serve(async (req) => {
     routed_event: ev,
     submitted_event: submittedEvent,
   });
+  } catch (err) {
+    console.error("paystack-initialize unexpected error:", err);
+    return json({ error: "Unexpected server error while starting payment." }, 500);
+  }
 });
+
