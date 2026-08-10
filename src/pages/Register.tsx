@@ -170,7 +170,7 @@ const Register = () => {
           callback_url,
         },
       });
-      if (error) throw error;
+      if (error) throw new Error(await edgeErrorMessage(error, "Could not start payment."));
       if (!data?.authorization_url) throw new Error("Could not start payment");
 
       window.location.href = data.authorization_url;
