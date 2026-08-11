@@ -51,13 +51,21 @@ const InboxTable = ({ title, description, table, columns, statusOptions, hasStat
     load();
   };
 
-  const updateField = async (id: string, key: string, value: string) => {
+  const updateField = async (id: string, key: string, value: any) => {
     const { error } = await supabase.from(table as any).update({ [key]: value }).eq("id", id);
     if (error) return toast.error(error.message);
     toast.success(`${key.replace(/_/g, " ")} updated`);
     setSelected((s: any) => s ? { ...s, [key]: value } : s);
     load();
   };
+
+  const openRow = (row: any) => {
+    setSelected(row);
+    const d: Record<string, string> = {};
+    editableTexts.forEach((t) => { d[t.key] = String(row[t.key] ?? ""); });
+    setDrafts(d);
+  };
+
 
   const remove = async (id: string) => {
     if (!confirm("Delete this entry?")) return;
