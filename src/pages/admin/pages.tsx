@@ -17,14 +17,26 @@ export const PrayerInbox = () => (
     ]} />
 );
 export const TestimonyInbox = () => (
-  <InboxTable title="Testimony Submissions" description="Stories shared by the community."
-    table="testimony_submissions" statusOptions={["pending", "approved", "featured", "archived"]}
+  <InboxTable title="Testimonies" description="Review, edit, approve and publish stories shared by the community. Nothing appears publicly until it is published."
+    table="testimony_submissions" statusOptions={["pending", "approved", "rejected", "featured", "archived"]}
+    booleanToggles={[{ key: "published", label: "Publish on /testimonies", onLabel: "Published", offLabel: "Unpublished" }]}
+    editableTexts={[
+      { key: "name", label: "Edit name" },
+      { key: "location", label: "Edit location" },
+      { key: "story", label: "Edit story", multiline: true },
+    ]}
+    extraFilters={[{ key: "published", label: "All visibility", options: ["Published", "Unpublished"],
+      matches: (r, v) => v === "Published" ? r.published === true : r.published !== true }]}
     columns={[
       { key: "name", label: "Name" },
       { key: "location", label: "Location" },
       { key: "story", label: "Story", truncate: true },
+      { key: "published", label: "Public", render: r => r.published
+        ? <span className="text-xs px-2 py-0.5 rounded-full bg-secondary/20 text-secondary-foreground">Published</span>
+        : <span className="text-xs text-muted-foreground">Hidden</span> },
     ]} />
 );
+
 export const RegistrationInbox = () => (
   <InboxTable title="Event Registrations" description="Paid attendees for YEC, SSC, and NSS. Only confirmed payments appear here."
     table="event_registrations" statusOptions={["new", "confirmed", "attended", "cancelled"]}
