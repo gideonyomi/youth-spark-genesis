@@ -1,0 +1,2 @@
+REVOKE EXECUTE ON FUNCTION public.admin_create_registration(text,text,text,text,text,text,text,text,text,text,text,text,boolean,text,text,text,text,integer) FROM anon, public;
+GRANT EXECUTE ON FUNCTION public.admin_create_registration(text,text,text,text,text,text,text,text,text,text,text,text,boolean,text,text,text,text,integer) TO authenticated, service_role;
