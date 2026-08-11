@@ -7,6 +7,8 @@ import { format } from "date-fns";
 type Col = { key: string; label: string; render?: (row: any) => React.ReactNode; truncate?: boolean };
 type ExtraFilter = { key: string; label: string; options: string[]; matches?: (row: any, value: string) => boolean };
 type EditableSelect = { key: string; label: string; options: string[] };
+type BooleanToggle = { key: string; label: string; onLabel?: string; offLabel?: string };
+type EditableText = { key: string; label: string; multiline?: boolean };
 
 type Props = {
   title: string;
@@ -17,15 +19,19 @@ type Props = {
   hasStatus?: boolean;
   extraFilters?: ExtraFilter[];
   editableSelects?: EditableSelect[];
+  booleanToggles?: BooleanToggle[];
+  editableTexts?: EditableText[];
 };
 
-const InboxTable = ({ title, description, table, columns, statusOptions, hasStatus = true, extraFilters = [], editableSelects = [] }: Props) => {
+const InboxTable = ({ title, description, table, columns, statusOptions, hasStatus = true, extraFilters = [], editableSelects = [], booleanToggles = [], editableTexts = [] }: Props) => {
   const [extra, setExtra] = useState<Record<string, string>>({});
   const [rows, setRows] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<any | null>(null);
+  const [drafts, setDrafts] = useState<Record<string, string>>({});
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+
 
   const load = async () => {
     setLoading(true);
@@ -45,13 +51,21 @@ const InboxTable = ({ title, description, table, columns, statusOptions, hasStat
     load();
   };
 
-  const updateField = async (id: string, key: string, value: string) => {
+  const updateField = async (id: string, key: string, value: any) => {
     const { error } = await supabase.from(table as any).update({ [key]: value }).eq("id", id);
     if (error) return toast.error(error.message);
     toast.success(`${key.replace(/_/g, " ")} updated`);
     setSelected((s: any) => s ? { ...s, [key]: value } : s);
     load();
   };
+
+  const openRow = (row: any) => {
+    setSelected(row);
+    const d: Record<string, string> = {};
+    editableTexts.forEach((t) => { d[t.key] = String(row[t.key] ?? ""); });
+    setDrafts(d);
+  };
+
 
   const remove = async (id: string) => {
     if (!confirm("Delete this entry?")) return;
@@ -144,7 +158,7 @@ const InboxTable = ({ title, description, table, columns, statusOptions, hasStat
               </thead>
               <tbody>
                 {filtered.map(r => (
-                  <tr key={r.id} className="border-t border-border hover:bg-muted/30 cursor-pointer" onClick={() => setSelected(r)}>
+                  <tr key={r.id} className="border-t border-border hover:bg-muted/30 cursor-pointer" onClick={() => openRow(r)}>
                     {columns.map(c => (
                       <td key={c.key} className={`px-4 py-3 ${c.truncate ? "max-w-xs truncate" : ""}`}>
                         {c.render ? c.render(r) : (r[c.key] ?? "—")}
@@ -203,6 +217,51 @@ const InboxTable = ({ title, description, table, columns, statusOptions, hasStat
                 </div>
               </div>
             ))}
+            {booleanToggles.map((bt) => (
+              <div className="mt-5" key={bt.key}>
+                <label className="text-xs uppercase tracking-wider text-muted-foreground block mb-2">{bt.label}</label>
+                <div className="flex gap-2 flex-wrap">
+                  {[true, false].map((val) => (
+                    <button key={String(val)} onClick={() => updateField(selected.id, bt.key, val)}
+                      className={`text-xs px-3 py-1.5 rounded-full border ${!!selected[bt.key] === val ? "bg-primary text-primary-foreground border-primary" : "border-border hover:bg-muted"}`}>
+                      {val ? (bt.onLabel ?? "Yes") : (bt.offLabel ?? "No")}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
+            {editableTexts.length > 0 && (
+              <div className="mt-5 space-y-3">
+                {editableTexts.map((et) => (
+                  <div key={et.key}>
+                    <label className="text-xs uppercase tracking-wider text-muted-foreground block mb-1.5">{et.label}</label>
+                    {et.multiline ? (
+                      <textarea rows={5} value={drafts[et.key] ?? ""}
+                        onChange={(e) => setDrafts({ ...drafts, [et.key]: e.target.value })}
+                        className="w-full text-sm border border-border rounded-md px-3 py-2 bg-background resize-y" />
+                    ) : (
+                      <input value={drafts[et.key] ?? ""}
+                        onChange={(e) => setDrafts({ ...drafts, [et.key]: e.target.value })}
+                        className="w-full text-sm border border-border rounded-md px-3 py-2 bg-background" />
+                    )}
+                  </div>
+                ))}
+                <button
+                  onClick={async () => {
+                    const payload: Record<string, any> = {};
+                    editableTexts.forEach((et) => { payload[et.key] = drafts[et.key]?.trim() || null; });
+                    const { error } = await supabase.from(table as any).update(payload).eq("id", selected.id);
+                    if (error) return toast.error(error.message);
+                    toast.success("Saved");
+                    setSelected({ ...selected, ...payload });
+                    load();
+                  }}
+                  className="text-xs px-4 py-2 rounded-full bg-secondary text-secondary-foreground font-semibold">
+                  Save edits
+                </button>
+              </div>
+            )}
+
             <div className="flex justify-end mt-6">
               <button onClick={() => setSelected(null)} className="text-sm px-4 py-2 rounded-md hover:bg-muted">Close</button>
             </div>

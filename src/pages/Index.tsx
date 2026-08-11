@@ -8,7 +8,6 @@ import EventsSection from "@/components/EventsSection";
 import HistorySection from "@/components/HistorySection";
 import LeadershipSection from "@/components/LeadershipSection";
 import LiveStreamSection from "@/components/LiveStreamSection";
-import TestimoniesSection from "@/components/TestimoniesSection";
 import PrayerRequestSection from "@/components/PrayerRequestSection";
 import NewsletterSection from "@/components/NewsletterSection";
 import Footer from "@/components/Footer";
@@ -26,7 +25,6 @@ const Index = () => {
       <HistorySection />
       <LeadershipSection preview />
       <LiveStreamSection />
-      <TestimoniesSection />
       <PrayerRequestSection />
       <NewsletterSection />
       <Footer />

@@ -364,6 +364,8 @@ export type Database = {
           payment_status: string
           phone: string | null
           photo_url: string | null
+          registered_by: string | null
+          registered_by_admin: boolean
           registration_code: string | null
           state: string | null
           status: string
@@ -392,6 +394,8 @@ export type Database = {
           payment_status?: string
           phone?: string | null
           photo_url?: string | null
+          registered_by?: string | null
+          registered_by_admin?: boolean
           registration_code?: string | null
           state?: string | null
           status?: string
@@ -420,6 +424,8 @@ export type Database = {
           payment_status?: string
           phone?: string | null
           photo_url?: string | null
+          registered_by?: string | null
+          registered_by_admin?: boolean
           registration_code?: string | null
           state?: string | null
           status?: string
@@ -896,6 +902,7 @@ export type Database = {
           id: string
           location: string | null
           name: string
+          published: boolean
           status: string
           story: string
         }
@@ -905,6 +912,7 @@ export type Database = {
           id?: string
           location?: string | null
           name: string
+          published?: boolean
           status?: string
           story: string
         }
@@ -914,6 +922,7 @@ export type Database = {
           id?: string
           location?: string | null
           name?: string
+          published?: boolean
           status?: string
           story?: string
         }
@@ -978,6 +987,29 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_create_registration: {
+        Args: {
+          p_age_range: string
+          p_city: string
+          p_class_level: string
+          p_country: string
+          p_email: string
+          p_event: string
+          p_first_time_attendee: boolean
+          p_full_name: string
+          p_gender: string
+          p_marital_status: string
+          p_notes: string
+          p_occupation: string
+          p_payment_amount?: number
+          p_payment_reference: string
+          p_phone: string
+          p_photo_url: string
+          p_state: string
+          p_zone_fellowship: string
+        }
+        Returns: Json
+      }
       can_edit: { Args: { _user_id: string }; Returns: boolean }
       has_role: {
         Args: {

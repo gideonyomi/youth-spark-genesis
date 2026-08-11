@@ -40,7 +40,7 @@ const Footer = () => {
                 { l: "Ministries", h: "#ministries" },
                 { l: "Leadership", h: "/leadership" },
                 { l: "History", h: "#history" },
-                { l: "Testimonies", h: "#testimonials" },
+                { l: "Testimonies", h: "/testimonies" },
               ].map((link) => (
                 <a key={link.l} href={link.h} className="text-primary-foreground/70 hover:text-primary-foreground transition-colors">
                   {link.l}
@@ -71,7 +71,7 @@ const Footer = () => {
             <p className="font-semibold uppercase tracking-wider text-xs text-accent mb-3">Get Involved</p>
             <div className="flex flex-col gap-2">
               <a href="#newsletter" className="text-primary-foreground/70 hover:text-primary-foreground transition-colors">Subscribe to Newsletter</a>
-              <a href="#share-testimony" className="text-primary-foreground/70 hover:text-primary-foreground transition-colors">Share a Testimony</a>
+              <a href="/testimonies" className="text-primary-foreground/70 hover:text-primary-foreground transition-colors">Share a Testimony</a>
               <a href="#prayer" className="text-primary-foreground/70 hover:text-primary-foreground transition-colors">Prayer Request</a>
               <a href={contactHref} className="text-primary-foreground/70 hover:text-primary-foreground transition-colors">Contact Us</a>
             </div>

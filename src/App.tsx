@@ -8,12 +8,14 @@ import Index from "./pages/Index.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import Register from "./pages/Register";
 import Leadership from "./pages/Leadership";
+import Testimonies from "./pages/Testimonies";
 import Login from "./pages/admin/Login";
 import AdminLayout from "./components/admin/AdminLayout";
 import AdminUsers from "./pages/admin/AdminUsers";
 import PendingApprovals from "./pages/admin/PendingApprovals";
 import BadgeTemplates from "./pages/admin/BadgeTemplates";
 import BadgeGenerator from "./pages/admin/BadgeGenerator";
+import AdminRegister from "./pages/admin/AdminRegister";
 import Evaluate from "./pages/Evaluate";
 import EvaluationForms from "./pages/admin/EvaluationForms";
 import EvaluationSubmissions from "./pages/admin/EvaluationSubmissions";
@@ -42,6 +44,7 @@ const App = () => (
             <Route path="/register/:event" element={<Register />} />
             <Route path="/evaluate/:event" element={<Evaluate />} />
             <Route path="/leadership" element={<Leadership />} />
+            <Route path="/testimonies" element={<Testimonies />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/admin/login" element={<Login />} />
@@ -52,6 +55,7 @@ const App = () => (
               <Route path="inbox/registrations" element={<RegistrationInbox />} />
               <Route path="inbox/contact" element={<ContactInbox />} />
               <Route path="inbox/newsletter" element={<NewsletterInbox />} />
+              <Route path="registrations/new" element={<AdminRegister />} />
               <Route path="team/users" element={<AdminUsers />} />
               <Route path="team/approvals" element={<PendingApprovals />} />
               <Route path="content/settings" element={<SiteSettingsEdit />} />

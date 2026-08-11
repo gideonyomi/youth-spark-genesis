@@ -17,14 +17,26 @@ export const PrayerInbox = () => (
     ]} />
 );
 export const TestimonyInbox = () => (
-  <InboxTable title="Testimony Submissions" description="Stories shared by the community."
-    table="testimony_submissions" statusOptions={["pending", "approved", "featured", "archived"]}
+  <InboxTable title="Testimonies" description="Review, edit, approve and publish stories shared by the community. Nothing appears publicly until it is published."
+    table="testimony_submissions" statusOptions={["pending", "approved", "rejected", "featured", "archived"]}
+    booleanToggles={[{ key: "published", label: "Publish on /testimonies", onLabel: "Published", offLabel: "Unpublished" }]}
+    editableTexts={[
+      { key: "name", label: "Edit name" },
+      { key: "location", label: "Edit location" },
+      { key: "story", label: "Edit story", multiline: true },
+    ]}
+    extraFilters={[{ key: "published", label: "All visibility", options: ["Published", "Unpublished"],
+      matches: (r, v) => v === "Published" ? r.published === true : r.published !== true }]}
     columns={[
       { key: "name", label: "Name" },
       { key: "location", label: "Location" },
       { key: "story", label: "Story", truncate: true },
+      { key: "published", label: "Public", render: r => r.published
+        ? <span className="text-xs px-2 py-0.5 rounded-full bg-secondary/20 text-secondary-foreground">Published</span>
+        : <span className="text-xs text-muted-foreground">Hidden</span> },
     ]} />
 );
+
 export const RegistrationInbox = () => (
   <InboxTable title="Event Registrations" description="Paid attendees for YEC, SSC, and NSS. Only confirmed payments appear here."
     table="event_registrations" statusOptions={["new", "confirmed", "attended", "cancelled"]}
@@ -37,13 +49,21 @@ export const RegistrationInbox = () => (
       { key: "occupation", label: "All occupations", options: ["Student", "Undergraduate (300 Level and Above)", "Employed", "Self-Employed", "Unemployed"] },
       { key: "first_time_attendee", label: "First-time?", options: ["Yes", "No"],
         matches: (r, v) => v === "Yes" ? r.first_time_attendee === true : r.first_time_attendee === false },
+      { key: "registered_by_admin", label: "All sources", options: ["Admin registered", "Online"],
+        matches: (r, v) => v === "Admin registered" ? r.registered_by_admin === true : r.registered_by_admin !== true },
     ]}
     columns={[
       { key: "registration_code", label: "ID", render: r => <span className="font-mono font-semibold">{r.registration_code || "—"}</span> },
       { key: "photo_url", label: "Photo", render: r => r.photo_url
         ? <a href={r.photo_url} target="_blank" rel="noreferrer"><img src={r.photo_url} alt="" className="w-10 h-10 rounded-full object-cover" /></a>
         : <span className="text-muted-foreground">—</span> },
-      { key: "full_name", label: "Name" },
+      { key: "full_name", label: "Name", render: r => (
+        <span className="inline-flex items-center gap-1.5">
+          {r.full_name}
+          {r.registered_by_admin && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground">Admin</span>}
+        </span>
+      ) },
+
       { key: "email", label: "Email", render: r => r.email || <span className="text-muted-foreground">—</span> },
       { key: "event", label: "Event", render: r => (
         <span className="inline-flex items-center gap-1">
