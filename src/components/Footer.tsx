@@ -40,7 +40,7 @@ const Footer = () => {
                 { l: "Ministries", h: "#ministries" },
                 { l: "Leadership", h: "/leadership" },
                 { l: "History", h: "#history" },
-                { l: "Testimonies", h: "#testimonials" },
+                { l: "Testimonies", h: "/testimonies" },
               ].map((link) => (
                 <a key={link.l} href={link.h} className="text-primary-foreground/70 hover:text-primary-foreground transition-colors">
                   {link.l}
