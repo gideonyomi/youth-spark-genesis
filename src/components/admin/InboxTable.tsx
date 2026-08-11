@@ -158,7 +158,7 @@ const InboxTable = ({ title, description, table, columns, statusOptions, hasStat
               </thead>
               <tbody>
                 {filtered.map(r => (
-                  <tr key={r.id} className="border-t border-border hover:bg-muted/30 cursor-pointer" onClick={() => setSelected(r)}>
+                  <tr key={r.id} className="border-t border-border hover:bg-muted/30 cursor-pointer" onClick={() => openRow(r)}>
                     {columns.map(c => (
                       <td key={c.key} className={`px-4 py-3 ${c.truncate ? "max-w-xs truncate" : ""}`}>
                         {c.render ? c.render(r) : (r[c.key] ?? "—")}
