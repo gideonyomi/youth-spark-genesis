@@ -6,7 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import {
   HandHeart, MessageSquareQuote, ClipboardList, Mail, AtSign,
   Settings, Home, Info, UserCircle, Sparkles, Building2, CalendarDays,
-  History, Users, Radio, Star, LogOut, Loader2, Menu, UserCog, IdCard, ClipboardCheck, MessagesSquare, FileText, Tags
+  History, Users, Radio, Star, LogOut, Loader2, Menu, UserCog, UserPlus, IdCard, ClipboardCheck, MessagesSquare, FileText, Tags
 } from "lucide-react";
 import { useState } from "react";
 
