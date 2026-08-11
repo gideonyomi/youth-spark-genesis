@@ -7,6 +7,8 @@ import { format } from "date-fns";
 type Col = { key: string; label: string; render?: (row: any) => React.ReactNode; truncate?: boolean };
 type ExtraFilter = { key: string; label: string; options: string[]; matches?: (row: any, value: string) => boolean };
 type EditableSelect = { key: string; label: string; options: string[] };
+type BooleanToggle = { key: string; label: string; onLabel?: string; offLabel?: string };
+type EditableText = { key: string; label: string; multiline?: boolean };
 
 type Props = {
   title: string;
@@ -17,15 +19,19 @@ type Props = {
   hasStatus?: boolean;
   extraFilters?: ExtraFilter[];
   editableSelects?: EditableSelect[];
+  booleanToggles?: BooleanToggle[];
+  editableTexts?: EditableText[];
 };
 
-const InboxTable = ({ title, description, table, columns, statusOptions, hasStatus = true, extraFilters = [], editableSelects = [] }: Props) => {
+const InboxTable = ({ title, description, table, columns, statusOptions, hasStatus = true, extraFilters = [], editableSelects = [], booleanToggles = [], editableTexts = [] }: Props) => {
   const [extra, setExtra] = useState<Record<string, string>>({});
   const [rows, setRows] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<any | null>(null);
+  const [drafts, setDrafts] = useState<Record<string, string>>({});
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+
 
   const load = async () => {
     setLoading(true);
