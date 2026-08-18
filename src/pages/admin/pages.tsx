@@ -40,7 +40,33 @@ export const TestimonyInbox = () => (
 export const RegistrationInbox = () => (
   <InboxTable title="Event Registrations" description="Paid attendees for YEC, SSC, and NSS. Only confirmed payments appear here."
     table="event_registrations" statusOptions={["new", "confirmed", "attended", "cancelled"]}
-    editableSelects={[{ key: "event", label: "Reassign event", options: ["YEC", "SSC", "NSS"] }]}
+    editableSelects={[
+      { key: "event", label: "Reassign event", options: ["YEC", "SSC", "NSS"] },
+      { key: "payment_status", label: "Payment status", options: ["paid", "unpaid", "pending", "failed", "refunded"] },
+      { key: "gender", label: "Gender", options: ["Male", "Female"] },
+      { key: "marital_status", label: "Marital status", options: ["Single", "Engaged", "Married"] },
+      { key: "age_range", label: "Age range", options: ["12–16", "16–20", "21–25", "25–30", "30+"] },
+      { key: "class_level", label: "Class / level", options: ["JSS 1", "JSS 2", "JSS 3", "SS 1", "SS 2", "SS 3", "Seeking Admission", "100 Level", "200 Level"] },
+      { key: "occupation", label: "Occupation", options: ["Student", "Undergraduate (300 Level and Above)", "Employed", "Self-Employed", "Unemployed"] },
+    ]}
+    booleanToggles={[
+      { key: "first_time_attendee", label: "First-time attendee" },
+      { key: "registered_by_admin", label: "Admin registered", onLabel: "Admin", offLabel: "Online" },
+    ]}
+    editableTexts={[
+      { key: "full_name", label: "Full name" },
+      { key: "email", label: "Email" },
+      { key: "phone", label: "Phone" },
+      { key: "country", label: "Country" },
+      { key: "state", label: "State / province" },
+      { key: "city", label: "City" },
+      { key: "zone_fellowship", label: "Zone / fellowship" },
+      { key: "payment_reference", label: "Payment reference" },
+      { key: "payment_amount", label: "Payment amount (kobo)" },
+      { key: "photo_url", label: "Photo URL" },
+      { key: "registration_code", label: "Registration ID (change with care)" },
+      { key: "notes", label: "Notes", multiline: true },
+    ]}
     extraFilters={[
       { key: "event", label: "All events", options: ["YEC", "SSC", "NSS"] },
       { key: "payment_status", label: "All payments", options: ["paid", "unpaid", "pending", "failed", "refunded"] },
