@@ -106,7 +106,7 @@ const Register = () => {
   const occupationOptions = isYEC ? YEC_OCCUPATIONS : isSSC ? SSC_OCCUPATIONS : NSS_OCCUPATIONS;
   const ageRanges = isSSC ? AGE_RANGES_SSC : AGE_RANGES_COMMON;
   const askFirstTime = isSSC || isYEC;
-  const emailRequired = !isSSC;
+  const emailRequired = true;
 
   const [processingPhoto, setProcessingPhoto] = useState(false);
   const onPhoto = async (file: File) => {
@@ -137,7 +137,8 @@ const Register = () => {
     if (isSSC && !form.class_level) return toast.error("Please select your class");
     if (askFirstTime && !form.first_time_attendee) return toast.error("Please answer the first-time attendee question");
     if (!form.zone_fellowship.trim()) return toast.error("Please enter your zone / fellowship");
-    if (emailRequired && !form.email.trim()) return toast.error("Email is required");
+    if (!form.email.trim()) return toast.error("Email is required");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) return toast.error("Please enter a valid email address");
 
     setBusy(true);
     try {
@@ -153,7 +154,7 @@ const Register = () => {
         body: {
           event: tag,
           full_name: form.full_name,
-          email: form.email.trim() || null,
+          email: form.email.trim(),
           phone: form.phone || null,
           country: form.country,
           state: form.state.trim(),
@@ -284,9 +285,9 @@ const Register = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-semibold mb-1.5">
-                    Email {emailRequired ? <span className="text-destructive">*</span> : <span className="text-muted-foreground font-normal">(optional)</span>}
+                    Email <span className="text-destructive">*</span>
                   </label>
-                  <input required={emailRequired} type="email" value={form.email}
+                  <input required type="email" value={form.email}
                     onChange={(e) => setForm({ ...form, email: e.target.value })} className={inputCls} />
                 </div>
               </div>

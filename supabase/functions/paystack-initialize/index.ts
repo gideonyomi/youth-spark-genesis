@@ -58,17 +58,20 @@ Deno.serve(async (req) => {
 
   const submittedEvent = String(event ?? "").toUpperCase();
 
-  // SSC allows missing email (younger participants); all others require it.
-  const emailRequired = submittedEvent !== "SSC";
+  // Email is compulsory for every event category, including SSC.
+  const emailRaw = email ? String(email).trim().toLowerCase() : "";
   const missing: string[] = [];
   if (!submittedEvent) missing.push("event");
   if (!full_name) missing.push("full name");
   if (!state) missing.push("state");
   if (!zone_fellowship) missing.push("zone / fellowship");
   if (!photo_url) missing.push("photo");
-  if (emailRequired && !email) missing.push("email");
+  if (!emailRaw) missing.push("email");
   if (missing.length) {
     return json({ error: `Missing required field(s): ${missing.join(", ")}` }, 400);
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailRaw)) {
+    return json({ error: "Please enter a valid email address" }, 400);
   }
 
 
@@ -90,16 +93,11 @@ Deno.serve(async (req) => {
 
   const reference = `${ev}-${Date.now()}-${crypto.randomUUID().slice(0, 8)}`;
 
-  // Build a stable email for Paystack (it requires a syntactically valid address).
-  // When SSC participants don't provide an email, generate a deterministic placeholder
-  // on a real TLD — Paystack rejects invented TLDs like ".placeholder".
-  const emailRaw = email ? String(email).trim().toLowerCase() : "";
-  const emailForPaystack = emailRaw || `no-reply.${reference.toLowerCase()}@blhmyouth.org`;
-
+  const emailForPaystack = emailRaw;
 
   const data = {
     full_name: String(full_name).trim(),
-    email: emailRaw || null,
+    email: emailRaw,
     phone: phone ? String(phone).trim() : null,
     event: ev,
     original_event: submittedEvent,

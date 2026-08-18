@@ -31,7 +31,8 @@ export const rulesFor = (tag: string) => {
     askFirstTime: isSSC || isYEC,
     askMarital: !isSSC,
     askClass: isSSC,
-    emailRequired: !isSSC,
+    // Email is compulsory for every event category, including SSC.
+    emailRequired: true,
   };
 };
 
