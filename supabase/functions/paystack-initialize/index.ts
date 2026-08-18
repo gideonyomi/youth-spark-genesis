@@ -93,16 +93,11 @@ Deno.serve(async (req) => {
 
   const reference = `${ev}-${Date.now()}-${crypto.randomUUID().slice(0, 8)}`;
 
-  // Build a stable email for Paystack (it requires a syntactically valid address).
-  // When SSC participants don't provide an email, generate a deterministic placeholder
-  // on a real TLD — Paystack rejects invented TLDs like ".placeholder".
-  const emailRaw = email ? String(email).trim().toLowerCase() : "";
-  const emailForPaystack = emailRaw || `no-reply.${reference.toLowerCase()}@blhmyouth.org`;
-
+  const emailForPaystack = emailRaw;
 
   const data = {
     full_name: String(full_name).trim(),
-    email: emailRaw || null,
+    email: emailRaw,
     phone: phone ? String(phone).trim() : null,
     event: ev,
     original_event: submittedEvent,
