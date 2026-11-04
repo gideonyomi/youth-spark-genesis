@@ -14,13 +14,24 @@ const HashHandler = () => {
     const id = hash.slice(1);
     let tries = 0;
     let timer: number | undefined;
+    let settled = 0;
+    const jump = (smooth: boolean) => {
+      el.scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "start" });
+    };
+    const check = () => {
+      // Re-correct a few times: content above can load late and shift layout.
+      const top = el.getBoundingClientRect().top;
+      if (Math.abs(top) > 60) jump(false);
+      if (++settled < 4) timer = window.setTimeout(check, 700);
+    };
     const tick = () => {
       const el = document.getElementById(id);
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      if (!el) {
+        if (++tries < 20) timer = window.setTimeout(tick, 150);
         return;
       }
-      if (++tries < 20) timer = window.setTimeout(tick, 150);
+      jump(true);
+      timer = window.setTimeout(check, 700);
     };
     timer = window.setTimeout(tick, 100);
     return () => window.clearTimeout(timer);
