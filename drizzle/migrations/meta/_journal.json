@@ -8,6 +8,13 @@
       "when": 1793806631520,
       "tag": "0000_lov_database_migration",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793906484262,
+      "tag": "0001_require_nss_genotype",
+      "breakpoints": true
     }
   ]
 }
