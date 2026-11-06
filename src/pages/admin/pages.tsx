@@ -103,7 +103,6 @@ export const RegistrationInbox = () => (
       { key: "age_range", label: "Age" },
       { key: "class_level", label: "Class" },
       { key: "occupation", label: "Occupation" },
-      { key: "genotype", label: "Genotype" },
       { key: "first_time_attendee", label: "First-time", render: r => r.first_time_attendee === true ? "Yes" : r.first_time_attendee === false ? "No" : "—" },
       { key: "country", label: "Country" },
       { key: "state", label: "State" },
