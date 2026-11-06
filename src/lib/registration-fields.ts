@@ -16,6 +16,7 @@ export const SSC_CLASSES = ["JSS 1", "JSS 2", "JSS 3", "SS 1", "SS 2", "SS 3", "
 export const SSC_OCCUPATIONS = ["Student", "Employed", "Self-Employed"];
 export const YEC_OCCUPATIONS = ["Undergraduate (300 Level and Above)", "Employed", "Self-Employed", "Unemployed"];
 export const NSS_OCCUPATIONS = ["Employed", "Student", "Self-Employed"];
+export const GENOTYPES = ["AA", "AS", "SS", "AC", "SC", "CC"];
 
 export type EventTag = "YEC" | "SSC" | "NSS";
 
@@ -42,7 +43,7 @@ export type RegistrationForm = {
   age_range: string; gender: string;
   marital_status: string; occupation: string;
   class_level: string; first_time_attendee: string;
-  zone_fellowship: string; notes: string;
+  zone_fellowship: string; notes: string; genotype: string;
 };
 
 export const emptyRegistrationForm: RegistrationForm = {
@@ -51,7 +52,7 @@ export const emptyRegistrationForm: RegistrationForm = {
   age_range: "", gender: "",
   marital_status: "", occupation: "",
   class_level: "", first_time_attendee: "",
-  zone_fellowship: "", notes: "",
+  zone_fellowship: "", notes: "", genotype: "",
 };
 
 /** Returns the first validation error message, or null when the form is valid. */
@@ -68,6 +69,7 @@ export const validateRegistration = (tag: string, form: RegistrationForm): strin
   if (r.askClass && !form.class_level) return "Please select a class";
   if (r.askFirstTime && !form.first_time_attendee) return "Please answer the first-time attendee question";
   if (!form.zone_fellowship.trim()) return "Please enter the zone / fellowship";
+  if (r.isNSS && !form.genotype.trim()) return "Genotype is required for NSS registrations";
   if (r.emailRequired && !form.email.trim()) return "Email is required";
   if (form.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) return "Please enter a valid email address";
   return null;

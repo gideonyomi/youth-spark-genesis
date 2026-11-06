@@ -26,6 +26,7 @@ const SSC_CLASSES = ["JSS 1", "JSS 2", "JSS 3", "SS 1", "SS 2", "SS 3", "Seeking
 const SSC_OCCUPATIONS = ["Student", "Employed", "Self-Employed"];
 const YEC_OCCUPATIONS = ["Undergraduate (300 Level and Above)", "Employed", "Self-Employed", "Unemployed"];
 const NSS_OCCUPATIONS = ["Employed", "Student", "Self-Employed"];
+const GENOTYPES = ["AA", "AS", "SS", "AC", "SC", "CC"];
 
 const Register = () => {
   const { event } = useParams<{ event: string }>();
@@ -41,7 +42,7 @@ const Register = () => {
     marital_status: "", occupation: "",
     class_level: "",
     first_time_attendee: "",
-    zone_fellowship: "", notes: "",
+    zone_fellowship: "", notes: "", genotype: "",
   });
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
@@ -137,6 +138,7 @@ const Register = () => {
     if (isSSC && !form.class_level) return toast.error("Please select your class");
     if (askFirstTime && !form.first_time_attendee) return toast.error("Please answer the first-time attendee question");
     if (!form.zone_fellowship.trim()) return toast.error("Please enter your zone / fellowship");
+    if (isNSS && !form.genotype.trim()) return toast.error("Genotype is required for NSS registrations");
     if (!form.email.trim()) return toast.error("Email is required");
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) return toast.error("Please enter a valid email address");
 
@@ -165,6 +167,7 @@ const Register = () => {
           age_range: form.age_range,
           class_level: form.class_level || null,
           first_time_attendee: askFirstTime ? form.first_time_attendee === "Yes" : null,
+          genotype: isNSS ? form.genotype.trim() : null,
           zone_fellowship: form.zone_fellowship.trim(),
           notes: form.notes || null,
           photo_url: pub.publicUrl,
@@ -344,6 +347,16 @@ const Register = () => {
                   </div>
                 )}
               </div>
+
+              {isNSS && (
+                <div>
+                  <label className="block text-sm font-semibold mb-1.5">Genotype <span className="text-destructive">*</span></label>
+                  <select required value={form.genotype} onChange={(e) => setForm({ ...form, genotype: e.target.value })} className={inputCls}>
+                    <option value="">Select genotype</option>
+                    {GENOTYPES.map((genotype) => <option key={genotype} value={genotype}>{genotype}</option>)}
+                  </select>
+                </div>
+              )}
 
               {askFirstTime && (
                 <div>
