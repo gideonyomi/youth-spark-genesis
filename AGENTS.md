@@ -1,0 +1,1 @@
+Registration requirements that must not be bypassed are enforced in both the interface and the database, because direct API writes can bypass form validation.

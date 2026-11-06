@@ -53,7 +53,7 @@ Deno.serve(async (req) => {
   const {
     event, full_name, email, phone, age_range, state, zone_fellowship, notes, photo_url, callback_url,
     country, city, gender, marital_status, occupation,
-    class_level, first_time_attendee,
+    class_level, first_time_attendee, genotype,
   } = body ?? {};
 
   const submittedEvent = String(event ?? "").toUpperCase();
@@ -67,6 +67,7 @@ Deno.serve(async (req) => {
   if (!zone_fellowship) missing.push("zone / fellowship");
   if (!photo_url) missing.push("photo");
   if (!emailRaw) missing.push("email");
+  if (submittedEvent === "NSS" && !String(genotype ?? "").trim()) missing.push("genotype");
   if (missing.length) {
     return json({ error: `Missing required field(s): ${missing.join(", ")}` }, 400);
   }
@@ -113,6 +114,7 @@ Deno.serve(async (req) => {
     occupation: occupation ? String(occupation).trim() : null,
     class_level: class_level ? String(class_level).trim() : null,
     first_time_attendee: typeof first_time_attendee === "boolean" ? first_time_attendee : null,
+    genotype: submittedEvent === "NSS" ? String(genotype).trim() : null,
   };
 
   const { error: insErr } = await admin.from("pending_registrations").insert({

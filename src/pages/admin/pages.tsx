@@ -48,6 +48,7 @@ export const RegistrationInbox = () => (
       { key: "age_range", label: "Age range", options: ["12–16", "16–20", "21–25", "25–30", "30+"] },
       { key: "class_level", label: "Class / level", options: ["JSS 1", "JSS 2", "JSS 3", "SS 1", "SS 2", "SS 3", "Seeking Admission", "100 Level", "200 Level"] },
       { key: "occupation", label: "Occupation", options: ["Student", "Undergraduate (300 Level and Above)", "Employed", "Self-Employed", "Unemployed"] },
+      { key: "genotype", label: "Genotype", options: ["AA", "AS", "SS", "AC", "SC", "CC"] },
     ]}
     booleanToggles={[
       { key: "first_time_attendee", label: "First-time attendee" },

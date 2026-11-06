@@ -89,6 +89,7 @@ Deno.serve(async (req) => {
     marital_status: d.marital_status ?? null, occupation: d.occupation ?? null,
     class_level: d.class_level ?? null,
     first_time_attendee: typeof d.first_time_attendee === "boolean" ? d.first_time_attendee : null,
+    genotype: d.genotype ?? null,
     original_event: d.original_event ?? null,
     payment_status: "paid", payment_reference: reference,
     payment_amount: amountKobo, paid_at: paidAt, status: "confirmed",

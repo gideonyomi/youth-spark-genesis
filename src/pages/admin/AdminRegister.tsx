@@ -6,7 +6,7 @@ import { NIGERIAN_STATES } from "@/lib/nigerian-states";
 import { COUNTRIES } from "@/lib/countries";
 import { processPassportPhoto } from "@/lib/photo-processor";
 import {
-  EVENT_META, GENDERS, MARITAL, SSC_CLASSES,
+  EVENT_META, GENDERS, MARITAL, SSC_CLASSES, GENOTYPES,
   emptyRegistrationForm, rulesFor, validateRegistration,
 } from "@/lib/registration-fields";
 
@@ -93,6 +93,7 @@ const AdminRegister = () => {
         p_photo_url: pub.publicUrl,
         p_payment_reference: paymentReference.trim(),
         p_payment_amount: amountKobo,
+        p_genotype: r.isNSS ? form.genotype.trim() : null,
       });
       if (error) throw error;
       const res = data as any;
@@ -230,6 +231,15 @@ const AdminRegister = () => {
               <select value={form.class_level} onChange={(e) => setForm({ ...form, class_level: e.target.value })} className={inputCls}>
                 <option value="">Select</option>
                 {SSC_CLASSES.map((c) => <option key={c} value={c}>{c}</option>)}
+              </select>
+            </div>
+          )}
+          {r.isNSS && (
+            <div>
+              <label className={labelCls}>Genotype *</label>
+              <select required value={form.genotype} onChange={(e) => setForm({ ...form, genotype: e.target.value })} className={inputCls}>
+                <option value="">Select genotype</option>
+                {GENOTYPES.map((genotype) => <option key={genotype} value={genotype}>{genotype}</option>)}
               </select>
             </div>
           )}
