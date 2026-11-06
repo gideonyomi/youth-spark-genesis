@@ -64,7 +64,6 @@ export const RegistrationInbox = () => (
       { key: "zone_fellowship", label: "Zone / fellowship" },
       { key: "payment_reference", label: "Payment reference" },
       { key: "payment_amount", label: "Payment amount (kobo)" },
-      { key: "genotype", label: "Genotype" },
       { key: "photo_url", label: "Photo URL" },
       { key: "registration_code", label: "Registration ID (change with care)" },
       { key: "notes", label: "Notes", multiline: true },

@@ -6,6 +6,7 @@ import { ArrowLeft, Loader2, Upload, X, CheckCircle2, AlertCircle } from "lucide
 import logo from "@/assets/blhm-logo.png";
 import { NIGERIAN_STATES } from "@/lib/nigerian-states";
 import { COUNTRIES } from "@/lib/countries";
+import { GENOTYPES } from "@/lib/registration-fields";
 import NameTagDownload from "@/components/NameTagDownload";
 import { processPassportPhoto } from "@/lib/photo-processor";
 import { edgeErrorMessage } from "@/lib/edge-error";
@@ -26,8 +27,6 @@ const SSC_CLASSES = ["JSS 1", "JSS 2", "JSS 3", "SS 1", "SS 2", "SS 3", "Seeking
 const SSC_OCCUPATIONS = ["Student", "Employed", "Self-Employed"];
 const YEC_OCCUPATIONS = ["Undergraduate (300 Level and Above)", "Employed", "Self-Employed", "Unemployed"];
 const NSS_OCCUPATIONS = ["Employed", "Student", "Self-Employed"];
-const GENOTYPES = ["AA", "AS", "SS", "AC", "SC", "CC"];
-
 const Register = () => {
   const { event } = useParams<{ event: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
