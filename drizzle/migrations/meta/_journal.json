@@ -15,6 +15,13 @@
       "when": 1793906484262,
       "tag": "0001_require_nss_genotype",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1795219092102,
+      "tag": "0002_tighten_public_access_rules",
+      "breakpoints": true
     }
   ]
 }

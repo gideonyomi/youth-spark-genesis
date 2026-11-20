@@ -79,9 +79,10 @@ Deno.serve(async (req) => {
   const ev = routeEvent(submittedEvent, { class_level, occupation, age_range });
 
   const { data: settingsRow } = await admin.from("site_settings").select("data").eq("id", 1).maybeSingle();
+  const { data: privateRow } = await admin.from("private_settings").select("paystack_secret_key").eq("id", 1).maybeSingle();
   const s = (settingsRow?.data as any) ?? {};
 
-  const secret = s.paystack_secret_key || Deno.env.get("PAYSTACK_SECRET_KEY") || "";
+  const secret = privateRow?.paystack_secret_key || Deno.env.get("PAYSTACK_SECRET_KEY") || "";
   if (!secret) return json({ error: "Payment provider not configured. Contact the administrator." }, 500);
 
   const amountKey = `paystack_amount_${ev.toLowerCase()}`;

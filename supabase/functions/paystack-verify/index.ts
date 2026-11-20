@@ -60,7 +60,8 @@ Deno.serve(async (req) => {
   }
 
   const { data: settingsRow } = await admin.from("site_settings").select("data").eq("id", 1).maybeSingle();
-  const secret = (settingsRow?.data as any)?.paystack_secret_key || Deno.env.get("PAYSTACK_SECRET_KEY") || "";
+  const { data: privateRow } = await admin.from("private_settings").select("paystack_secret_key").eq("id", 1).maybeSingle();
+  const secret = privateRow?.paystack_secret_key || Deno.env.get("PAYSTACK_SECRET_KEY") || "";
   if (!secret) return json({ error: "Payment provider not configured" }, 500);
 
   const verifyRes = await fetch(`https://api.paystack.co/transaction/verify/${encodeURIComponent(reference)}`, {

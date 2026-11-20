@@ -829,6 +829,24 @@ export type Database = {
         }
         Relationships: []
       }
+      private_settings: {
+        Row: {
+          id: number
+          paystack_secret_key: string | null
+          updated_at: string
+        }
+        Insert: {
+          id?: number
+          paystack_secret_key?: string | null
+          updated_at?: string
+        }
+        Update: {
+          id?: number
+          paystack_secret_key?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       programs: {
         Row: {
           created_at: string

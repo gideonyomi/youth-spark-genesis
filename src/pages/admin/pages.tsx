@@ -183,7 +183,8 @@ export const SiteSettingsEdit = () => {
   useEffect(() => {
     (async () => {
       const { data: row } = await supabase.from("site_settings").select("*").eq("id", 1).maybeSingle();
-      setData((row as any)?.data ?? {});
+      const { data: priv } = await supabase.from("private_settings").select("paystack_secret_key").eq("id", 1).maybeSingle();
+      setData({ ...((row as any)?.data ?? {}), paystack_secret_key: priv?.paystack_secret_key ?? "" });
       setLoading(false);
     })();
   }, []);
