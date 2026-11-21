@@ -22,6 +22,13 @@
       "when": 1795219092102,
       "tag": "0002_tighten_public_access_rules",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1795219351378,
+      "tag": "0003_limit_evaluation_functions_and_photo_listing",
+      "breakpoints": true
     }
   ]
 }
